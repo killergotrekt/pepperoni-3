@@ -1,5 +1,5 @@
 options:
-	economycctv: xxx
+	economycctv: no
 	bot: Pepperoni SE
 	
 
@@ -37,6 +37,15 @@ discord command /bal [<member>]:
 				set the colour of the embed to Cyan
 				send the last created embed to event-channel with event-bot
                 
+function format(n: number) :: text:
+    set {_data} to "B,9|M,6|k,3"
+    loop split {_data} at "|":
+        set {_s::*} to split loop-value at ","
+        {_n} >= 10 ^ {_s::2} parsed as number
+        return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
+    return "%{_n}%" 
+
+
 
 discord command /hourly:
 	trigger:
@@ -99,14 +108,10 @@ discord command withdraw [<string>]:
 		else:
 			if arg-1 = "all":
 				set {_b} to {moneybank::%discord id of event-user%}
+				reply with "Withdrew **$%format({_b})%**"
 				set {moneybank::%discord id of event-user%} to 0
 				add {_b} to {money::%discord id of event-user%}
-				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/wd all` and gained `$%{_b}%`" to channel with id "{@economycctv}" with "{@bot}"
-				create embed:
-					set the colour of the embed to green
-					set the description of embed to "Withdrew **$%format({_b})%**"
-					send the last created embed to event-channel with event-bot
-				stop
+				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/wd all` and gained `$%arg%`" to channel with id "{@economycctv}" with "{@bot}"
 			else:
 				set {_f} to arg-1 parsed as integer
 				if {_f} < 0:
@@ -121,14 +126,10 @@ discord command withdraw [<string>]:
 				if {_f} > {moneybank::%discord id of event-user%}:
 					reply with "You are attempting to withdraw **$%format({_f})%**, but you only have **$%format({moneybank::%discord id of event-user%})%**"
 					stop
-				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/wd` and gained `$%{_f}%`" to channel with id "{@economycctv}" with "{@bot}"
+				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/wd` and gained `$%arg%`" to channel with id "{@economycctv}" with "{@bot}"
 				remove {_f} from {moneybank::%discord id of event-user%}
 				add {_f} to {money::%discord id of event-user%}
-				create embed:
-					set the colour of the embed to green
-					set the description of embed to "Withdrew **$%format({_f})%**"
-					send the last created embed to event-channel with event-bot
-				stop
+				reply with "Withdrew **$%format({_f})%**"
 			
 				
 discord command deposit [<string>]:    
@@ -149,22 +150,15 @@ discord command deposit [<string>]:
 					set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
 					remove {moneybank::%discord id of event-user%} from {_C}
 					set {money::%discord id of event-user%} to {_C}
-					create embed:
-						set the description of embed to "Deposited **$%format({_b})%**"
-						set the colour of the embed to green
-						send the last created embed to event-channel with event-bot
-					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%{_b}%`" to channel with id "{@economycctv}" with "{@bot}"
+					reply with "Deposited **$%format({_b})%**"
+					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%arg%`" to channel with id "{@economycctv}" with "{@bot}"
 					stop
 				else:
 					set {_C} to {money::%discord id of event-user%}
 					add {money::%discord id of event-user%} to {moneybank::%discord id of event-user%}
 					set {money::%discord id of event-user%} to 0
 					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%arg%`" to channel with id "{@economycctv}" with "{@bot}"
-					create embed:
-						set the description of embed to "Deposited **$%format({_c})%**"
-						set the colour of the embed to green
-						send the last created embed to event-channel with event-bot
-					stop
+					reply with "Deposited **$%format({_c})%**"
 			if arg-1 contains "a":
 				reply with "Usage: `/dep <number | all>`"
 				stop
@@ -261,5 +255,5 @@ discord command deposit [<string>]:
 					add {_c} to {moneybank::%discord id of event-user%}
 					remove {_c} from {money::%discord id of event-user%} 
 					reply with "**$%format({_c})%** deposited"
-					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%{_c}%`" to channel with id "{@economycctv}" with "{@bot}"
+					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%arg%`" to channel with id "{@economycctv}" with "{@bot}"
 					stop
