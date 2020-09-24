@@ -65,7 +65,7 @@ discord command /hourly:
 			set {_D} to difference between {lasthourly.%discord id of event-user%} and now
 			if {_D} is more than 2 hour:
 				set {lasthourly.%discord id of event-user%} to now
-				set {streakhourly.%discord id of event-user%} to 1
+				add 1 to {streakhourly.%discord id of event-user%}
 				set {hourlymoney.%discord id of event-user%} to 50
 				add {hourlymoney.%discord id of event-user%} to {money::%discord id of event-user%}
 				create embed:
@@ -88,3 +88,178 @@ discord command /hourly:
 					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 15%% more money."
 					send the last created embed to event-channel with event-bot
 				stop
+				
+discord command withdraw [<string>]:    
+	aliases: wd
+	prefixes: /
+	trigger:
+		if arg-1 is not set:
+			reply with "Usage: `/wd <number | all>`"
+			stop
+		else:
+			if arg-1 = "all":
+				set {_b} to {moneybank::%discord id of event-user%}
+				set {moneybank::%discord id of event-user%} to 0
+				add {_b} to {money::%discord id of event-user%}
+				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/wd all` and gained `$%{_b}%`" to channel with id "{@economycctv}" with "{@bot}"
+				create embed:
+					set the colour of the embed to green
+					set the description of embed to "Withdrew **$%format({_b})%**"
+					send the last created embed to event-channel with event-bot
+				stop
+			else:
+				set {_f} to arg-1 parsed as integer
+				if {_f} < 0:
+					reply with "Needs to be a whole number greater than 0"
+					stop
+				if {moneybank::%discord id of event-user%} is less than 0:
+					reply with "Please deposit to clear debt, before trying to wd"
+					stop
+				if {moneybank::%discord id of event-user%} is 0:
+					reply with "You don't have any cash in your bank."
+					stop
+				if {_f} > {moneybank::%discord id of event-user%}:
+					reply with "You are attempting to withdraw **$%format({_f})%**, but you only have **$%format({moneybank::%discord id of event-user%})%**"
+					stop
+				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/wd` and gained `$%{_f}%`" to channel with id "{@economycctv}" with "{@bot}"
+				remove {_f} from {moneybank::%discord id of event-user%}
+				add {_f} to {money::%discord id of event-user%}
+				create embed:
+					set the colour of the embed to green
+					set the description of embed to "Withdrew **$%format({_f})%**"
+					send the last created embed to event-channel with event-bot
+				stop
+			
+				
+discord command deposit [<string>]:    
+	aliases: dep
+	prefixes: /
+	trigger:
+		if arg-1 is not set:
+			reply with "Usage: `/dep <number | all>`"
+			stop
+		else:
+			if arg-1 is not alphanumeric:
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 = "all":
+				set {_c} to {money::%discord id of event-user%}+{moneybank::%discord id of event-user%}
+				if {_c} > {moneybankmax::%discord id of event-user%}:
+					set {_b} to {moneybankmax::%discord id of event-user%}-{moneybank::%discord id of event-user%}
+					set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
+					remove {moneybank::%discord id of event-user%} from {_C}
+					set {money::%discord id of event-user%} to {_C}
+					create embed:
+						set the description of embed to "Deposited **$%format({_b})%**"
+						set the colour of the embed to green
+						send the last created embed to event-channel with event-bot
+					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%{_b}%`" to channel with id "{@economycctv}" with "{@bot}"
+					stop
+				else:
+					set {_C} to {money::%discord id of event-user%}
+					add {money::%discord id of event-user%} to {moneybank::%discord id of event-user%}
+					set {money::%discord id of event-user%} to 0
+					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%arg%`" to channel with id "{@economycctv}" with "{@bot}"
+					create embed:
+						set the description of embed to "Deposited **$%format({_c})%**"
+						set the colour of the embed to green
+						send the last created embed to event-channel with event-bot
+					stop
+			if arg-1 contains "a":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "b":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "c":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "d":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "e":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "f":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "g":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "h":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "i":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "j":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "k":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "l":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "m":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "n":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "o":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "p":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "q":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "r":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "s":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "t":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "u":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "v":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "w":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "x":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "y":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			if arg-1 contains "z":
+				reply with "Usage: `/dep <number | all>`"
+				stop
+			else:
+				set {_f} to arg-1 parsed as integer
+				if {money::%discord id of event-user%} is less than 0:
+					reply with "Please withdraw to escape debt, before trying to dep"
+					stop
+				if {money::%discord id of event-user%} is 0:
+					reply with "You don't have any cash in your purse."
+					stop
+				set {_c} to {_f}+{moneybank::%discord id of event-user%}
+				if {_c} > {moneybankmax::%discord id of event-user%}:
+					set {_b} to {moneybankmax::%discord id of event-user%}-{moneybank::%discord id of event-user%}
+					reply with "You can only manually deposit up to **$%format({_b})%**. Or else do `/dep all` instead." 
+					stop
+				else:
+					set {_c} to {_f}
+					add {_c} to {moneybank::%discord id of event-user%}
+					remove {_c} from {money::%discord id of event-user%} 
+					reply with "**$%format({_c})%** deposited"
+					send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/dep` and dep `$%{_c}%`" to channel with id "{@economycctv}" with "{@bot}"
+					stop
