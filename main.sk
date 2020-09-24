@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.1
-	build: 20.GHIJ3
-	maincctv: xxx
+	version: 2.1.1
+	build: 20.ABCE1
+	maincctv: cease
 
 on skript load:
-	login to "xxx" with name "{@bot}"
+	login to "you fucking idot" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
@@ -16,7 +16,7 @@ discord command /help:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`" to embed
-			add field named "Other" with value "`/help`, `/github`, `/gems`" to embed
+			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
 			send the last created embed to event-channel with event-bot
@@ -78,13 +78,10 @@ discord command /gems [<text>]:
 						set the colour of the embed to red
 						send the last created embed to event-channel with event-bot
 						
-function format(n: number) :: text:
-    set {_data} to "B,9|M,6|k,3"
-    loop split {_data} at "|":
-        set {_s::*} to split loop-value at ","
-        {_n} >= 10 ^ {_s::2} parsed as number
-        return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
-    return "%{_n}%" 
+discord command /invite:
+	bots: {@bot}
+	trigger:
+		reply with "https://discord.com/api/oauth2/authorize?client_id=671896615950221322&permissions=2147483639&scope=bot"
 
 on vixio command:
 	if {gems::%discord id of event-user%} is not set:
