@@ -1,0 +1,119 @@
+options:
+	bot: Pepperoni SE
+	version: 2.03
+	build: 20.MKIE8
+	maincctv: xxx
+
+on skript load:
+	login to "xxx" with name "{@bot}"
+	mark "Pepperoni SE" as playing "/help"
+	
+discord command /help:
+	bots: {@bot}
+	trigger:
+		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/help`" to channel with id "{@maincctv}" with "{@bot}"
+		create embed:
+			set the title of embed to title with text "Help - version {@version}"
+			set the description of embed to "All Pepperoni SE commands listed below:"
+			add field named "Economics" with value "`/bal`" to embed
+			add field named "Other" with value "`/help`, `/github`, `/gems`" to embed
+			set the footer of embed to footer with text "(Build {@build})"
+			set the colour of the embed to Cyan
+			send the last created embed to event-channel with event-bot
+			
+discord command /github:
+	bots: {@bot}
+	trigger:
+		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/help`" to channel with id "{@maincctv}" with "{@bot}"
+		create embed:
+			set the title of embed to title with text "Github"
+			set the description of embed to "All Pepperoni SE downloads/stuff listed below:%nl%https://github.com/killergotrekt/pepperoni-se2"
+			set the colour of the embed to Cyan
+			send the last created embed to event-channel with event-bot
+			
+command /gemeco <text> <number> <number>:
+	trigger:
+		arg-1 = "add":
+			add arg-2 to {gems::%arg-3%}
+			send "```ALERT!```%nl%`Console` has added **%arg-2% gems** to account `%arg-3%`!!!" to channel with id "{@maincctv}" with "{@bot}"
+		arg-1 = "set":
+			set {gems::%arg-3%} to arg-2
+			send "```ALERT!```%nl%`Console` set **%arg-2% gems** to account `%arg-3%`!!!" to channel with id "{@maincctv}" with "{@bot}"
+		arg-1 = "remove":
+			remove arg-2 from {gems::%arg-3%}
+			send "```ALERT!```%nl%`Console` has removed **%arg-2% gems** from account `%arg-3%`!!!" to channel with id "{@maincctv}" with "{@bot}"
+			
+discord command /gems [<text>]:
+	bots: {@bot}
+	trigger:
+		arg isn't set:
+			send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/gems`" to channel with id "{@maincctv}" with "{@bot}"
+			create embed:
+				set the title of embed to title with text "%event-user%'s gems"
+				set the description of embed to "Your gems: :gem: **%format({gems::%discord id of event-user%})%**%nl%Premium: `%{premium::%discord id of event-user%}%`%nl%Gems are used to purchase `Premium`, or in the gems shop.%nl%%nl%`BUY PREMIUM - 600 GEMS` (**/gems premium**)%nl%`GEM SHOP - COMING SOON` **(Purchase premium goods there)**%nl%%nl%```Get Gems```%nl%- **Leveling up**%nl%- **Daily Rewards**%nl%- **Special Events**"
+				set the colour of the embed to Cyan
+				send the last created embed to event-channel with event-bot
+		else:
+			arg-1 = "unlock":
+				discord id of event-user = "387336581775884288":
+					reply with "Enabled Bypass cooldown restrictions."
+					set {premium::%discord id of event-user%} to "Admin Mode"
+					send "```ALERT!```%nl%`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) is now **bypassing command cooldown**!!! <@387336581775884288>" to channel with id "{@maincctv}" with "{@bot}"
+				else:
+					reply with "You cannot bypass the cooldown restrictions, what are you thinking?"
+			arg-1 = "premium":
+				if {gems::%discord id of event-user%} >= 600:
+					remove 600 from {gems::%discord id of event-user%}
+					set {premium::%discord id of event-user%} to "Active" 
+					send "```ALERT!```%nl%`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) has purchased **premium upgrade**!!!" to channel with id "{@maincctv}" with "{@bot}"
+					create embed:
+						set the title of embed to title with text ":tada: Premium Unlocked!"
+						set the description of embed to "You unlocked `Premium` Forever."
+						set the colour of the embed to green
+						send the last created embed to event-channel with event-bot
+				else:
+					create embed:
+						set the title of embed to title with text "Not Enough Gems!"
+						set the description of embed to "You need more gems to complete this action."
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+						
+function format(n: number) :: text:
+    set {_data} to "B,9|M,6|k,3"
+    loop split {_data} at "|":
+        set {_s::*} to split loop-value at ","
+        {_n} >= 10 ^ {_s::2} parsed as number
+        return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
+    return "%{_n}%" 
+
+on vixio command:
+	if {gems::%discord id of event-user%} is not set:
+		set {gems::%discord id of event-user%} to 0
+		set {premium::%discord id of event-user%} to "Not Active"
+	if {premium::%discord id of event-user%} = "Admin Mode":
+		set {lastcommand.%discord id of event-user%} to now
+	if {premium::%discord id of event-user%} = "Not Active":
+		set {_D} to difference between {lastcommand.%discord id of event-user%} and now
+		if {_D} is less than 4 seconds:
+			cancel event
+			create embed:
+				set the title of embed to title with text "Cooldown"
+				set the description of embed to "Pepperoni can be used again in `%difference between 4 seconds and {_d}%`"
+				set the colour of the embed to red
+				set the footer of embed to footer with text "Get Premium to decrease cooldown 4 -> 2"
+				send the last created embed to event-channel with event-bot
+		else:
+			set {lastcommand.%discord id of event-user%} to now
+	if {premium::%discord id of event-user%} = "Active":
+		set {_D} to difference between {lastcommand.%discord id of event-user%} and now
+		if {_D} is less than 2 seconds:
+			cancel event
+			create embed:
+				set the title of embed to title with text "Cooldown"
+				set the description of embed to "Pepperoni can be used again in `%difference between 2 seconds and {_d}%`"
+				set the colour of the embed to red
+				set the footer of embed to footer with text "Chill out bro"
+				send the last created embed to event-channel with event-bot
+		else:
+			set {lastcommand.%discord id of event-user%} to now
+		
