@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.1.1
-	build: 20.ABCE1
-	maincctv: cease
+	version: 2.1.2
+	build: 20.LMAO6
+	maincctv: xxx
 
 on skript load:
-	login to "you fucking idot" with name "{@bot}"
+	login to "xxx" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
@@ -20,6 +20,14 @@ discord command /help:
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
 			send the last created embed to event-channel with event-bot
+			
+function format(n: number) :: text:
+    set {_data} to "B,9|M,6|k,3"
+    loop split {_data} at "|":
+        set {_s::*} to split loop-value at ","
+        {_n} >= 10 ^ {_s::2} parsed as number
+        return "%{_n} / 10 ^ {_s::2} parsed as number%%{_s::1}%"
+    return "%{_n}%" 
 			
 discord command /github:
 	bots: {@bot}
@@ -77,10 +85,14 @@ discord command /gems [<text>]:
 						set the description of embed to "You need more gems to complete this action."
 						set the colour of the embed to red
 						send the last created embed to event-channel with event-bot
-						
+
+on bot join guild:
+	send "**pepperoni** was added in guild `%event-guild%` (`%discord id of event-guild%`)" to channel with id "{@maincctv}" with "{@bot}"
+
 discord command /invite:
 	bots: {@bot}
 	trigger:
+		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/invite`" to channel with id "{@maincctv}" with "{@bot}"
 		reply with "https://discord.com/api/oauth2/authorize?client_id=671896615950221322&permissions=2147483639&scope=bot"
 
 on vixio command:
@@ -113,4 +125,4 @@ on vixio command:
 				send the last created embed to event-channel with event-bot
 		else:
 			set {lastcommand.%discord id of event-user%} to now
-		
+
