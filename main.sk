@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.1.3
-	build: 20.SUBB3
+	version: 2.2
+	build: 20.HEHE2
 	maincctv: xxx
 
 on skript load:
@@ -15,7 +15,7 @@ discord command /help:
 		create embed:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
-			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`" to embed
+			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`, `/rob`, `/beg`" to embed
 			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
