@@ -1,5 +1,5 @@
 options:
-	economycctv: xxx
+	economycctv: 757727016672821268
 	bot: Pepperoni SE
 	
 
@@ -160,7 +160,7 @@ discord command deposit [<Text>]:
 					add {_fund} to {moneybank::%discord id of event-user%}
 					set {money::%discord id of event-user%} to 0
 					create embed:
-						set the description of embed to "Deposited **$%format2({_money})%**"
+						set the description of embed to "Deposited **$%format2({_fund})%**"
 						set the colour of the embed to green
 						send the last created embed to event-channel with event-bot
 			else:
