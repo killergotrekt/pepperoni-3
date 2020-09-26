@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.2
-	build: 20.HEHE2
+	version: 2.3
+	build: 20.KPOW3
 	maincctv: xxx
 
 on skript load:
@@ -15,7 +15,7 @@ discord command /help:
 		create embed:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
-			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`, `/rob`, `/beg`" to embed
+			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`, `/rob`, `/beg`, `/levels`" to embed
 			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
@@ -89,6 +89,18 @@ discord command /gems [<text>]:
 on bot join guild:
 	send "**pepperoni** was added in guild `%event-guild%` (`%discord id of event-guild%`)" to channel with id "{@maincctv}" with "{@bot}"
 
+command /wipeuser <number>:
+	trigger:
+		delete {money::%arg%}
+		set {moneybank::%arg%} to 1000
+		set {moneybankmax::%arg%} to 500
+		delete {levels::%arg%::xp}
+		delete {levels::%arg%::bankerlvl}
+		delete {levels::%arg%::current}
+		delete {levels::%arg%::xp}
+		delete {levels::%arg%::extraxpneed}
+		delete {levels::%arg%::bankerlvl}
+
 discord command /invite:
 	bots: {@bot}
 	trigger:
@@ -125,4 +137,22 @@ on vixio command:
 				send the last created embed to event-channel with event-bot
 		else:
 			set {lastcommand.%discord id of event-user%} to now
-
+	{levels::%discord id of event-user%::xp} isn't set:
+		set {levels::%discord id of event-user%::xp} to 0
+		set {levels::%discord id of event-user%::extraxpneed} to 0
+		set {levels::%discord id of event-user%::current} to 0
+	add 1 to {levels::%discord id of event-user%::xp}
+	if {premium::%discord id of event-user%} = "Active":
+		add 0.5 to {levels::%discord id of event-user%::xp}
+	set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
+	if {levels::%discord id of event-user%::xp} > {_req}:
+		remove {_req} from {levels::%discord id of event-user%::xp}
+		add 1 to {levels::%discord id of event-user%::current}
+		add 1 to {levels::%discord id of event-user%::bankerlvlxp}
+		set {_moneygain} to random integer between 1 and 5
+		add {_moneygain} to {money::%discord id of event-user%}
+		set {_bgain} to random integer between 20 and 45
+		add {_bgain} to {moneybankmax::%discord id of event-user%}
+		add 0.2 to {levels::%discord id of event-user%::extraxpneed}
+	
+		
