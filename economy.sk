@@ -266,4 +266,25 @@ discord command rob [<member>]:
 						set {_d} to {money::%discord id of event-user%}/33
 						remove {_d} from {money::%discord id of event-user%}
 						add {_d} to {money::%discord id of arg-1%}
-						reply with "**%arg-1%**: What are you doing snooping in my purse?!? Give me **$%{_d}%** for compensation!!!"
+						reply with "**%arg-1%**: What are you doing snooping in my purse?!? Give me **$%{_d}%** or else ill report you to the police!!!"
+						
+discord command level [<text>]:
+	aliases: levels
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		remove 1 from {levels::%discord id of event-user%::xp}
+		if {premium::%discord id of event-user%} = "Active":
+			remove 0.5 from {levels::%discord id of event-user%::xp}
+		{levels::%discord id of event-user%::bankerlvl} isn't set:
+			set {levels::%discord id of event-user%::bankerlvl} to 0
+		{levels::%discord id of event-user%::extraxpneed} isn't set:
+			set {levels::%discord id of event-user%::extraxpneed} to 0
+		{levels::%discord id of event-user%::current} isn't set:
+			set {levels::%discord id of event-user%::current} to 0
+		set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
+		create embed:
+			set the title of embed to title with text "Level %{levels::%discord id of event-user%::current}% - Banker Level %{levels::%discord id of event-user%::bankerlvl}%"
+			set the description of embed to "**Progress to level up**: %{levels::%discord id of event-user%::xp}/{_req}*100%%%%nl%Each level-up grants you a few bucks, and a random amount of bank storage, ($20-$45)"
+			set the footer of embed to footer with text "Level XP: %{levels::%discord id of event-user%::xp}%/%{_req}%"
+			send the last created embed to event-channel with event-bot
