@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.3
-	build: 20.KPOW3
+	version: 2.3.1
+	build: 20.IOPQ0
 	maincctv: xxx
 
 on skript load:
@@ -144,7 +144,7 @@ on vixio command:
 	add 1 to {levels::%discord id of event-user%::xp}
 	if {premium::%discord id of event-user%} = "Active":
 		add 0.5 to {levels::%discord id of event-user%::xp}
-	set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
+	set {_req} to {levels::%discord id of event-user%::extraxpneed}+3
 	if {levels::%discord id of event-user%::xp} > {_req}:
 		remove {_req} from {levels::%discord id of event-user%::xp}
 		add 1 to {levels::%discord id of event-user%::current}
@@ -153,6 +153,37 @@ on vixio command:
 		add {_moneygain} to {money::%discord id of event-user%}
 		set {_bgain} to random integer between 20 and 45
 		add {_bgain} to {moneybankmax::%discord id of event-user%}
-		add 0.2 to {levels::%discord id of event-user%::extraxpneed}
-	
-		
+		add 0.1 to {levels::%discord id of event-user%::extraxpneed}
+		{_bankerlvl} < 50:
+			set {_bankerlvl} to floor({levels::%discord id of event-user%::current}/2)
+			set {_add} to {moneybankmax::%discord id of event-user%}*({_bankerlvl}*0.006)
+		{levels::%discord id of event-user%::current} = 10:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 75 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 30:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 100 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 50:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 150 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 75:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 200 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 110:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 300 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 145:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 500 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 200:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 600 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 275:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 700 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 365:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 800 to {Gems::%discord id of event-user%}
+		{levels::%discord id of event-user%::current} = 500:
+			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
+			add 1000 to {Gems::%discord id of event-user%}
