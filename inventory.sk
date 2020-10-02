@@ -1,0 +1,95 @@
+options:
+	bot: Pepperoni SE
+	version: 2.4
+
+discord command inventory [<text>]:
+	aliases: inv
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		if {inventory::%discord id of event-user%::*} isn't set:
+			create embed:
+				set the title of embed to title with text "Inventory"
+				set the description of embed to "There is nothing here?!?!"
+				set the colour of the embed to orange
+				set the footer of embed to footer with text "..."
+				send the last created embed to event-channel with event-bot
+		if arg = "-unsort":
+			create embed:
+				set the title of embed to title with text "Inventory (Unsorted)"
+				set the description of embed to "%{inventory::%discord id of event-user%::*}%"
+				set the colour of the embed to orange
+				set the footer of embed to footer with text "'/inv -unsort' - Unsorted version"
+				send the last created embed to event-channel with event-bot
+			stop
+		else:
+			Set {_laptop} to size of ({inventory::%discord id of event-user%::*} where ["%input%" contains "laptop"])
+			set {_1} to skutil yaml value "description" from file "plugins/Skript/items/laptop.yml"
+			create embed:
+				set the title of embed to title with text "Inventory"
+				add split field named "**Laptop** - %{_laptop}%" with value "%{_1}%" to embed
+				set the colour of the embed to orange
+				set the footer of embed to footer with text "'/inv -unsort' - Unsorted version"
+				send the last created embed to event-channel with event-bot
+				
+
+discord command shop [<text>]:
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		Set {_laptop} to size of ({inventory::%discord id of event-user%::*} where ["%input%" contains "laptop"])
+		set {_1.d} to skutil yaml value "description" from file "plugins/Skript/items/laptop.yml"
+		set {_1.p} to skutil yaml value "price" from file "plugins/Skript/items/laptop.yml"
+		create embed:
+			set the title of embed to title with text "Shop"
+			add field named "**Laptop** - `$%{_1.p}%`" with value "%{_1.d}%" to embed
+			set the colour of the embed to green
+			set the footer of embed to footer with text "Balance: %format({money::%discord id of event-user%})%"
+			send the last created embed to event-channel with event-bot
+
+
+discord command buy [<text>]:
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		arg-1 isn't set:
+			reply with "Buy... `/buy <item>`"
+			stop
+		if file "plugins/Skript/items/%arg%.yml" does not exist:
+			reply with "This item does not exist."
+			stop
+		set {_1} to skutil yaml value "canbuy" from file "plugins/Skript/items/test_item.yml"
+		if "%{_1}%" = "0":
+			reply with "This item cannot be purchased."
+			stop
+		set {_2} to skutil yaml value "price" from file "plugins/Skript/items/test_item.yml"
+		if {money::%discord id of event-user%} >= {_2}:
+			remove {_2} from {money::%discord id of event-user%}
+			add arg-1 to {inventory::%discord id of event-user%::*}
+			reply with "Purchased `%arg-1%` for **$%{_2}%**"
+		else:
+			reply with "Not Enough cash! You are missing **%{money::%discord id of event-user%}-{_2}%**!"
+			
+discord command sell [<text>]:
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		arg-1 isn't set:
+			reply with "Buy... `/buy <item>`"
+			stop
+		if file "plugins/Skript/items/%arg%.yml" does not exist:
+			reply with "This item does not exist."
+			stop
+		set {_1} to skutil yaml value "cansell" from file "plugins/Skript/items/test_item.yml"
+		if "%{_1}%" = "0":
+			reply with "This item cannot be sold."
+			stop
+		if {inventory::%discord id of event-user%::*} contains "%arg-1%":
+			set {_2} to skutil yaml value "price" from file "plugins/Skript/items/test_item.yml"
+			set {_3} to skutil yaml value "sellpercentageback" from file "plugins/Skript/items/test_item.yml"
+			set {_c} to {_2}*{_3}
+			remove arg-1 from {inventory::%discord id of event-user%::*}
+			add {_c} to {money::%discord id of event-user%}
+			reply with "Sold `%arg-1% and gained `%{_c}%`"
+		else:
+			reply with "You don't own this item."
