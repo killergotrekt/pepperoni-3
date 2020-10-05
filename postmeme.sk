@@ -1,0 +1,61 @@
+options:
+	bot: Pepperoni SE
+
+
+on guild message receive:
+	set {_msg} to "%event-message%"
+	If {postingameme::%discord id of event-user%::ok} is set:
+		if discord id of event-channel = {postingameme::%discord id of event-user%::channel}:
+			delete {postingameme::%discord id of event-user%::*}
+			set {_msg} to "%event-message%"
+			if {_msg} is "e" or "f" or "d" or "r":
+				set {_c} to random integer between 1 and 10
+				if {_C} is 1:
+					reply with "The internet hated that meme so much that they overwhelmed your computer with DDos attacks and your laptop exploded and you died."
+					set {money::%discord id of event-user%} to {money::%discord id of event-user%}
+					remove "Laptop" from {inventory::%discord id of event-user%::*}
+					stop
+				if {_C} is less than 3:
+					set {_views} to random integer between -2312 and -333
+					reply with "The internet didn't like that meme. Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. Your computer broke since it was Dosed."
+					remove "Laptop" from {inventory::%discord id of event-user%::*}
+					stop
+				if {_C} is less than 6:
+					set {_views} to random integer between 52312 and 432333
+					set {_reward} to random integer between 20 and 45
+					reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. You gained **%{_reward}% XP**."
+					add {_reward} to {levels::%discord id of event-user%::xp}
+					stop
+				else:
+					set {_views} to random integer between 1312 and 232333
+					set {_reward} to random integer between 55 and 125
+					reply with "Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. You gained **$%{_reward}%**."
+					add {_reward} to {money::%discord id of event-user%}
+					stop
+
+discord command pm [<text>]:
+	aliases: postmeme
+	prefixes: /
+	bots {@bot}
+	trigger:
+		set {_b} to difference between {%discord id of event-user%.lastmeme} and now
+		if {_b} is less than 3 minute:
+			create embed:
+				set the footer of embed to footer with text "Avaliable %difference between 3 minute and {_b}%"
+				set the colour of the embed to red
+				set the title of embed to title with text "Cooldown"
+				set the description of embed to "**Internet**: no way normie."
+				send the last created embed to event-channel with event-bot
+			stop
+		{inventory::%discord id of event-user%::*} contains "laptop":
+			wait 15 ticks
+			set {%discord id of event-user%.lastmeme} to now
+			set {postingameme::%discord id of event-user%::ok} to true
+			set {postingameme::%discord id of event-user%::channel} to discord id of event-channel
+			reply with "**__What type of meme do you want to post?__**%nl%e -  stolen meme%nl%f -  fresh memes%nl%d -  dank memes%nl%r  -  no meme"
+			wait 6 seconds
+			if {postingameme::%discord id of event-user%::ok} is set:
+				delete {postingameme::%discord id of event-user%::*}
+				reply with "<@%discord id of event-user%> turning off laptop..."
+		else:
+			reply with "You will need a special item to post those memes. Go to `/buy laptop`."
