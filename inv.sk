@@ -1,0 +1,21 @@
+options:
+	bot: Pepperoni SE
+
+discord command /buy [<text>]:
+	trigger:
+		arg-1 isn't set:
+			reply with "`/buy <laptop/fishingrod>` Laptop: $400, FishingRod: $500"
+		arg-1 = "laptop":
+			if {money::%discord id of event-user%} >= 400:
+				remove 400 from {money::%discord id of event-user%}
+				add "laptop" to {inventory::%discord id of event-user%::*}
+				reply with ":white_check_mark: Successfully purchased laptop for **$400**."
+			else:
+				reply with "Not enough money! You still need **$%400-{money::%discord id of event-user%}%** more."
+		arg-1 = "fishingrod":
+			if {money::%discord id of event-user%} >= 500:
+				remove 500 from {money::%discord id of event-user%}
+				add "fishingrod" to {inventory::%discord id of event-user%::*}
+				reply with ":white_check_mark: Successfully purchased fishing rod for **$500**."
+			else:
+				reply with "Not enough money! You still need **$%500-{money::%discord id of event-user%}%** more."
