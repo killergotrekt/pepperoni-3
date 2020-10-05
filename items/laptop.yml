@@ -1,6 +1,0 @@
-id: laptop
-price: 700
-canbuy: '1'
-cansell: '1'
-description: 'Post your dank memes on here.'
-sellpercentageback: 0.80
