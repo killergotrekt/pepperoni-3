@@ -1,0 +1,24 @@
+
+options:
+	bot: Pepperoni SE
+
+discord command boost [<text>]:
+	aliases: booster, boosters
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		if {booster::%discord id of event-user%::smallxp-pkg} isn't set:
+			set {booster::%discord id of event-user%::smallxp-pkg} to 0
+		if {booster::%discord id of event-user%::medxp-pkg} isn't set:
+			set {booster::%discord id of event-user%::medxp-pkg} to 0
+		if {booster::%discord id of event-user%::largexp-pkg} isn't set:
+			set {booster::%discord id of event-user%::largexp-pkg} to 0
+		arg-1 isn't set:
+			create embed:
+				set the title of embed to title with text "Boosting"
+				set the description of embed to "Boosting increases your xp gain quicker than ever.%nl%To use a xp pack, do `/boost usepack <small/med/large>`%nl%To use a hour booster, do `/boost activate<2x/3x>`"
+				add field named "Instant XP Packs" with value "`Small XP Boost (30XP)` - `%{booster::%discord id of event-user%::smallxp-pkg}%`%nl%`Medium XP Boost (50XP)` - `%{booster::%discord id of event-user%::medxp-pkg}%`%nl%`Large XP Boost (75XP)` - `%{booster::%discord id of event-user%::largexp-pkg}%`" to embed
+				add field named "Hourly XP Booster" with value "N/A" to embed
+				set the footer of embed to footer with text "No Hour booster active"
+				set the colour of the embed to magenta
+				send the last created embed to event-channel with event-bot
