@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
 	version: 2.4 S
-	build: ...
+	build: 76561d7
 	maincctv: xxx
 
 on skript load:
