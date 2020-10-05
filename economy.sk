@@ -2,40 +2,6 @@ options:
 	economycctv: xxx
 	bot: Pepperoni SE
 
-on guild message receive:
-	set {_msg} to "%event-message%"
-	If {postingameme::%discord id of event-user%::ok} is set:
-		if discord id of event-channel = {postingameme::%discord id of event-user%::channel}:
-			delete {postingameme::%discord id of event-user%::*}
-			set {_msg} to "%event-message%"
-			if {_msg} is "s" or "f" or "d" or "r":
-				set {_c} to random integer between 1 and 10
-				if {_C} is 1:
-					reply with "The internet hated that meme so much that they overwhelmed your computer with DDos attacks and your laptop exploded and you died."
-					set {money::%discord id of event-user%} to {money::%discord id of event-user%}
-					remove "Laptop" from {inventory::%discord id of event-user%::*}
-					stop
-				if {_C} is less than 3:
-					set {_views} to random integer between -2312 and -333
-					reply with "The internet didn't like that meme. Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. Your computer broke since it was Dosed."
-					remove "Laptop" from {inventory::%discord id of event-user%::*}
-					stop
-				if {_C} is less than 6:
-					set {_views} to random integer between 52312 and 432333
-					set {_reward} to random integer between 20 and 45
-					reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. You gained **%{_reward}% XP**."
-					add {_reward} to {levels::%discord id of event-user%::xp}
-					stop
-				else:
-					set {_views} to random integer between 1312 and 232333
-					set {_reward} to random integer between 55 and 125
-					reply with "Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. You gained **$%{_reward}%**."
-					add {_reward} to {money::%discord id of event-user%}
-					stop
-
-
-
-
 discord command /bal [<member>]:
 	aliases: balance, money
 	bots: {@bot}
@@ -101,7 +67,7 @@ discord command /hourly:
 					set the title of embed to title with text "Gained Hourly Cash!"
 					set the description of embed to "**$%{hourlymoney.%discord id of event-user%}%** has been added to your purse."
 					set the colour of the embed to green
-					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 17.5%% more money."
+					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 20%% more money."
 					send the last created embed to event-channel with event-bot
 				stop
 			set {_D} to difference between {lasthourly.%discord id of event-user%} and now
@@ -114,20 +80,20 @@ discord command /hourly:
 					set the title of embed to title with text "Gained Hourly Cash! (Streak broken)"
 					set the description of embed to "**$%{hourlymoney.%discord id of event-user%}%** has been added to your purse."
 					set the colour of the embed to green
-					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 17.5%% more money."
+					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 20%% more money."
 					send the last created embed to event-channel with event-bot
 				stop
 			else:
 				set {lasthourly.%discord id of event-user%} to now
 				add 1 to {streakhourly.%discord id of event-user%}
-				set {_c} to {hourlymoney.%discord id of event-user%}*0.175
+				set {_c} to {hourlymoney.%discord id of event-user%}*0.2
 				add {_c} to {hourlymoney.%discord id of event-user%}
 				add {hourlymoney.%discord id of event-user%} to {money::%discord id of event-user%}
 				create embed:
 					set the title of embed to title with text "Gained Hourly Cash!"
 					set the description of embed to "**$%{hourlymoney.%discord id of event-user%}%** has been added to your purse."
 					set the colour of the embed to green
-					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 16.5%% more money."
+					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 20%% more money."
 					send the last created embed to event-channel with event-bot
 				if {streakhourly.%discord id of event-user%} = 5:
 					add 35 to {gems::%discord id of event-user%}
@@ -241,10 +207,10 @@ discord command /beg [<Text>]:
 		else:
 			
 			set {lastbeg.%discord id of event-user%} to now
-			set {_people::*} to "<@671896615950221322>", "Kim jong-un", "Xi", "Putin", "Boris", "Biden", "Obama", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Some random cat", "Homeless dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
+			set {_people::*} to "<@671896615950221322>", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Cat", "Dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
 			set {_person} to random element out of {_people::*}
 			chance of 70%:
-				set {_failmsgs::*} to "stop it!!!", "i'm poor too.", "...", "Cease", "Do not.", "jeez kid post some memes instead", "haha of course not", "nah", "get a job lol", "pew pew no.", "you are not poor", "no u", "no", and "sucker"
+				set {_failmsgs::*} to "haha of course not", "nah", "get a job lol", "pew pew no.", "you are not poor", "no u", "no", and "sucker"
 				set {_msg} to random element out of {_failmsgs::*}
 				reply with "**%{_person}%**: %{_msg}%"
 			else:
@@ -274,6 +240,9 @@ discord command rob [<member>]:
 		arg-1 isn't set:
 			reply with "`/rob <someone>` u stupid or wut"
 			stop
+		{difficulty::%discord id of event-user%} = "Pacifist":
+			reply with "You have noob mode as your difficulty. you need to set it aleast `normal` before continuing."
+			stop
 		discord id of arg-1 = discord id of event-user:
 			reply with "You are an extremely retarded child. You **cannot rob yourself**. Now let's repeat this again. `/rob <someone>`, and yourself isn't robbable."
 			stop
@@ -284,6 +253,10 @@ discord command rob [<member>]:
 			{money::%discord id of event-user%} < 150:
 				reply with "Your victim has less than **$150** in their purse."
 				stop
+			{difficulty::%discord id of arg-1%} = "Pacifist":
+				reply with "Your victim has noob mode as their difficulty."
+				stop
+
 			else:
 				set {lastrob.%discord id of event-user%} to now
 				chance of 32.5%:
@@ -332,32 +305,7 @@ discord command level [<text>]:
 		create embed:
 			set the title of embed to title with text "Level %{levels::%discord id of event-user%::current}% - Banker Level %{_bankerlvl}%/50"
 			set the description of embed to "**Progress to level up**: %{levels::%discord id of event-user%::xp}/{_req}*100%%%%nl%Each level-up grants you a few bucks, and a random amount of bank storage, ($20-$45)"
-			add field named "Banker Skill" with value "Increase your bank capacity by **%{_bankerlvl}*0.006*100%%%** when leveling up." to embed
+			add field named "Banker Skill" with value "Increase your bank capacity by **%{_bankerlvl}*0.0085*100%%%** when leveling up." to embed
 			set the footer of embed to footer with text "Level XP: %{levels::%discord id of event-user%::xp}%/%{_req}%"
 			send the last created embed to event-channel with event-bot
 
-discord command pm [<text>]:
-	aliases: postmeme
-	prefixes: /
-	trigger:
-		set {_b} to difference between {%discord id of event-user%.lastmeme} and now
-		if {_b} is less than 3 minute:
-			create embed:
-				set the footer of embed to footer with text "Avaliable %difference between 3 minute and {_b}%"
-				set the colour of the embed to red
-				set the title of embed to title with text "Cooldown"
-				set the description of embed to "**Internet**: no way normie."
-				send the last created embed to event-channel with event-bot
-			stop
-		{inventory::%discord id of event-user%::*} contains "laptop":
-			wait 15 ticks
-			set {%discord id of event-user%.lastmeme} to now
-			set {postingameme::%discord id of event-user%::ok} to true
-			set {postingameme::%discord id of event-user%::channel} to discord id of event-channel
-			reply with "**__What type of meme do you want to post?__**%nl%s -  stolen meme%nl%f -  fresh memes%nl%d -  dank memes%nl%r  -  no meme"
-			wait 6 seconds
-			if {postingameme::%discord id of event-user%::ok} is set:
-				delete {postingameme::%discord id of event-user%::*}
-				reply with "<@%discord id of event-user%> turning off laptop..."
-		else:
-			reply with "You will need a special item to post those memes. Go to `/shop` to browse and look for one.`
