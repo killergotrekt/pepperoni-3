@@ -1,0 +1,109 @@
+options:
+	bot: Pepperoni SE
+	
+on guild message receive:
+	set {_msg} to "%event-message%"
+	If {fishinggui.%discord id of event-user%} is set:
+		delete {fishinggui.%discord id of event-user%}
+		if {_msg} = "pond":
+			set {_bc} to difference between {%discord id of event-user%.lastpond} and now
+			if {_bc} is less than 55 second:
+				create embed:
+					set the footer of embed to footer with text "Avaliable %difference between 55 second and {_bc}%"
+					set the colour of the embed to red
+					set the title of embed to title with text "Cooldown"
+					set the description of embed to "seems like theres way too much fishermen in this area."
+					send the last created embed to event-channel with event-bot
+			else:
+				set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}
+				if {_fishes} >= {fishbag::%discord id of event-user%::max}:
+					reply with "Your fishing bag is full/overcapacity! you will need to sell them all."
+					stop
+				set {%discord id of event-user%.lastpond} to now
+				chance of 22%:
+					reply with "The `Supreme Fish` decided to eat up your fishingrod whole because 'it was hungry'."
+					remove "fishingrod" from {inventory::%discord id of event-user%::*}
+					stop
+				else:
+					set {_luck} to random integer between 1 and 100
+					if {_luck} is less than 50:
+						set {_c} to random integer between 5 and 10
+						add {_c} to {fishbag::%discord id of event-user%::common}
+						reply with "You fished up **%{_c}%x** :fish: Common Fish!"
+						stop
+					if {_luck} is less than 85:
+						set {_c} to random integer between 4 and 7
+						add {_c} to {fishbag::%discord id of event-user%::uncommon}
+						reply with "You fished up **%{_c}%x** :tropical_fish: Uncommon Fish!"
+						stop
+					if {_luck} is less than 95:
+						set {_c} to random integer between 3 and 5
+						add {_c} to {fishbag::%discord id of event-user%::rare}
+						reply with "You fished up **%{_c}%x** :blowfish: Rare Fish!"
+						stop
+					if {_luck} is less than 101:
+						set {_c} to random integer between 1 and 3
+						add {_c} to {fishbag::%discord id of event-user%::supreme}
+						reply with "You fished up **%{_c}%x** :shark: `Supreme Fish`!"
+						stop
+		if {_msg} = "bag":
+			set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}		
+			create embed:
+				set the title of embed to title with text "%event-user%'s fishing bag (%{_fishes}%/%{fishbag::%discord id of event-user%::max}%)"
+				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%%nl%:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%%nl%:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%%nl%:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%"
+				set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
+				set the colour of the embed to Cyan
+				send the last created embed to event-channel with event-bot
+		if {_msg} = "sell":
+			set {_cf} to {fishbag::%discord id of event-user%::common}*10
+			set {_uf} to {fishbag::%discord id of event-user%::uncommon}*15
+			set {_rf} to {fishbag::%discord id of event-user%::rare}*20
+			set {_sf} to {fishbag::%discord id of event-user%::supreme}*50
+			set {_profit} to {_cf}+{_uf}+{_rf}+{_sf}
+			add {_profit} to {money::%discord id of event-user%}
+			create embed:
+				set the title of embed to title with text "Successful sale"
+				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%x @ `$10` each, **$%{_cf}%**nl:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%x @ `$15` each, **$%{_uf}%**nl:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%x @ `$20` each, **$%{_rf}%**nl:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%x @ `$50` each, **$%{_sf}%**nl**Total**: `$%{_profit}%`"
+				set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+			set {fishbag::%discord id of event-user%::common} to 0
+			set {fishbag::%discord id of event-user%::uncommon} to 0
+			set {fishbag::%discord id of event-user%::rare} to 0
+			set {fishbag::%discord id of event-user%::supreme} to 0
+
+
+
+
+discord command fish [<text>]:
+	aliases: fishing, pond
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		{inventory::%discord id of event-user%::*} doesn't contain "fishingrod":
+			reply with "You need a fishingrod to fish. Now buy one. `/buy fishingrod`"
+			stop
+		if {fishbag::%discord id of event-user%::common} isn't set:
+			set {fishbag::%discord id of event-user%::common} to 0
+			set {fishbag::%discord id of event-user%::uncommon} to 0
+			set {fishbag::%discord id of event-user%::rare} to 0
+			set {fishbag::%discord id of event-user%::supreme} to 0
+			set {fishbag::%discord id of event-user%::max} to 20
+		set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}		
+		set {fishinggui.%discord id of event-user%} to discord id of event-channel
+		create embed:
+			set the title of embed to title with text "Fishing Game (%event-user%)"
+			set the description of embed to "what do you want to do?%nl%reply with an answer."
+			add field named ":cup_with_straw: `Pond`" with value "Go to the pond and fish.%nl%**Cooldown**: 55 seconds" to embed
+			add field named ":shopping_bags: `Bag`" with value "Check your fishing bag." to embed
+			add field named ":moneybag: `Sell`" with value "Sell everything in your bag." to embed
+			send the last created embed to event-channel with event-bot
+		wait 10 seconds
+		{fishinggui.%discord id of event-user%} is set:
+			delete {fishinggui.%discord id of event-user%}
+			
+		
+
+
+			
+
