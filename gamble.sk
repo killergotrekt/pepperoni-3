@@ -1,0 +1,143 @@
+options:
+	bot: Pepperoni SE
+
+discord command bet [<text>]:
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		{difficulty::%discord id of event-user%} = "Normal":
+			arg-1 isn't set:
+				reply with "Unacceptable. `/bet <amount/all>`"
+				stop
+			else:
+				arg-1 = "all":
+					if {money::%discord id of event-user%} is less than 1:
+						reply with "You have nothing to bet."
+						stop
+					set {_you} to random integer between 1 and 6
+					set {_me} to random integer between 1 and 6
+					if {_you} > {_me}:
+						set {_reduce} to 0.5/{reduceRewardsBet.%discord id of event-user%}
+						set {_money} to {money::%discord id of event-user%}*{_reduce}
+						add {_money} to {money::%discord id of event-user%}
+						create embed:
+							set the title of embed to title with text "%event-user%'s little game"
+							set the colour of the embed to green
+							set the description of embed to "You won **$%format2({_money})%!"
+							add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+							add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+							set the footer of embed to footer with text "Won {_reduce}%% of your bet."
+							send the last created embed to event-channel with event-bot
+					else:
+						set {money::%discord id of event-user%} to 0
+						create embed:
+							set the title of embed to title with text "%event-user%'s little game"
+							set the colour of the embed to red
+							set the description of embed to "You lost **$%format2({_money})%!"
+							add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+							add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+							set the footer of embed to footer with text "loser, you lost everything."
+							send the last created embed to event-channel with event-bot
+				else:
+					set {_money} to arg parsed as integer
+					if {_money} is set:
+						{_money} is less than 1:
+							reply with "Argument Must be greater than 1."
+							stop
+						if {money::%discord id of event-user%} >= {_money}:
+							reply with "You must have more money than you can bet."
+							stop
+						set {_you} to random integer between 1 and 6
+						set {_me} to random integer between 1 and 6
+						if {_you} > {_me}:
+							set {_reduce} to 0.5/{reduceRewardsBet.%discord id of event-user%}
+							set {_money2} to {_money}*{_reduce}
+							add {_money2} to {money::%discord id of event-user%}
+							create embed:
+								set the title of embed to title with text "%event-user%'s little game"
+								set the colour of the embed to green
+								set the description of embed to "You won **$%format2({_money})%!"
+								add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+								add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+								set the footer of embed to footer with text "Won {_reduce}%% of your bet."
+								send the last created embed to event-channel with event-bot
+						else:
+							remove {_money} from {money::%discord id of event-user%}
+							create embed:
+								set the title of embed to title with text "%event-user%'s little game"
+								set the colour of the embed to red
+								set the description of embed to "You lost **$%format2({_money})%!"
+								add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+								add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+								set the footer of embed to footer with text "sucks 2 suck"
+								send the last created embed to event-channel with event-bot
+					else:
+						reply with "Completely fucking Unacceptable. You must either put a integer or `all` as a argument."
+		{difficulty::%discord id of event-user%} = "Pacifist":
+			arg-1 isn't set:
+				reply with "Unacceptable. `/bet <amount/all>`"
+				stop
+			else:
+				arg-1 = "all":
+					if {money::%discord id of event-user%} is less than 1:
+						reply with "You have nothing to bet."
+						stop
+					set {_you} to random integer between 1 and 6
+					set {_me} to random integer between 1 and 6
+					if {_you} > {_me}:
+						set {_reduce} to 0.25/{reduceRewardsBet.%discord id of event-user%}
+						set {_money} to {money::%discord id of event-user%}*{_reduce}
+						add {_money} to {money::%discord id of event-user%}
+						create embed:
+							set the title of embed to title with text "%event-user%'s little game"
+							set the colour of the embed to green
+							set the description of embed to "You won **$%format2({_money})%!"
+							add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+							add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+							set the footer of embed to footer with text "Won {_reduce}%% of your bet. Could've earned 25%% potential if wasn't in pacifist."
+							send the last created embed to event-channel with event-bot
+					else:
+						set {money::%discord id of event-user%} to 0
+						create embed:
+							set the title of embed to title with text "%event-user%'s little game"
+							set the colour of the embed to red
+							set the description of embed to "You lost **$%format2({_money})%!"
+							add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+							add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+							set the footer of embed to footer with text "loser, you lost everything."
+							send the last created embed to event-channel with event-bot
+				else:
+					set {_money} to arg parsed as integer
+					if {_money} is set:
+						{_money} is less than 1:
+							reply with "Argument Must be greater than 1."
+							stop
+						if {money::%discord id of event-user%} >= {_money}:
+							reply with "You must have more money than you can bet."
+							stop
+						set {_you} to random integer between 1 and 6
+						set {_me} to random integer between 1 and 6
+						if {_you} > {_me}:
+							set {_reduce} to 0.25/{reduceRewardsBet.%discord id of event-user%}
+							set {_money2} to {_money}*{_reduce}
+							add {_money2} to {money::%discord id of event-user%}
+							create embed:
+								set the title of embed to title with text "%event-user%'s little game"
+								set the colour of the embed to green
+								set the description of embed to "You won **$%format2({_money})%!"
+								add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+								add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+								set the footer of embed to footer with text "Won {_reduce}%% of your bet."
+								send the last created embed to event-channel with event-bot
+						else:
+							remove {_money} from {money::%discord id of event-user%}
+							create embed:
+								set the title of embed to title with text "%event-user%'s little game"
+								set the colour of the embed to red
+								set the description of embed to "You lost **$%format2({_money})%!"
+								add split field named "You (`%event-user%`}" with value "Rolled a `%{_you}%`" to embed
+								add split field named "Me (`Pepperoni`}" with value "Rolled a `%{_me}%`" to embed
+								set the footer of embed to footer with text "sucks 2 suck"
+								send the last created embed to event-channel with event-bot
+					else:
+						reply with "Completely fucking Unacceptable. You must either put a integer or `all` as a argument."
