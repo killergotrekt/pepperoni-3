@@ -9,7 +9,7 @@ on guild message receive:
 			set {_bc} to difference between {%discord id of event-user%.lastpond} and now
 			if {_bc} is less than 55 second:
 				create embed:
-					set the footer of embed to footer with text "Avaliable %difference between 55 second and {_bc}%"
+					set the footer of embed to footer with text "Avaliable in %difference between 55 second and {_bc}%"
 					set the colour of the embed to red
 					set the title of embed to title with text "Cooldown"
 					set the description of embed to "seems like theres way too much fishermen in this area."
@@ -55,15 +55,15 @@ on guild message receive:
 				set the colour of the embed to Cyan
 				send the last created embed to event-channel with event-bot
 		if {_msg} = "sell":
-			set {_cf} to {fishbag::%discord id of event-user%::common}*10
-			set {_uf} to {fishbag::%discord id of event-user%::uncommon}*15
-			set {_rf} to {fishbag::%discord id of event-user%::rare}*20
-			set {_sf} to {fishbag::%discord id of event-user%::supreme}*50
+			set {_cf} to {fishbag::%discord id of event-user%::common}*20
+			set {_uf} to {fishbag::%discord id of event-user%::uncommon}*30
+			set {_rf} to {fishbag::%discord id of event-user%::rare}*50
+			set {_sf} to {fishbag::%discord id of event-user%::supreme}*100
 			set {_profit} to {_cf}+{_uf}+{_rf}+{_sf}
 			add {_profit} to {money::%discord id of event-user%}
 			create embed:
 				set the title of embed to title with text "Successful sale"
-				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%x @ `$10` each, **$%{_cf}%**nl:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%x @ `$15` each, **$%{_uf}%**nl:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%x @ `$20` each, **$%{_rf}%**nl:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%x @ `$50` each, **$%{_sf}%**nl**Total**: `$%{_profit}%`"
+				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%x @ `$20` each, **$%{_cf}%**%nl%:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%x @ `$30` each, **$%{_uf}%**%nl%:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%x @ `$50` each, **$%{_rf}%**%nl%:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%x @ `$100` each, **$%{_sf}%**%nl%**Total**: `$%{_profit}%`"
 				set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
 				set the colour of the embed to green
 				send the last created embed to event-channel with event-bot
@@ -80,6 +80,14 @@ discord command fish [<text>]:
 	bots: {@bot}
 	prefixes: /
 	trigger:
+		{levels::%discord id of event-user%::current} is less than 20:
+			create embed:
+				set the footer of embed to footer with text "%20-{levels::%discord id of event-user%::current}% level(s) away"
+				set the colour of the embed to red
+				set the title of embed to title with text ":lock: Locked"
+				set the description of embed to "This command cannot be used at this current level."
+				send the last created embed to event-channel with event-bot
+			stop
 		{inventory::%discord id of event-user%::*} doesn't contain "fishingrod":
 			reply with "You need a fishingrod to fish. Now buy one. `/buy fishingrod`"
 			stop
