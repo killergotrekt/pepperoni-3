@@ -305,7 +305,7 @@ discord command level [<text>]:
 		create embed:
 			set the title of embed to title with text "Level %{levels::%discord id of event-user%::current}% - Banker Level %{_bankerlvl}%/50"
 			set the description of embed to "**Progress to level up**: %{levels::%discord id of event-user%::xp}/{_req}*100%%%%nl%Each level-up grants you a few bucks, and a random amount of bank storage, ($20-$45)"
-			add field named "Banker Skill" with value "Increase your bank capacity by **%{_bankerlvl}*0.0085*100%%%** when leveling up." to embed
+			add field named "Banker Skill" with value "Increase your bank capacity by **%{_bankerlvl}*0.007*100%%%** when leveling up." to embed
 			set the footer of embed to footer with text "Level XP: %{levels::%discord id of event-user%::xp}%/%{_req}%"
 			send the last created embed to event-channel with event-bot
 
