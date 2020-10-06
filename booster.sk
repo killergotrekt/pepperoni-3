@@ -22,3 +22,21 @@ discord command boost [<text>]:
 				set the footer of embed to footer with text "No Hour booster active"
 				set the colour of the embed to magenta
 				send the last created embed to event-channel with event-bot
+		else:
+			if arg-1 = "usepack small":
+				{booster::%discord id of event-user%::smallxp-pkg} > 0
+				remove 1 from {booster::%discord id of event-user%::smallxp-pkg}
+				add 30 to {levels::%discord id of event-user%::xp}
+				reply with "<@%discord id of event-user%>, redeemed **Instant Small XP pack** for **30 XP**!"
+			if arg-1 = "usepack med":
+				{booster::%discord id of event-user%::medxp-pkg} > 0
+				remove 1 from {booster::%discord id of event-user%::medxp-pkg}
+				add 50 to {levels::%discord id of event-user%::xp}
+				reply with "<@%discord id of event-user%>, redeemed **Instant Medium XP pack** for **50 XP**!"
+
+			if arg-1 = "usepack large":
+				{booster::%discord id of event-user%::largexp-pkg} > 0
+				remove 1 from {booster::%discord id of event-user%::slargexp-pkg}
+				add 75 to {levels::%discord id of event-user%::xp}
+				reply with "<@%discord id of event-user%>, redeemed **Instant Large XP pack** for **75 XP**!"
+
