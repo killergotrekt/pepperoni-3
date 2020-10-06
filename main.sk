@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.4 S
-	build: 76561d7
+	version: 2.4.1
+	build: ...
 	maincctv: xxx
 
 on skript load:
@@ -16,7 +16,7 @@ discord command /help:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`, `/rob`, `/beg`, `/fish`, `/difficulty`, `/bet`, `/pm`" to embed
-			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/boost`, `/levels`" to embed
+			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/boost`, `/levels`, `/progress`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
 			send the last created embed to event-channel with event-bot
@@ -130,20 +130,20 @@ discord command /gems [<text>] [<text>]:
 						add split field named "[1] `Small XP Pack`" with value "Gives 30 XP.%nl%**Cost** 150 gems" to embed
 						add split field named "[2] `Medium XP Pack`" with value "Gives 50 XP.%nl%**Cost** 225 gems" to embed
 						add split field named "[3] `Large XP Pack`" with value "Gives 75 XP.%nl%**Cost** 350 gems" to embed
-						if {levels::%discord id of event-user%::current} is more than 10:
+						if {levels::%discord id of event-user%::current} is more than 20:
 							if {fishbag::%discord id of event-user%::medbagupgrade} isn't set:
 								add split field named "[4] `Medium Fishing Bag Upgrade`" with value "Increase bag size by 10.%nl%**Cost** 100 gems" to embed
 							else:
 								add split field named "~~[4] `Medium Fishing Bag Upgrade`~~" with value "~~Increase bag size by 10.~~%nl%**Cost** Unlocked" to embed
 						else:
-							add split field named ":lock: `LOCKED`" with value "Reach level 10 to reveal." to embed
-						if {levels::%discord id of event-user%::current} is more than 25:
+							add split field named ":lock: `LOCKED`" with value "Reach level 20 to reveal." to embed
+						if {levels::%discord id of event-user%::current} is more than 35:
 							if {fishbag::%discord id of event-user%::largebagupgrade} isn't set:
 								add split field named "[5] `Large Fishing Bag Upgrade`" with value "Increase bag size by 20.%nl%**Cost** 200 gems" to embed
 							else:
 								add split field named "~~[5] `Large Fishing Bag Upgrade`~~" with value "~~Increase bag size by 20.~~%nl%**Cost** Unlocked" to embed
 						else:	
-							add split field named ":lock: `LOCKED`" with value "Reach level 25 to reveal." to embed
+							add split field named ":lock: `LOCKED`" with value "Reach level 35 to reveal." to embed
 						set the footer of embed to footer with text "%{gems::%discord id of event-user%}% gems remaining"
 						set the colour of the embed to cyan
 						send the last created embed to event-channel with event-bot
@@ -172,7 +172,7 @@ discord command /gems [<text>] [<text>]:
 					else:
 						reply with "Not Enough Gems! (%350-{gems::%discord id of event-user%}% missing)"
 				arg-2 = "4":
-					{levels::%discord id of event-user%::current} is more than 10
+					{levels::%discord id of event-user%::current} is more than 20
 					{fishbag::%discord id of event-user%::medbagupgrade} isn't set
 					if {gems::%discord id of event-user%} >= 100:
 						remove 100 from {gems::%discord id of event-user%}
@@ -182,7 +182,7 @@ discord command /gems [<text>] [<text>]:
 					else:
 						reply with "Not Enough Gems! (%100-{gems::%discord id of event-user%}% missing)"
 				arg-2 = "5":
-					{levels::%discord id of event-user%::current} is more than 25
+					{levels::%discord id of event-user%::current} is more than 35
 					{fishbag::%discord id of event-user%::largebagupgrade} isn't set
 					if {gems::%discord id of event-user%} >= 200:
 						remove 200 from {gems::%discord id of event-user%}
@@ -216,7 +216,18 @@ discord command /invite:
 		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/invite`" to channel with id "{@maincctv}" with "{@bot}"
 		reply with "https://discord.com/api/oauth2/authorize?client_id=671896615950221322&permissions=2147483639&scope=bot"
 
+command wip:
+	trigger:
+		set {wip} to !{wip}
+		broadcast "&7%{wip}%"
+
 on vixio command:
+	{wip} is true:
+		cancel event
+		discord id of event-user = "387336581775884288":
+			uncancel event
+			stop
+		reply with "this bot cannot be used at this moment."
 	{difficulty::%discord id of event-user%} is not set:
 		set {difficulty::%discord id of event-user%} to "Normal"
 	if {gems::%discord id of event-user%} is not set:
@@ -248,10 +259,6 @@ on vixio command:
 				send the last created embed to event-channel with event-bot
 		else:
 			set {lastcommand.%discord id of event-user%} to now
-	set {_rD} to difference between {reduceRewardsCD.%discord id of event-user%} and now
-	if {_rD} is more than 15 minutes:
-		set {reduceRewardsCD.%discord id of event-user%} to now
-		set {reduceRewardsBet.%discord id of event-user%} to 1
 	{levels::%discord id of event-user%::xp} isn't set:
 		set {levels::%discord id of event-user%::xp} to 0
 		set {levels::%discord id of event-user%::extraxpneed} to 0
@@ -269,9 +276,8 @@ on vixio command:
 		set {_bgain} to random integer between 20 and 45
 		add {_bgain} to {moneybankmax::%discord id of event-user%}
 		add 0.1 to {levels::%discord id of event-user%::extraxpneed}
-		{_bankerlvl} < 50:
-			set {_bankerlvl} to floor({levels::%discord id of event-user%::current}/2)
-			set {_add} to {moneybankmax::%discord id of event-user%}*({_bankerlvl}*0.0085)
+		set {_bankerlvl} to floor({levels::%discord id of event-user%::current}/2)
+		set {_add} to {moneybankmax::%discord id of event-user%}*({_bankerlvl}*0.007)
 		{levels::%discord id of event-user%::current} = 10:
 			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
 			add 75 to {Gems::%discord id of event-user%}
