@@ -17,19 +17,19 @@ on guild message receive:
 					stop
 				if {_C} is less than 3:
 					set {_views} to random integer between -2312 and -333
-					reply with "The internet didn't like that meme. Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. Your computer broke since it was Dosed."
+					reply with "The internet didn't like that meme. Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. Your computer broke since it was Dosed."
 					remove "Laptop" from {inventory::%discord id of event-user%::*}
 					stop
 				if {_C} is less than 6:
 					set {_views} to random integer between 52312 and 432333
 					set {_reward} to random integer between 20 and 45
-					reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. You gained **%{_reward}% XP**."
+					reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **%{_reward}% XP**."
 					add {_reward} to {levels::%discord id of event-user%::xp}
 					stop
 				else:
 					set {_views} to random integer between 1312 and 232333
-					set {_reward} to random integer between 55 and 125
-					reply with "Your meme gained **%{_views}%** views and **round(%{_views}/23%)** upvotes. You gained **$%{_reward}%**."
+					set {_reward} to random integer between 35 and 85
+					reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%**."
 					add {_reward} to {money::%discord id of event-user%}
 					stop
 
@@ -38,6 +38,14 @@ discord command pm [<text>]:
 	prefixes: /
 	bots {@bot}
 	trigger:
+		{levels::%discord id of event-user%::current} is less than 5:
+			create embed:
+				set the footer of embed to footer with text "%5-{levels::%discord id of event-user%::current}% level(s) away"
+				set the colour of the embed to red
+				set the title of embed to title with text ":lock: Locked"
+				set the description of embed to "This command cannot be used at this current level."
+				send the last created embed to event-channel with event-bot
+			stop
 		set {_b} to difference between {%discord id of event-user%.lastmeme} and now
 		if {_b} is less than 3 minute:
 			create embed:
