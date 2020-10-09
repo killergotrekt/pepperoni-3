@@ -9,29 +9,58 @@ on guild message receive:
 			delete {postingameme::%discord id of event-user%::*}
 			set {_msg} to "%event-message%"
 			if {_msg} is "e" or "f" or "d" or "r":
-				set {_c} to random integer between 1 and 10
-				if {_C} is 1:
-					reply with "The internet hated that meme so much that they overwhelmed your computer with DDos attacks and your laptop exploded and you died."
-					set {money::%discord id of event-user%} to {money::%discord id of event-user%}
-					remove "Laptop" from {inventory::%discord id of event-user%::*}
-					stop
-				if {_C} is less than 3:
-					set {_views} to random integer between -2312 and -333
-					reply with "The internet didn't like that meme. Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. Your computer broke since it was Dosed."
-					remove "Laptop" from {inventory::%discord id of event-user%::*}
-					stop
-				if {_C} is less than 6:
-					set {_views} to random integer between 52312 and 432333
-					set {_reward} to random integer between 20 and 45
-					reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **%{_reward}% XP**."
-					add {_reward} to {levels::%discord id of event-user%::xp}
-					stop
-				else:
-					set {_views} to random integer between 1312 and 232333
-					set {_reward} to random integer between 35 and 85
-					reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%**."
-					add {_reward} to {money::%discord id of event-user%}
-					stop
+				{event.active.meme} is set:
+					set {_c} to random integer between 1 and 10
+					if {_C} is 1:
+						set {_views} to random integer between 2312 and 99999
+						set {_reward} to random integer between 100 and 200
+						add {_reward} to {mgems::%discord id of event-user%}
+						reply with "The internet :eyes:. Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **%{_reward}% gems**."
+						stop
+					if {_C} is less than 3:
+						set {_views} to random integer between 52312 and 432333
+						set {_reward} to random integer between 20 and 45
+						reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **%{_reward}% XP**."
+						add {_reward} to {levels::%discord id of event-user%::xp}
+						stop
+					if {_C} is less than 6:
+						set {_views} to random integer between 1312 and 232333
+						set {_reward} to random integer between 35 and 85
+						reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%**."
+						add {_reward} to {money::%discord id of event-user%}
+						stop
+					else:
+						set {_views} to random integer between 1312 and 232333
+						set {_reward} to random integer between 35 and 85
+						set {_gems} to random integer between 55 and 95
+						add {_gems} to {gems::%discord id of event-user%}
+						reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%** and **$%{_gems}% gems**"
+						add {_reward} to {money::%discord id of event-user%}
+						stop
+				else:	
+					set {_c} to random integer between 1 and 10
+					if {_C} is 1:
+						reply with "The internet hated that meme so much that they overwhelmed your computer with DDos attacks and your laptop exploded and you died."
+						set {money::%discord id of event-user%} to {money::%discord id of event-user%}
+						remove "Laptop" from {inventory::%discord id of event-user%::*}
+						stop
+					if {_C} is less than 3:
+						set {_views} to random integer between -2312 and -333
+						reply with "The internet didn't like that meme. Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. Your computer broke since it was Dosed."
+						remove "Laptop" from {inventory::%discord id of event-user%::*}
+						stop
+					if {_C} is less than 6:
+						set {_views} to random integer between 52312 and 432333
+						set {_reward} to random integer between 20 and 45
+						reply with "Geez, that meme went viral! Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **%{_reward}% XP**."
+						add {_reward} to {levels::%discord id of event-user%::xp}
+						stop
+					else:
+						set {_views} to random integer between 1312 and 232333
+						set {_reward} to random integer between 35 and 85
+						reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%**."
+						add {_reward} to {money::%discord id of event-user%}
+						stop
 
 discord command pm [<text>]:
 	aliases: postmeme
