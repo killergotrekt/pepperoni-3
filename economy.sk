@@ -209,7 +209,7 @@ discord command /beg [<Text>]:
 			set {lastbeg.%discord id of event-user%} to now
 			set {_people::*} to "<@671896615950221322>", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Cat", "Dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
 			set {_person} to random element out of {_people::*}
-			chance of 70%:
+			chance of 60%:
 				set {_failmsgs::*} to "haha of course not", "nah", "get a job lol", "pew pew no.", "you are not poor", "no u", "no", and "sucker"
 				set {_msg} to random element out of {_failmsgs::*}
 				reply with "**%{_person}%**: %{_msg}%"
