@@ -1,0 +1,66 @@
+options:
+	eventcctv: xxx
+	bot: Pepperoni SE
+
+every minute:
+	{event.active.doublexp} isn't set:
+		remove 1 from {event.timer.doublexp}
+		if {event.timer.doublexp} is 0:
+			set {event.timer.doublexp} to 420
+			set {event.active.doublexp} to 60
+			send "**DOUBLE XP EVENT** This event has started! Start executing commands for 2x more xp, or 4x more xp if you are a premium user." to channel with id "{@eventcctv}" with "{@bot}"
+	else:
+		remove 1 from {event.active.doublexp}
+		if {event.active.doublexp} = 0:
+			delete {event.active.doublexp}
+			send "**DOUBLE XP EVENT** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+	{event.active.fishing} isn't set:
+		remove 1 from {event.timer.fishing}
+		if {event.timer.fishing} is 0:
+			set {event.timer.fishing} to 2100
+			set {event.active.fishing} to 240
+			send "**FISHING SEASON** This event has started! Your chances of catching rare & supreme fishes has been increased." to channel with id "{@eventcctv}" with "{@bot}"
+	else:
+		remove 1 from {event.active.fishing}
+		if {event.active.fishing} = 0:
+			delete {event.active.fishing}
+			send "**FISHING SEASON** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+	{event.active.meme} isn't set:
+		remove 1 from {event.timer.meme}
+		if {event.timer.meme} is 0:
+			set {event.timer.meme} to 1020
+			set {event.active.meme} to 120
+			send "**MEME TIME** This event has started! Start spamming memes onto the internet, you can now gain gems from memeing!" to channel with id "{@eventcctv}" with "{@bot}"
+	else:
+		remove 1 from {event.active.meme}
+		if {event.active.meme} = 0:
+			delete {event.active.meme}
+			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+
+
+discord command event [<text>]:
+	aliases: eve
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		if {event.timer.doublexp} isn't set:
+			set {event.timer.doublexp} to 420
+			set {event.timer.fishing} to 2100
+			set {event.timer.meme} to 1020
+		create embed:
+			set the title of embed to title with text "Event Master"
+			set the description of embed to "Limited time events that spice up ur gameplay."
+			if {event.active.doublexp} is not set:
+				add field named ":magic_wand: `Double XP`" with value "`Description`: *Doubles XP for 1 hour (2x). Premium members get quadruple (4x) instead.*%nl%`Starts in`: **%{event.timer.doublexp}% minutes**" to embed
+			else:
+				add field named "[:warning:] :magic_wand: `Double XP`" with value "`Description`: *Doubles XP for 1 hour (2x). Premium members get quadruple (4x) instead.*%nl%`Ends`: **%{event.active.doublexp}% minutes**" to embed
+			if {event.active.fishing} is not set:
+				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching rare/supreme fishes significantly.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
+			else:
+				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching rare/supreme fishes significantly.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
+			if {event.active.meme} is not set:
+				add field named ":computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Starts in`: **%{event.timer.meme}% minutes**" to embed
+			else:
+				add field named ":computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Ends`: **%{event.active.meme}% minutes**" to embed
+			send the last created embed to event-channel with event-bot
+
