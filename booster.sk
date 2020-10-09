@@ -36,7 +36,7 @@ discord command boost [<text>]:
 
 			if arg-1 = "usepack large":
 				{booster::%discord id of event-user%::largexp-pkg} > 0
-				remove 1 from {booster::%discord id of event-user%::slargexp-pkg}
+				remove 1 from {booster::%discord id of event-user%::largexp-pkg}
 				add 75 to {levels::%discord id of event-user%::xp}
 				reply with "<@%discord id of event-user%>, redeemed **Instant Large XP pack** for **75 XP**!"
 
