@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.4.1
-	build: abfcff6
+	version: 2.5
+	build: ...
 	maincctv: xxx
 
 on skript load:
@@ -263,9 +263,14 @@ on vixio command:
 		set {levels::%discord id of event-user%::xp} to 0
 		set {levels::%discord id of event-user%::extraxpneed} to 0
 		set {levels::%discord id of event-user%::current} to 0
-	add 1 to {levels::%discord id of event-user%::xp}
-	if {premium::%discord id of event-user%} = "Active":
-		add 0.5 to {levels::%discord id of event-user%::xp}
+	{event.active.doublexp} isn't set:
+		add 1 to {levels::%discord id of event-user%::xp}
+		if {premium::%discord id of event-user%} = "Active":
+			add 0.5 to {levels::%discord id of event-user%::xp}
+	else:
+		add 2 to {levels::%discord id of event-user%::xp}
+		if {premium::%discord id of event-user%} = "Active":
+			add 2 to {levels::%discord id of event-user%::xp}
 	set {_req} to {levels::%discord id of event-user%::extraxpneed}+3
 	if {levels::%discord id of event-user%::xp} > {_req}:
 		remove {_req} from {levels::%discord id of event-user%::xp}
