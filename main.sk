@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.5
-	build: 8018f7f
+	version: 2.5.1
+	build: compiled_10-11-2020
 	maincctv: xxx
 
 on skript load:
@@ -228,6 +228,9 @@ on vixio command:
 			uncancel event
 			stop
 		reply with "this bot cannot be used at this moment."
+	if event-bot doesn't have permission manage server:
+		event-member has permission manage server
+		reply with "**WARNING** Pepperoni is now requesting the permission `manage server` to perform the bot as best as it's ability. If you do not give, the bot may not function properly."
 	{difficulty::%discord id of event-user%} is not set:
 		set {difficulty::%discord id of event-user%} to "Normal"
 	if {gems::%discord id of event-user%} is not set:
