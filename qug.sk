@@ -1,0 +1,208 @@
+options:
+	bot: Pepperoni SE
+
+on guild message receive:
+	set {_msg} to "%event-message%"
+	If {confirmqug::%discord id of event-user%} is discord id of event-channel:
+		{_msg} = "yes"
+		{banklvl::%discord id of event-user%::current} = "Basic":
+			delete {confirmqug::%discord id of event-user%}
+			remove 300 from {gems::%discord id of event-user%}
+			remove 10000 from {gems::%discord id of event-user%}
+			set {banklvl::%discord id of event-user%::current} to "Pro"
+			add 20000 to {moneybankmax::%discord id of event-user%}
+			create embed:
+				add field named "Pro Unlocked!" with value "**One Time Bonus**: +$20,000 to storage%nl%**Interest**: 2%% to 1.5%%" to embed
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+			stop
+		{banklvl::%discord id of event-user%::current} = "Pro":
+			delete {confirmqug::%discord id of event-user%}
+			remove 500 from {gems::%discord id of event-user%}
+			remove 50000 from {gems::%discord id of event-user%}
+			set {banklvl::%discord id of event-user%::current} to "Deluxe"
+			add 100000 to {moneybankmax::%discord id of event-user%}
+			create embed:
+				add field named "Deluxe Unlocked!" with value "**One Time Bonus**: +$100,000 to storage%nl%**Interest**: 1.5%% to 1%%" to embed
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+			stop
+
+		{banklvl::%discord id of event-user%::current} = "Deluxe":
+			delete {confirmqug::%discord id of event-user%}
+			remove 700 from {gems::%discord id of event-user%}
+			remove 100000 from {gems::%discord id of event-user%}
+			set {banklvl::%discord id of event-user%::current} to "Premier"
+			add 500000 to {moneybankmax::%discord id of event-user%}
+			create embed:
+				add field named "Premier Unlocked!" with value "**One Time Bonus**: +$500,000 to storage%nl%**Interest**: 1%% to 0.5%%" to embed
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+			stop
+		{banklvl::%discord id of event-user%::current} = "Premier":
+			delete {confirmqug::%discord id of event-user%}
+			remove 1500 from {gems::%discord id of event-user%}
+			remove 300000 from {gems::%discord id of event-user%}
+			set {banklvl::%discord id of event-user%::current} to "Ultimate"
+			add 1000000 to {moneybankmax::%discord id of event-user%}
+			create embed:
+				add field named "Premier Unlocked!" with value "**One Time Bonus**: +$1,000,000 to storage%nl%**Interest**: 0.5%% to 0.2%%" to embed
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+			stop
+
+
+
+
+
+discord command qug:
+	bots: Pepperoni SE
+	prefixes: /
+	trigger:
+		{levels::%discord id of event-user%::current} is less than 120:
+			create embed:
+				add field named ":lock: Locked" with value "**Level Required:** %{levels::%discord id of event-user%::current}%/120" to embed
+				set the footer of embed to footer with text "Bank level: Basic"
+				set the colour of the embed to red
+				send the last created embed to event-channel with event-bot
+		else:
+			{banklvl::%discord id of event-user%::current} isn't set:
+				set {banklvl::%discord id of event-user%::current} to "Basic"
+			{banklvl::%discord id of event-user%::current} = "Basic":
+				{gems::%discord id of event-user%} >= 300:
+					add 1 to {_meet}
+				{money::%discord id of event-user%} >= 10000:
+					add 1 to {_meet}
+				{_meet} = 2:
+					reply with "Are you sure you wanna do this? type `yes` within 10 seconds."
+					set {confirmqug::%discord id of event-user%} to discord id of event-channel
+					wait 10 seconds
+					delete {confirmqug::%discord id of event-user%}
+				else:
+					create embed:
+						add field named "Pro requirements" with value "**Level Required:** %{levels::%discord id of event-user%::current}%/120%nl%**Gems required**: %{gems::%discord id of event-user%}%/300%nl%**Purse Cash**: $%format({money::%discord id of event-user%})%/$10k" to embed
+						set the footer of embed to footer with text "Bank level: Basic"
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+			{banklvl::%discord id of event-user%::current} = "Pro":
+				{levels::%discord id of event-user%::current} >= 300:
+					add 1 to {_meet}
+				{gems::%discord id of event-user%} >= 500:
+					add 1 to {_meet}
+				{money::%discord id of event-user%} >= 50000:
+					add 1 to {_meet}
+				{_meet} = 3:
+					reply with "Are you sure you wanna do this? type `yes` within 10 seconds."
+					set {confirmqug::%discord id of event-user%} to discord id of event-channel
+					wait 10 seconds
+					delete {confirmqug::%discord id of event-user%}
+				else:
+					create embed:
+						add field named "Deluxe requirements" with value "**Level Required:** %{levels::%discord id of event-user%::current}%/200%nl%**Gems required**: %{gems::%discord id of event-user%}%/500%nl%**Purse Cash**: $%format({money::%discord id of event-user%})%/$50k" to embed
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+			{banklvl::%discord id of event-user%::current} = "Deluxe":
+				{levels::%discord id of event-user%::current} >= 425:
+					add 1 to {_meet}
+				{gems::%discord id of event-user%} >= 700:
+					add 1 to {_meet}
+				{money::%discord id of event-user%} >= 100000:
+					add 1 to {_meet}
+				{_meet} = 3:
+					reply with "Are you sure you wanna do this? type `yes` within 10 seconds."
+					set {confirmqug::%discord id of event-user%} to discord id of event-channel
+					wait 10 seconds
+					delete {confirmqug::%discord id of event-user%}
+				else:
+					create embed:
+						add field named "Premier requirements" with value "**Level Required:** %{levels::%discord id of event-user%::current}%/425%nl%**Gems required**: %{gems::%discord id of event-user%}%/700%nl%**Purse Cash**: $%format({money::%discord id of event-user%})%/$100k" to embed
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+			{banklvl::%discord id of event-user%::current} = "Premier":
+				{levels::%discord id of event-user%::current} >= 700:
+					add 1 to {_meet}
+				{gems::%discord id of event-user%} >= 1500:
+					add 1 to {_meet}
+				{money::%discord id of event-user%} >= 300000:
+					add 1 to {_meet}
+				{_meet} = 3:
+					reply with "Are you sure you wanna do this? type `yes` within 10 seconds."
+					set {confirmqug::%discord id of event-user%} to discord id of event-channel
+					wait 10 seconds
+					delete {confirmqug::%discord id of event-user%}
+				else:
+					create embed:
+						add field named "Ultimate requirements" with value "**Level Required:** %{levels::%discord id of event-user%::current}%/700%nl%**Gems required**: %{gems::%discord id of event-user%}%/1500%nl%**Purse Cash**: $%format({money::%discord id of event-user%})%/$300k" to embed
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+			{banklvl::%discord id of event-user%::current} = "Ultimate":
+				{levels::%discord id of event-user%::current} >= 999999999:
+					add 1 to {_meet}
+				{gems::%discord id of event-user%} >= 0:
+					add 1 to {_meet}
+				{money::%discord id of event-user%} >= 0:
+					add 1 to {_meet}
+				{_meet} = 3:
+					reply with "Are you sure you wanna do this? type `yes` within 10 seconds."
+					set {confirmqug::%discord id of event-user%} to discord id of event-channel
+					wait 10 seconds
+					delete {confirmqug::%discord id of event-user%}
+				else:
+					create embed:
+						add field named "Overflux requirements" with value "**Level Required:** %{levels::%discord id of event-user%::current}%/999999999%nl%**Gems required**: %{gems::%discord id of event-user%}%/0%nl%**Purse Cash**: $%format({money::%discord id of event-user%})%/$0" to embed
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+
+			
+
+on vixio command:
+	delete {confirmqug::%discord id of event-user%}
+	{banklvl::%discord id of event-user%::current} isn't set:
+		set {banklvl::%discord id of event-user%::current} to "Basic"
+	{lastinterest.%discord id of event-user%} isn't set:
+		set {lastinterest.%discord id of event-user%} to 4 days before now
+	{banklvl::%discord id of event-user%::current} is set:
+		set {_D} to difference between {lastinterest.%discord id of event-user%} and now
+		if {_D} is more than 3 days:
+			set {lastinterest.%discord id of event-user%} to now
+			{banklvl::%discord id of event-user%::current} = "Basic":
+				set {_bankbal} to {moneybank::%discord id of event-user%}*0.02
+				if {_bankbal} > 1000:
+					set {_bankbal} to 1000
+				add {_bankbal} to {moneybank::%discord id of event-user%}
+				{moneybank::%discord id of event-user%} > {moneybankmax::%discord id of event-user%}
+				set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
+			{banklvl::%discord id of event-user%::current} = "Pro":
+				set {_bankbal} to {moneybank::%discord id of event-user%}*0.015
+				if {_bankbal} > 5000:
+					set {_bankbal} to 5000
+				add {_bankbal} to {moneybank::%discord id of event-user%}
+				{moneybank::%discord id of event-user%} > {moneybankmax::%discord id of event-user%}
+				set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
+			{banklvl::%discord id of event-user%::current} = "Deluxe":
+				set {_bankbal} to {moneybank::%discord id of event-user%}*0.01
+				if {_bankbal} > 20000:
+					set {_bankbal} to 20000
+				add {_bankbal} to {moneybank::%discord id of event-user%}
+				{moneybank::%discord id of event-user%} > {moneybankmax::%discord id of event-user%}
+				set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
+
+			{banklvl::%discord id of event-user%::current} = "Premier":
+				set {_bankbal} to {moneybank::%discord id of event-user%}*0.005
+				if {_bankbal} > 50000:
+					set {_bankbal} to 50000
+				add {_bankbal} to {moneybank::%discord id of event-user%}
+				{moneybank::%discord id of event-user%} > {moneybankmax::%discord id of event-user%}
+				set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
+			{banklvl::%discord id of event-user%::current} = "Ultimate":
+				set {_bankbal} to {moneybank::%discord id of event-user%}*0.002
+				if {_bankbal} > 125000:
+					set {_bankbal} to 125000
+				add {_bankbal} to {moneybank::%discord id of event-user%}
+				{moneybank::%discord id of event-user%} > {moneybankmax::%discord id of event-user%}
+				set {moneybank::%discord id of event-user%} to {moneybankmax::%discord id of event-user%}
+
+
+
+
+
