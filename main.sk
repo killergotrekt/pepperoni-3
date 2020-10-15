@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.5.1
-	build: compiled_10-11-2020
+	version: 2.6
+	build: compile_10-15-2020
 	maincctv: xxx
 
 on skript load:
@@ -15,7 +15,7 @@ discord command /help:
 		create embed:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
-			add field named "Economics" with value "`/bal`, `/hourly`, `/dep`, `/wd`, `/rob`, `/beg`, `/fish`, `/difficulty`, `/bet`, `/pm`" to embed
+			add field named "Economics" with value "`/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/rob`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`" to embed
 			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/boost`, `/levels`, `/progress`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
@@ -127,23 +127,37 @@ discord command /gems [<text>] [<text>]:
 					create embed:
 						set the title of embed to title with text "Gems Shop"
 						set the description of embed to "To buy an item: `/gems shop <id>`"
-						add split field named "[1] `Small XP Pack`" with value "Gives 30 XP.%nl%**Cost** 150 gems" to embed
-						add split field named "[2] `Medium XP Pack`" with value "Gives 50 XP.%nl%**Cost** 225 gems" to embed
-						add split field named "[3] `Large XP Pack`" with value "Gives 75 XP.%nl%**Cost** 350 gems" to embed
-						if {levels::%discord id of event-user%::current} is more than 20:
+						add split field named "[1] `Small Instant XP`" with value "Gives 30 XP.%nl%**Cost** 150 gems" to embed
+						if {levels::%discord id of event-user%::current} >= 10:
+							add split field named "[2] `Medium Instant XP`" with value "Gives 50 XP.%nl%**Cost** 225 gems" to embed
+						else:
+							add split field named ":lock: `Locked`" with value "Reach level 10 to reveal." to embed
+						if {levels::%discord id of event-user%::current} >= 25:
+							add split field named "[3] `Large Instant XP`" with value "Gives 75 XP.%nl%**Cost** 350 gems" to embed
+						else:
+							add split field named ":lock: `Locked`" with value "Reach level 25 to reveal." to embed
+						if {levels::%discord id of event-user%::current} >= 20:
 							if {fishbag::%discord id of event-user%::medbagupgrade} isn't set:
 								add split field named "[4] `Medium Fishing Bag Upgrade`" with value "Increase bag size by 10.%nl%**Cost** 100 gems" to embed
 							else:
 								add split field named "~~[4] `Medium Fishing Bag Upgrade`~~" with value "~~Increase bag size by 10.~~%nl%**Cost** Unlocked" to embed
 						else:
 							add split field named ":lock: `LOCKED`" with value "Reach level 20 to reveal." to embed
-						if {levels::%discord id of event-user%::current} is more than 35:
+						if {levels::%discord id of event-user%::current} >= 35:
 							if {fishbag::%discord id of event-user%::largebagupgrade} isn't set:
 								add split field named "[5] `Large Fishing Bag Upgrade`" with value "Increase bag size by 20.%nl%**Cost** 200 gems" to embed
 							else:
 								add split field named "~~[5] `Large Fishing Bag Upgrade`~~" with value "~~Increase bag size by 20.~~%nl%**Cost** Unlocked" to embed
 						else:	
 							add split field named ":lock: `LOCKED`" with value "Reach level 35 to reveal." to embed
+						if {levels::%discord id of event-user%::current} >= 50:
+							add split field named "[6] `Massive Instant XP`" with value "Gives 300 XP.%nl%**Cost** 1250 gems" to embed
+						else:
+							add split field named ":lock: `Locked`" with value "Reach level 50 to reveal." to embed
+						if {levels::%discord id of event-user%::current} >= 120:
+							add split field named "[7] `Giant Instant XP`" with value "Gives 1500 XP.%nl%**Cost** 6500 gems" to embed
+						else:
+							add split field named ":lock: `Locked`" with value "Reach level 120 to reveal." to embed
 						set the footer of embed to footer with text "%{gems::%discord id of event-user%}% gems remaining"
 						set the colour of the embed to cyan
 						send the last created embed to event-channel with event-bot
@@ -152,22 +166,24 @@ discord command /gems [<text>] [<text>]:
 				arg-2 = "1":
 					if {gems::%discord id of event-user%} >= 150:
 						remove 150 from {gems::%discord id of event-user%}
-						add 1 to {booster::%discord id of event-user%::smallxp-pkg}
+						add 30 to {levels::%discord id of event-user%::xp}
 						reply with "Successfully purchased for **150 gems**!"
 					else:
 						reply with "Not Enough Gems! (%150-{gems::%discord id of event-user%}% missing)"
 				arg-2 = "2":
+					{levels::%discord id of event-user%::current} >= 10
 					if {gems::%discord id of event-user%} >= 225:
 						remove 225 from {gems::%discord id of event-user%}
-						add 1 to {booster::%discord id of event-user%::medxp-pkg}
+						add 50 to {levels::%discord id of event-user%::xp}
 						reply with "Successfully purchased for **225 gems**!"
 					else:
 						reply with "Not Enough Gems! (%225-{gems::%discord id of event-user%}% missing)"
 
 				arg-2 = "3":
+					{levels::%discord id of event-user%::current} >= 25
 					if {gems::%discord id of event-user%} >= 350:
 						remove 350 from {gems::%discord id of event-user%}
-						add 1 to {booster::%discord id of event-user%::largexp-pkg}
+						add 75 to {levels::%discord id of event-user%::xp}
 						reply with "Successfully purchased for **350 gems**!"
 					else:
 						reply with "Not Enough Gems! (%350-{gems::%discord id of event-user%}% missing)"
@@ -191,6 +207,24 @@ discord command /gems [<text>] [<text>]:
 						reply with "Successfully purchased for **100 gems**!"
 					else:
 						reply with "Not Enough Gems! (%200-{gems::%discord id of event-user%}% missing)"
+				arg-2 = "6":
+					{levels::%discord id of event-user%::current} >= 50
+					if {gems::%discord id of event-user%} >= 1250:
+						remove 1250 from {gems::%discord id of event-user%}
+						add 300 to {levels::%discord id of event-user%::xp}
+						reply with "Successfully purchased for **1250 gems**!"
+					else:
+						reply with "Not Enough Gems! (%1250-{gems::%discord id of event-user%}% missing)"
+
+				arg-2 = "7":
+					{levels::%discord id of event-user%::current} >= 120
+					if {gems::%discord id of event-user%} >= 6500:
+						remove 6500 from {gems::%discord id of event-user%}
+						add 1500 to {levels::%discord id of event-user%::xp}
+						reply with "Successfully purchased for **6500 gems**!"
+					else:
+						reply with "Not Enough Gems! (%6500-{gems::%discord id of event-user%}% missing)"
+
 
 
 					
@@ -274,7 +308,7 @@ on vixio command:
 		add 2 to {levels::%discord id of event-user%::xp}
 		if {premium::%discord id of event-user%} = "Active":
 			add 2 to {levels::%discord id of event-user%::xp}
-	set {_req} to {levels::%discord id of event-user%::extraxpneed}+3
+	set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
 	if {levels::%discord id of event-user%::xp} > {_req}:
 		remove {_req} from {levels::%discord id of event-user%::xp}
 		add 1 to {levels::%discord id of event-user%::current}
