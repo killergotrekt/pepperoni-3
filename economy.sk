@@ -15,8 +15,11 @@ discord command /bal [<member>]:
 				send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) created a new account" to channel with id "{@economycctv}" with "{@bot}"
 			create embed:
 				set the title of embed to title with text "%event-user%'s balance"
-				set the description of embed to "Purse: **$%round({money::%discord id of event-user%})%**%nl%Bank: **$%format2({moneybank::%discord id of event-user%})%/$%format2({moneybankmax::%discord id of event-user%})%**"
-				set the footer of embed to footer with text "level up to increase bank balance"
+				if {levels::%discord id of event-user%::current} is less than 120:
+					set the description of embed to "Purse: **$%round({money::%discord id of event-user%})%**%nl%Bank: **$%format2({moneybank::%discord id of event-user%})%/$%format2({moneybankmax::%discord id of event-user%})%**"
+				else:
+					set the description of embed to "Purse: **$%round({money::%discord id of event-user%})%**%nl%Bank: **$%format2({moneybank::%discord id of event-user%})%/$%format2({moneybankmax::%discord id of event-user%})%**%nl%Storage Solutions: **/qug**"
+				set the footer of embed to footer with text "level up to increase bank balance, interest every 3 days"
 				set the colour of the embed to Cyan
 				send the last created embed to event-channel with event-bot
 			send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/balance`" to channel with id "{@economycctv}" with "{@bot}"
@@ -61,39 +64,39 @@ discord command /hourly:
 			if {lasthourly.%discord id of event-user%} isn't set:
 				set {lasthourly.%discord id of event-user%} to now
 				add 1 to {streakhourly.%discord id of event-user%}
-				set {hourlymoney.%discord id of event-user%} to 125
+				set {hourlymoney.%discord id of event-user%} to 300
 				add {hourlymoney.%discord id of event-user%} to {money::%discord id of event-user%}
 				create embed:
 					set the title of embed to title with text "Gained Hourly Cash!"
 					set the description of embed to "**$%{hourlymoney.%discord id of event-user%}%** has been added to your purse."
 					set the colour of the embed to green
-					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 20%% more money."
+					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 10%% more money."
 					send the last created embed to event-channel with event-bot
 				stop
 			set {_D} to difference between {lasthourly.%discord id of event-user%} and now
 			if {_D} is more than 2 hour:
 				set {lasthourly.%discord id of event-user%} to now
 				set {streakhourly.%discord id of event-user%} to 1
-				set {hourlymoney.%discord id of event-user%} to 125
+				set {hourlymoney.%discord id of event-user%} to 300
 				add {hourlymoney.%discord id of event-user%} to {money::%discord id of event-user%}
 				create embed:
 					set the title of embed to title with text "Gained Hourly Cash! (Streak broken)"
 					set the description of embed to "**$%{hourlymoney.%discord id of event-user%}%** has been added to your purse."
 					set the colour of the embed to green
-					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 20%% more money."
+					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 10%% more money."
 					send the last created embed to event-channel with event-bot
 				stop
 			else:
 				set {lasthourly.%discord id of event-user%} to now
 				add 1 to {streakhourly.%discord id of event-user%}
-				set {_c} to {hourlymoney.%discord id of event-user%}*0.2
+				set {_c} to {hourlymoney.%discord id of event-user%}*0.1
 				add {_c} to {hourlymoney.%discord id of event-user%}
 				add {hourlymoney.%discord id of event-user%} to {money::%discord id of event-user%}
 				create embed:
 					set the title of embed to title with text "Gained Hourly Cash!"
 					set the description of embed to "**$%{hourlymoney.%discord id of event-user%}%** has been added to your purse."
 					set the colour of the embed to green
-					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 20%% more money."
+					set the footer of embed to footer with text "Streak: %{streakhourly.%discord id of event-user%}%, do this again next hour for 10%% more money."
 					send the last created embed to event-channel with event-bot
 				if {streakhourly.%discord id of event-user%} = 5:
 					add 35 to {gems::%discord id of event-user%}
@@ -108,6 +111,78 @@ discord command /hourly:
 				if {streakhourly.%discord id of event-user%} = 30:
 					add 210 to {gems::%discord id of event-user%}
 				stop
+
+discord command /daily:
+	trigger:
+		set {_lastdaily} to difference between {lastdailyly.%discord id of event-user%} and now
+		if {_lastdaily} is less than 1 day:
+			cancel event
+			create embed:
+				set the title of embed to title with text "Cooldown"
+				set the colour of the embed to red
+				set the footer of embed to footer with text "Avaliable in %difference between 1 day and {_lastdaily}%"
+				send the last created embed to event-channel with event-bot
+		else:
+			send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/daily` and got money." to channel with id "{@economycctv}" with "{@bot}"
+			if {lastdailyly.%discord id of event-user%} isn't set:
+				set {lastdailyly.%discord id of event-user%} to now
+				add 1 to {streakdailyly.%discord id of event-user%}
+				set {dailylymoney.%discord id of event-user%} to 1500
+				add {dailylymoney.%discord id of event-user%} to {money::%discord id of event-user%}
+				create embed:
+					set the title of embed to title with text "Gained Daily Cash!"
+					set the description of embed to "**$%{dailylymoney.%discord id of event-user%}%** has been added to your purse."
+					set the colour of the embed to green
+					set the footer of embed to footer with text "Streak: %{streakdailyly.%discord id of event-user%}%, do this again daily for 15%% more money."
+					send the last created embed to event-channel with event-bot
+				stop
+			set {_D} to difference between {lastdailyly.%discord id of event-user%} and now
+			if {_D} is more than 2 days:
+				set {lastdailyly.%discord id of event-user%} to now
+				set {streakdailyly.%discord id of event-user%} to 1
+				set {dailylymoney.%discord id of event-user%} to 300
+				add {dailylymoney.%discord id of event-user%} to {money::%discord id of event-user%}
+				create embed:
+					set the title of embed to title with text "Gained Daily Cash! (Streak broken)"
+					set the description of embed to "**$%{dailylymoney.%discord id of event-user%}%** has been added to your purse."
+					set the colour of the embed to green
+					set the footer of embed to footer with text "Streak: %{streakdailyly.%discord id of event-user%}%, do this again daily for 15%% more money."
+					send the last created embed to event-channel with event-bot
+				stop
+			else:
+				set {lastdailyly.%discord id of event-user%} to now
+				add 1 to {streakdailyly.%discord id of event-user%}
+				set {_c} to {dailylymoney.%discord id of event-user%}*0.15
+				add {_c} to {dailylymoney.%discord id of event-user%}
+				add {dailylymoney.%discord id of event-user%} to {money::%discord id of event-user%}
+				create embed:
+					set the title of embed to title with text "Gained Daily Cash!"
+					set the description of embed to "**$%{dailylymoney.%discord id of event-user%}%** has been added to your purse."
+					set the colour of the embed to green
+					set the footer of embed to footer with text "Streak: %{streakdailyly.%discord id of event-user%}%, do this again daily for 15%% more money."
+					send the last created embed to event-channel with event-bot
+
+discord command /weekly:
+	trigger:
+		set {_lastweek} to difference between {lastweekly.%discord id of event-user%} and now
+		if {_lastweek} is less than 7 days:
+			cancel event
+			create embed:
+				set the title of embed to title with text "Cooldown"
+				set the colour of the embed to red
+				set the footer of embed to footer with text "Avaliable in %difference between 7 day and {_lastweek}%"
+				send the last created embed to event-channel with event-bot
+		else:
+			send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/week` and got money." to channel with id "{@economycctv}" with "{@bot}"
+			set {lastweekly.%discord id of event-user%} to now
+			set {weeklymoney.%discord id of event-user%} to 12000
+			add {weeklymoney.%discord id of event-user%} to {money::%discord id of event-user%}
+			create embed:
+				set the title of embed to title with text "Gained Weekly Cash!"
+				set the description of embed to "**$%{weeklymoney.%discord id of event-user%}%** has been added to your purse."
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+			stop
 				
 discord command withdraw [<text>]:
 	prefixes: /
@@ -205,11 +280,11 @@ discord command /beg [<Text>]:
 				set the footer of embed to footer with text "Avaliable in %difference between 40 seconds and {_lastbeg}%"
 				send the last created embed to event-channel with event-bot
 		else:
-			
 			set {lastbeg.%discord id of event-user%} to now
-			set {_people::*} to "<@671896615950221322>", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Cat", "Dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
+			set {_people::*} to "<@671896615950221322>", "Granny", "Mr. Krabs", "Dr. Stupid", "Lenin", "Mao", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Grandpa's Cat", "Your Dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
 			set {_person} to random element out of {_people::*}
-			chance of 60%:
+			set {_bc} to {money::%discord id of event-user%}/({money::%discord id of event-user%}+350)*100
+			chance of {_bc}%:
 				set {_failmsgs::*} to "haha of course not", "nah", "get a job lol", "pew pew no.", "you are not poor", "no u", "no", and "sucker"
 				set {_msg} to random element out of {_failmsgs::*}
 				reply with "**%{_person}%**: %{_msg}%"
@@ -300,12 +375,14 @@ discord command level [<text>]:
 			set {levels::%discord id of event-user%::extraxpneed} to 0
 		{levels::%discord id of event-user%::current} isn't set:
 			set {levels::%discord id of event-user%::current} to 0
-		set {_req} to {levels::%discord id of event-user%::extraxpneed}+3
+		set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
 		set {_bankerlvl} to floor({levels::%discord id of event-user%::current}/2)
+		if {_bankerlvl} > 50:
+			set {_bankerlvl} to 50
 		create embed:
-			set the title of embed to title with text "Level %{levels::%discord id of event-user%::current}% - Banker Level %{_bankerlvl}%/50"
+			set the title of embed to title with text "%event-user%'s Level %{levels::%discord id of event-user%::current}%"
 			set the description of embed to "**Progress to level up**: %{levels::%discord id of event-user%::xp}/{_req}*100%%%%nl%Each level-up grants you a few bucks, and a random amount of bank storage, ($20-$45)"
-			add field named "Banker Skill" with value "Increase your bank capacity by **%{_bankerlvl}*0.007*100%%%** when leveling up." to embed
+			add field named "Banker Skill %{_bankerlvl}%/50" with value "Increase your bank capacity by **%{_bankerlvl}*0.002*100%%%** when leveling up." to embed
 			set the footer of embed to footer with text "Level XP: %{levels::%discord id of event-user%::xp}%/%{_req}%"
 			send the last created embed to event-channel with event-bot
 
