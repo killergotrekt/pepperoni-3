@@ -4,7 +4,6 @@ options:
 on guild message receive:
 	set {_msg} to "%event-message%"
 	If {fishinggui.%discord id of event-user%} is set:
-		delete {fishinggui.%discord id of event-user%}
 		if {_msg} = "pond":
 			set {_bc} to difference between {%discord id of event-user%.lastpond} and now
 			if {_bc} is less than 55 second:
