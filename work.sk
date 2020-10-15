@@ -1,0 +1,227 @@
+options:
+	bot: Pepperoni SE
+
+on guild message receive:
+	set {_msg} to "%event-message%"
+	If {workanswer::%discord id of event-user%::b} is discord id of event-channel:
+		if {_msg} = {workanswer::%discord id of event-user%::b}:
+			delete {workanswer::%discord id of event-user%::*}
+			if {workjob::%discord id of event-user%::current} = "Janitor":
+				set {_pay} to 200*({workjob::%discord id of event-user%::bonus}+1)
+			if {workjob::%discord id of event-user%::current} = "Karen":
+				set {_pay} to 300*({workjob::%discord id of event-user%::bonus}+1)
+			if {workjob::%discord id of event-user%::current} = "Soldier":
+				set {_pay} to 400*({workjob::%discord id of event-user%::bonus}+1)
+			add {_pay} to {money::%discord id of event-user%}
+			reply with "**BOSS** Excellent work %event-user%, I have paid you `$%{_pay}%`. Continue this work and you will gain a promotion."
+		else:
+			delete {workanswer::%discord id of event-user%::*}
+			if {workjob::%discord id of event-user%::current} = "Janitor":
+				set {_pay} to 150*({workjob::%discord id of event-user%::bonus}+1)
+			if {workjob::%discord id of event-user%::current} = "Karen":
+				set {_pay} to 225*({workjob::%discord id of event-user%::bonus}+1)
+			if {workjob::%discord id of event-user%::current} = "Soldier":
+				set {_pay} to 300*({workjob::%discord id of event-user%::bonus}+1)
+			add {_pay} to {money::%discord id of event-user%}
+			reply with "**BOSS** Adequate work %event-user%, I am disappointed in you. Heres `$%{_pay}%`, Do not mess up again."
+
+
+
+discord command work [<text>]:
+	aliases: job
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		if arg-1 = "list":
+			set {_b} to 2
+			create embed:
+				set the title of embed to title with text "Work list"
+				set the description of embed to "Jobs that are not shown are hidden."
+				add field named "`/work Janitor`" with value "`$200`/hour, Required times per 24h: `0`" to embed
+				if {levels::%discord id of event-user%::current} >= 15:
+					{worktimes::%discord id of event-user%} >= 10
+					remove 1 from {_b}
+					add field named "`/work Karen`" with value "`$300`/hour, Required times per 24h: `0`" to embed
+				if {levels::%discord id of event-user%::current} >= 45:
+					{worktimes::%discord id of event-user%} >= 20
+					add field named "`/work Soldier`" with value "`$400`/hour, Required times per 24h: `1`" to embed
+					remove 1 from {_b}
+				set the footer of embed to footer with text "Work 0 times - %{_b}% locked"
+				set the colour of the embed to yellow
+				send the last created embed to event-channel with event-bot
+			stop
+		if arg-1 is "resign" or "quit":
+			{workjob::%discord id of event-user%::current} is not set:
+				create embed:
+					set the description of embed to "You don't have a job."
+					set the footer of embed to footer with text "'/job list' to browse all jobs"
+					set the colour of the embed to yellow
+					send the last created embed to event-channel with event-bot
+				stop
+			if {workquit.%discord id of event-user%} isn't set:
+				set {workquit.%discord id of event-user%} to true
+				reply with "**BOSS** You sure you wanna resign? You'll need to wait 8 hours to find another job again. Execute this command again to continue."
+				wait 10 seconds
+				delete {workquit.%discord id of event-user%}
+			else:
+				delete {workjob::%discord id of event-user%::current} 
+				reply with "**BOSS** Alright, get outta here."
+				delete {workquit.%discord id of event-user%}
+				set {workwait::%discord id of event-user%} to now
+			stop
+		arg-1 = "janitor":
+			set {_c} to difference between {workwait::%discord id of event-user%} and now
+			if {_c} is less than 8 hours:
+				create embed:
+					set the description of embed to "You recently left/got fired."
+					set the footer of embed to footer with text "Try again within %difference between 8 hours and {_c}%"
+					set the colour of the embed to red
+					send the last created embed to event-channel with event-bot
+				stop
+			{workjob::%discord id of event-user%::current} is set:
+				create embed:
+					set the description of embed to "You are already occupying a job. You'll need to resign your position before continuing."
+					set the footer of embed to footer with text "'/job quit', however a 8h wait is required to find another one."
+					set the colour of the embed to orange
+					send the last created embed to event-channel with event-bot
+				stop
+			set {workjob::%discord id of event-user%::current} to "Janitor"
+			set {workjob::%discord id of event-user%::bonus} to 0 
+			reply with "**Congratulations** on getting the `Janitor` Job, You'll need to work aleast `0` times within every 24h. If you fail, you will get fired. You succeed, your boss might give a small percentage raise."
+			stop
+		arg-1 = "karen":
+			set {_c} to difference between {workwait::%discord id of event-user%} and now
+			if {_c} is less than 8 hours:
+				create embed:
+					set the description of embed to "You recently left/got fired."
+					set the footer of embed to footer with text "Try again within %difference between 8 hours and {_c}%"
+					set the colour of the embed to red
+					send the last created embed to event-channel with event-bot
+				stop
+			{workjob::%discord id of event-user%::current} is set:
+				create embed:
+					set the description of embed to "You are already occupying a job. You'll need to resign your position before continuing."
+					set the footer of embed to footer with text "'/job quit', however a 8h wait is required to find another one."
+					set the colour of the embed to orange
+					send the last created embed to event-channel with event-bot
+				stop
+			{levels::%discord id of event-user%::current} >= 15
+			{worktimes::%discord id of event-user%} >= 10
+			set {workjob::%discord id of event-user%::current} to "Karen"
+			set {workjob::%discord id of event-user%::bonus} to 0 
+			reply with "**Congratulations** on becoming `Karen`. You'll need to work aleast `0` times within every 24h. If you fail, you will get fired. You succeed, your boss might give a small percentage raise."
+			stop
+		arg-1 = "soldier":
+			set {_c} to difference between {workwait::%discord id of event-user%} and now
+			if {_c} is less than 8 hours:
+				create embed:
+					set the description of embed to "You recently left/got fired."
+					set the footer of embed to footer with text "Try again within %difference between 8 hours and {_c}%"
+					set the colour of the embed to red
+					send the last created embed to event-channel with event-bot
+				stop
+			{workjob::%discord id of event-user%::current} is set:
+				create embed:
+					set the description of embed to "You are already occupying a job. You'll need to resign your position before continuing."
+					set the footer of embed to footer with text "'/job quit', however a 8h wait is required to find another one."
+					set the colour of the embed to orange
+					send the last created embed to event-channel with event-bot
+				stop
+			{levels::%discord id of event-user%::current} >= 45
+			{worktimes::%discord id of event-user%} >= 20
+			set {workjob::%discord id of event-user%::current} to "Soldier"
+			set {workjob::%discord id of event-user%::bonus} to 0 
+			reply with "**Congratulations** on finishing your training, `Soldier`. You'll need to work aleast `1` time within every 24h. If you fail, you will get fired. You succeed, your boss might give a small percentage raise."
+			stop
+		if {workjob::%discord id of event-user%::current} is not set:
+			create embed:
+				set the description of embed to "You don't have a job."
+				set the footer of embed to footer with text "'/job list' to browse all jobs"
+				set the colour of the embed to yellow
+				send the last created embed to event-channel with event-bot
+		else:
+			set {_c} to difference between {lastwork.%discord id of event-user%} and now
+			if {_c} is less than 1 hour:
+				create embed:
+					set the description of embed to "You recently worked."
+					set the footer of embed to footer with text "Try again within %difference between 1 hours and {_c}%"
+					set the colour of the embed to red
+					send the last created embed to event-channel with event-bot
+				stop
+			set {lastwork.%discord id of event-user%} to now
+			chance of 50%:
+				set {_x} to random integer between 4 and 10
+				set {_a} to random integer between 3 and 6
+				set {_b} to random integer between 1 and 8
+				set {_choose} to random integer between 1 and 2
+				chance of 50%:
+					set {_f} to {_a}*{_x}
+					set {_ab} to {_f}+{_b} 
+					set {workanswer::%discord id of event-user%::a} to "%{_ab}%"
+					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
+					reply with "**WORK** What is `%{_a}%x + %{_b}%` if `x = %{_x}%`?"
+				else:
+					set {_f} to {_a}*{_x}
+					set {_ab} to {_f}+{_b} 
+					set {workanswer::%discord id of event-user%::a} to "%{_ab}%"
+					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
+					reply with "**WORK** What is `%{_a}%x - %{_b}%` if `x = %{_x}%`?"
+				wait 20 seconds
+				if {workjob::%discord id of event-user%::current} = "Janitor":
+					delete {workanswer::%discord id of event-user%::*}
+					set {_pay} to 100*({workjob::%discord id of event-user%::bonus}+1)
+					add {_pay} to {money::%discord id of event-user%}
+					reply with "**BOSS** Disgusting job, `%event-user%` you didn't even try. Here's half of your pay, `$%{_pay}%`, I don't want to see this again."
+				if {workjob::%discord id of event-user%::current} = "Karen":
+					delete {workanswer::%discord id of event-user%::*}
+					set {_pay} to 150*({workjob::%discord id of event-user%::bonus}+1)
+					add {_pay} to {money::%discord id of event-user%}
+					reply with "**BOSS** Disgusting job, `%event-user%` you didn't even try. Here's half of your pay, `$%{_pay}%`, I don't want to see this again."
+				if {workjob::%discord id of event-user%::current} = "Soldier":
+					delete {workanswer::%discord id of event-user%::*}
+					set {_pay} to 200*({workjob::%discord id of event-user%::bonus}+1)
+					add {_pay} to {money::%discord id of event-user%}
+					reply with "**BOSS** Disgusting job, `%event-user%` you didn't even try. Here's half of your pay, `$%{_pay}%`, I don't want to see this again."
+			else:
+				if {workjob::%discord id of event-user%::current} = "Janitor":
+					set {_words::*} to "bleach", "mop", "plunger", "slippery", "toliet", "wipes", "custodian", and "janitor"
+					set {_a} to random element out of {_words::*}
+					set {_b} to random element out of {_words::*}
+					set {_c} to random element out of {_words::*}
+					set {_d} to random element out of {_words::*}
+					set {workanswer::%discord id of event-user%::a} to "%{_a}%-%{_b}%-%{_c}%-%{_d}%"
+					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
+				if {workjob::%discord id of event-user%::current} = "Karen":
+					set {_words::*} to "manager", "masks", "service", "discount", "fired", "curse", "stupid", and "demand"
+					set {_a} to random element out of {_words::*}
+					set {_b} to random element out of {_words::*}
+					set {_c} to random element out of {_words::*}
+					set {_d} to random element out of {_words::*}
+					set {workanswer::%discord id of event-user%::a} to "%{_a}%-%{_b}%-%{_c}%-%{_d}%"
+					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
+				if {workjob::%discord id of event-user%::current} = "Soldier":
+					set {_words::*} to "rifle", "army", "national", "guard", "fire", "general", "arms", and "training"
+					set {_a} to random element out of {_words::*}
+					set {_b} to random element out of {_words::*}
+					set {_c} to random element out of {_words::*}
+					set {_d} to random element out of {_words::*}
+					set {workanswer::%discord id of event-user%::a} to "%{_a}%-%{_b}%-%{_c}%-%{_d}%"
+					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
+				reply with "**WORK** Type this into the chat: `%{workanswer::%discord id of event-user%::a}%`"
+				wait 15 seconds
+				{workanswer::%discord id of event-user%::b} is set
+				if {workjob::%discord id of event-user%::current} = "Janitor":
+					delete {workanswer::%discord id of event-user%::*}
+					set {_pay} to 100*({workjob::%discord id of event-user%::bonus}+1)
+					add {_pay} to {money::%discord id of event-user%}
+					reply with "**BOSS** Disgusting job, `%event-user%` you didn't even try. Here's half of your pay, `$%{_pay}%`, I don't want to see this again."
+				if {workjob::%discord id of event-user%::current} = "Karen":
+					delete {workanswer::%discord id of event-user%::*}
+					set {_pay} to 150*({workjob::%discord id of event-user%::bonus}+1)
+					add {_pay} to {money::%discord id of event-user%}
+					reply with "**BOSS** Disgusting job, `%event-user%` you didn't even try. Here's half of your pay, `$%{_pay}%`, I don't want to see this again."
+				if {workjob::%discord id of event-user%::current} = "Soldier":
+					delete {workanswer::%discord id of event-user%::*}
+					set {_pay} to 200*({workjob::%discord id of event-user%::bonus}+1)
+					add {_pay} to {money::%discord id of event-user%}
+					reply with "**BOSS** Disgusting job, `%event-user%` you didn't even try. Here's half of your pay, `$%{_pay}%`, I don't want to see this again."
