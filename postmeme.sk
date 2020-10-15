@@ -34,7 +34,7 @@ on guild message receive:
 						set {_reward} to random integer between 35 and 85
 						set {_gems} to random integer between 55 and 95
 						add {_gems} to {gems::%discord id of event-user%}
-						reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%** and **$%{_gems}% gems**"
+						reply with "Your meme gained **%{_views}%** views and **%round({_views}/23)%** upvotes. You gained **$%{_reward}%** and **%{_gems}% gems**"
 						add {_reward} to {money::%discord id of event-user%}
 						stop
 				else:	
