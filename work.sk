@@ -4,7 +4,7 @@ options:
 on guild message receive:
 	set {_msg} to "%event-message%"
 	If {workanswer::%discord id of event-user%::b} is discord id of event-channel:
-		if {_msg} = {workanswer::%discord id of event-user%::b}:
+		if {_msg} = {workanswer::%discord id of event-user%::a}:
 			delete {workanswer::%discord id of event-user%::*}
 			if {workjob::%discord id of event-user%::current} = "Janitor":
 				set {_pay} to 200*({workjob::%discord id of event-user%::bonus}+1)
@@ -13,7 +13,17 @@ on guild message receive:
 			if {workjob::%discord id of event-user%::current} = "Soldier":
 				set {_pay} to 400*({workjob::%discord id of event-user%::bonus}+1)
 			add {_pay} to {money::%discord id of event-user%}
+			add 1 to {worktimes::%discord id of event-user%}
 			reply with "**BOSS** Excellent work %event-user%, I have paid you `$%{_pay}%`. Continue this work and you will gain a promotion."
+			chance of 40%:
+				add 0.05 to {workjob::%discord id of event-user%::bonus}
+				if {workjob::%discord id of event-user%::current} = "Janitor":
+					set {_pay} to 200*{workjob::%discord id of event-user%::bonus}
+				if {workjob::%discord id of event-user%::current} = "Karen":
+					set {_pay} to 300*{workjob::%discord id of event-user%::bonus}
+				if {workjob::%discord id of event-user%::current} = "Soldier":
+					set {_pay} to 400*{workjob::%discord id of event-user%::bonus}
+				reply with "**BOSS** I'm giving you a promotion for your good work. (`+$%{_pay}%)`"
 		else:
 			delete {workanswer::%discord id of event-user%::*}
 			if {workjob::%discord id of event-user%::current} = "Janitor":
@@ -148,6 +158,7 @@ discord command work [<text>]:
 					set the colour of the embed to red
 					send the last created embed to event-channel with event-bot
 				stop
+			wait 1 second
 			set {lastwork.%discord id of event-user%} to now
 			chance of 50%:
 				set {_x} to random integer between 4 and 10
@@ -167,6 +178,7 @@ discord command work [<text>]:
 					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
 					reply with "**WORK** What is `%{_a}%x - %{_b}%` if `x = %{_x}%`?"
 				wait 20 seconds
+				{workanswer::%discord id of event-user%::b} is set
 				if {workjob::%discord id of event-user%::current} = "Janitor":
 					delete {workanswer::%discord id of event-user%::*}
 					set {_pay} to 100*({workjob::%discord id of event-user%::bonus}+1)
