@@ -14,6 +14,7 @@ on guild message receive:
 				set {_pay} to 400*({workjob::%discord id of event-user%::bonus}+1)
 			add {_pay} to {money::%discord id of event-user%}
 			add 1 to {worktimes::%discord id of event-user%}
+			add 1 to {worktimes24h.times.%discord id of event-user%}
 			reply with "**BOSS** Excellent work %event-user%, I have paid you `$%{_pay}%`. Continue this work and you will gain a promotion."
 			chance of 40%:
 				add 0.05 to {workjob::%discord id of event-user%::bonus}
@@ -24,17 +25,6 @@ on guild message receive:
 				if {workjob::%discord id of event-user%::current} = "Soldier":
 					set {_pay} to 400*{workjob::%discord id of event-user%::bonus}
 				reply with "**BOSS** I'm giving you a promotion for your good work. (`+$%{_pay}%)`"
-		else:
-			delete {workanswer::%discord id of event-user%::*}
-			if {workjob::%discord id of event-user%::current} = "Janitor":
-				set {_pay} to 150*({workjob::%discord id of event-user%::bonus}+1)
-			if {workjob::%discord id of event-user%::current} = "Karen":
-				set {_pay} to 225*({workjob::%discord id of event-user%::bonus}+1)
-			if {workjob::%discord id of event-user%::current} = "Soldier":
-				set {_pay} to 300*({workjob::%discord id of event-user%::bonus}+1)
-			add {_pay} to {money::%discord id of event-user%}
-			reply with "**BOSS** Adequate work %event-user%, I am disappointed in you. Heres `$%{_pay}%`, Do not mess up again."
-
 
 
 discord command work [<text>]:
@@ -56,7 +46,7 @@ discord command work [<text>]:
 					{worktimes::%discord id of event-user%} >= 20
 					add field named "`/work Soldier`" with value "`$400`/hour, Required times per 24h: `1`" to embed
 					remove 1 from {_b}
-				set the footer of embed to footer with text "Work 0 times - %{_b}% locked"
+				set the footer of embed to footer with text "Work %{worktimes::%discord id of event-user%}% times - %{_b}% locked"
 				set the colour of the embed to yellow
 				send the last created embed to event-channel with event-bot
 			stop
@@ -139,6 +129,7 @@ discord command work [<text>]:
 				stop
 			{levels::%discord id of event-user%::current} >= 45
 			{worktimes::%discord id of event-user%} >= 20
+			set {worktimes24h.now.%discord id of event-user%} to now
 			set {workjob::%discord id of event-user%::current} to "Soldier"
 			set {workjob::%discord id of event-user%::bonus} to 0 
 			reply with "**Congratulations** on finishing your training, `Soldier`. You'll need to work aleast `1` time within every 24h. If you fail, you will get fired. You succeed, your boss might give a small percentage raise."
@@ -158,8 +149,17 @@ discord command work [<text>]:
 					set the colour of the embed to red
 					send the last created embed to event-channel with event-bot
 				stop
-			wait 1 second
-			set {lastwork.%discord id of event-user%} to now
+			wait 10 ticks
+			{workjob::%discord id of event-user%::current} = "soldier":
+				set {_c} to difference between {worktimes24h.now.%discord id of event-user%} and now
+				if {_c} is more than 24 hour:
+					{worktimes24h.times.%discord id of event-user%} < 1:
+						set {worktimes24h.now.%discord id of event-user%} to now
+						set {worktimes24h.times.%discord id of event-user%} to 0
+					else:
+						reply with "**BOSS** You hadn't been in work lately. You're fired."
+						delete {workjob::%discord id of event-user%::current}
+						set {workwait::%discord id of event-user%} to now
 			chance of 50%:
 				set {_x} to random integer between 4 and 10
 				set {_a} to random integer between 3 and 6
