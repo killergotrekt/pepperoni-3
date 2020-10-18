@@ -1,8 +1,49 @@
 options:
-	eventcctv: 764198870003089440
+	eventcctv: xxx
 	bot: Pepperoni SE
 
 every minute:
+	add 5 to {time.min}
+	if {time.min} = 60:
+		set {time.min} to 0
+		if {time.hour} = 12:
+			if {time.hoursystem} = "am":
+				set {time.hoursystem} to "pm"
+			else:
+				set {time.hoursystem} to "am"
+		add 1 to {time.hour}
+		if {time.hour} = 13:
+			set {time.hour} to 1
+		if {time.hour} = 12:
+			{time.hoursystem} = "am"
+			add 1 to {time.day}
+			{time.day} = 31
+			set {time.day} to 1
+			if {time.stage} = "Late Summer":
+				set {time.stage} to "Early Winter"
+				add 1 to {time.year}
+			if {time.stage} = "Mid Fall":
+				set {time.stage} to "Late Fall"
+			if {time.stage} = "Early Fall":
+				set {time.stage} to "Mid Fall"
+			if {time.stage} = "Late Summer":
+				set {time.stage} to "Early Fall"
+			if {time.stage} = "Mid Summer":
+				set {time.stage} to "Late Summer"
+			if {time.stage} = "Early Summer":
+				set {time.stage} to "Mid Summer"
+			if {time.stage} = "Late Spring":
+				set {time.stage} to "Early Summer"
+			if {time.stage} = "Mid Spring":
+				set {time.stage} to "Late Spring"
+			if {time.stage} = "Early Spring":
+				set {time.stage} to "Mid Spring"
+			if {time.stage} = "Late Winter":
+				set {time.stage} to "Early Spring"
+			if {time.stage} = "Mid Winter":
+				set {time.stage} to "Late Winter"
+			if {time.stage} = "Early Winter":
+				set {time.stage} to "Mid Winter"
 	{event.active.doublexp} isn't set:
 		remove 1 from {event.timer.doublexp}
 		if {event.timer.doublexp} is 0:
@@ -36,6 +77,28 @@ every minute:
 		if {event.active.meme} = 0:
 			delete {event.active.meme}
 			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+
+discord command schedule [<text>]:
+	aliases: scheduler, sched, sch
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		if {time.year} isn't set:
+			set {time.year} to 0
+			set {time.stage} to "Early Winter"
+			set {time.day} to 1
+			set {time.hour} to 12
+			set {time.min} to 0
+			set {time.hoursystem} to "am"
+		create embed:
+			set the title of embed to title with text "Schedule"
+			if {time.min} = 0 OR 5:
+				set the description of embed to "**Year**: %{time.year}%%nl%**Date:** %{time.stage}%, Day %{time.day}%%nl%**Time**: %{time.hour}%%{time.hoursystem}%"
+			else:
+				set the description of embed to "**Year**: %{time.year}%%nl%**Date:** %{time.stage}%, Day %{time.day}%%nl%**Time**: %{time.hour}%:%{time.min}%%{time.hoursystem}%"
+			add field named "Upcoming Event" with value "None" to embed
+			send the last created embed to event-channel with event-bot
+
 
 
 discord command event [<text>]:
