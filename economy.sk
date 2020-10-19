@@ -1,5 +1,5 @@
 options:
-	economycctv: xxx
+	economycctv: 757727016672821268
 	bot: Pepperoni SE
 
 discord command /bal [<member>]:
@@ -140,7 +140,7 @@ discord command /daily:
 			if {_D} is more than 2 days:
 				set {lastdailyly.%discord id of event-user%} to now
 				set {streakdailyly.%discord id of event-user%} to 1
-				set {dailylymoney.%discord id of event-user%} to 300
+				set {dailylymoney.%discord id of event-user%} to 1500
 				add {dailylymoney.%discord id of event-user%} to {money::%discord id of event-user%}
 				create embed:
 					set the title of embed to title with text "Gained Daily Cash! (Streak broken)"
@@ -297,70 +297,7 @@ discord command /beg [<Text>]:
 					set {_gems} to random integer between 30 and 50
 					add {_gems} to {gems::%discord id of event-user%}
 					reply with "**%{_person}%** has given you **%{_gems}% gems!**"
-					
-discord command rob [<member>]:
-	aliases: steal
-	bots: {@bot}
-	prefixes: /
-	trigger:
-		set {_lastrob} to difference between {lastrob.%discord id of event-user%} and now
-		if {_lastrob} is less than 1 minute:
-			create embed:
-				set the title of embed to title with text "Cooldown"
-				set the description of embed to "**Police Officer**: i'm watching you sus kid"
-				set the colour of the embed to red
-				set the footer of embed to footer with text "Avaliable in %difference between 1 minutes and {_lastrob}%"
-				send the last created embed to event-channel with event-bot
-			stop
-		arg-1 isn't set:
-			reply with "`/rob <someone>` u stupid or wut"
-			stop
-		{difficulty::%discord id of event-user%} = "Pacifist":
-			reply with "You have noob mode as your difficulty. you need to set it aleast `normal` before continuing."
-			stop
-		discord id of arg-1 = discord id of event-user:
-			reply with "You are an extremely retarded child. You **cannot rob yourself**. Now let's repeat this again. `/rob <someone>`, and yourself isn't robbable."
-			stop
-		{money::%discord id of event-user%} < 150:
-			reply with "You must have more than **$150** to rob someone."
-			stop
-		else:
-			{money::%discord id of event-user%} < 150:
-				reply with "Your victim has less than **$150** in their purse."
-				stop
-			{difficulty::%discord id of arg-1%} = "Pacifist":
-				reply with "Your victim has noob mode as their difficulty."
-				stop
-
-			else:
-				set {lastrob.%discord id of event-user%} to now
-				chance of 32.5%:
-					set {_c} to {money::%discord id of event-user%}/15
-					remove {_c} from {money::%discord id of event-user%}
-					reply with "**Police Officer**: Caught ya! Here's a fine of **$%{_c}%**!"
-					chance of 30%:
-						set {_d} to {money::%discord id of event-user%}/18.5
-						remove {_d} from {money::%discord id of event-user%}
-						add {_d} to {money::%discord id of arg-1%}
-						reply with "**%arg-1%**: Hey! I saw that! Gimme **$%{_c}%**!"
-				else:
-					chance of 22%:
-						set {_b} to round({money::%discord id of arg-1%}/4)
-						remove {_b} from {money::%discord id of arg%}
-						add {_b} to {money::%discord id of event-user%}
-						reply with "You stole a big chunk of **%arg-1%**'s money in their purse, which is **$%format2({_b})%**"
-						stop
-					chance of 66%:
-						set {_b} to round({money::%discord id of arg-1%}/8)
-						remove {_b} from {money::%discord id of arg%}
-						add {_b} to {money::%discord id of event-user%}
-						reply with "You stole **$%format2({_b})%** from **%arg-1%**'s purse."
-					else:
-						set {_d} to {money::%discord id of event-user%}/33
-						remove {_d} from {money::%discord id of event-user%}
-						add {_d} to {money::%discord id of arg-1%}
-						reply with "**%arg-1%**: What are you doing snooping in my purse?!? Give me **$%{_d}%** or else ill report you to the police!!!"
-						
+											
 discord command level [<text>]:
 	aliases: levels
 	bots: {@bot}
