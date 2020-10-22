@@ -160,6 +160,7 @@ discord command work [<text>]:
 						reply with "**BOSS** You hadn't been in work lately. You're fired."
 						delete {workjob::%discord id of event-user%::current}
 						set {workwait::%discord id of event-user%} to now
+			set {lastwork.%discord id of event-user%} to now
 			chance of 50%:
 				set {_x} to random integer between 4 and 10
 				set {_a} to random integer between 3 and 6
