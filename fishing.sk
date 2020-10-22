@@ -23,69 +23,100 @@ on guild message receive:
 					reply with "The `Supreme Fish` decided to eat up your fishingrod whole because 'it was hungry'."
 					remove "fishingrod" from {inventory::%discord id of event-user%::*}
 					stop
+				chance of 11%:
+					reply with "The *`Ultimate Fish`* decided to eat up your fishingrod whole and beat the shit outta you. You died!"
+					remove "fishingrod" from {inventory::%discord id of event-user%::*}
+					set {money::%discord id of event-user%} to {money::%discord id of event-user%} /2
+					stop
 				else:
+					set {_fishinglvl} to floor({levels::%discord id of event-user%::current}/3)
+					if {_fishinglvl} > 50:
+						set {_fishinglvl} to 50
+					set {_multi} to 0.009*{_fishinglvl}
 					{event.active.fishing} isn't set:
 						set {_luck} to random integer between 1 and 100
 						if {_luck} is less than 50:
 							set {_c} to random integer between 5 and 10
-							add {_c} to {fishbag::%discord id of event-user%::common}
-							reply with "You fished up **%{_c}%x** :fish: Common Fish!"
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::common}
+							reply with "You fished up **%{_d}%x** :fish: Common Fish!"
 							stop
 						if {_luck} is less than 85:
 							set {_c} to random integer between 4 and 7
-							add {_c} to {fishbag::%discord id of event-user%::uncommon}
-							reply with "You fished up **%{_c}%x** :tropical_fish: Uncommon Fish!"
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::uncommon}
+							reply with "You fished up **%{_d}%x** :tropical_fish: Uncommon Fish!"
 							stop
 						if {_luck} is less than 95:
 							set {_c} to random integer between 3 and 5
-							add {_c} to {fishbag::%discord id of event-user%::rare}
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::rare}
 							reply with "You fished up **%{_c}%x** :blowfish: Rare Fish!"
 							stop
-						if {_luck} is less than 101:
+						if {_luck} is less than 100:
 							set {_c} to random integer between 1 and 3
-							add {_c} to {fishbag::%discord id of event-user%::supreme}
-							reply with "You fished up **%{_c}%x** :shark: `Supreme Fish`!"
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::supreme}
+							reply with "You fished up **%{_d}%x** :shark: `Supreme Fish`!"
+							stop
+						if {_luck} is 100:
+							set {_c} to random integer between 1 and 2
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::ultimate}
+							reply with "You fished up **%{_d}%x** :whale: *`Ultimate Fish`*!"
 							stop
 					else:
+						set {_multi} to (0.009*{_fishinglvl})*2
 						set {_luck} to random integer between 1 and 100
-						if {_luck} is less than 20:
+						if {_luck} is less than 15:
 							set {_c} to random integer between 5 and 10
-							add {_c} to {fishbag::%discord id of event-user%::common}
-							reply with "You fished up **%{_c}%x** :fish: Common Fish!"
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::common}
+							reply with "You fished up **%{_d}%x** :fish: Common Fish!"
 							stop
-						if {_luck} is less than 50:
+						if {_luck} is less than 45:
 							set {_c} to random integer between 4 and 7
-							add {_c} to {fishbag::%discord id of event-user%::uncommon}
-							reply with "You fished up **%{_c}%x** :tropical_fish: Uncommon Fish!"
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::uncommon}
+							reply with "You fished up **%{_d}%x** :tropical_fish: Uncommon Fish!"
 							stop
-						if {_luck} is less than 85:
+						if {_luck} is less than 80:
 							set {_c} to random integer between 3 and 5
-							add {_c} to {fishbag::%discord id of event-user%::rare}
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::rare}
 							reply with "You fished up **%{_c}%x** :blowfish: Rare Fish!"
 							stop
-						if {_luck} is less than 101:
+						if {_luck} is less than 98:
 							set {_c} to random integer between 1 and 3
-							add {_c} to {fishbag::%discord id of event-user%::supreme}
-							reply with "You fished up **%{_c}%x** :shark: `Supreme Fish`!"
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::supreme}
+							reply with "You fished up **%{_d}%x** :shark: `Supreme Fish`!"
+							stop
+						else:
+							set {_c} to random integer between 1 and 2
+							set {_d} to round({_multi}*{_c})
+							add {_d} to {fishbag::%discord id of event-user%::ultimate}
+							reply with "You fished up **%{_d}%x** :whale: *`Ultimate Fish`*!"
 							stop
 		if {_msg} = "bag":
-			set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}		
+			set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}+{fishbag::%discord id of event-user%::ultimate}		
 			create embed:
 				set the title of embed to title with text "%event-user%'s fishing bag (%{_fishes}%/%{fishbag::%discord id of event-user%::max}%)"
-				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%%nl%:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%%nl%:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%%nl%:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%"
+				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%%nl%:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%%nl%:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%%nl%:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%%nl%:whale: ***`Ultimate Fishes`***: %{fishbag::%discord id of event-user%::ultimate}%"
 				set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
 				set the colour of the embed to Cyan
 				send the last created embed to event-channel with event-bot
 		if {_msg} = "sell":
-			set {_cf} to {fishbag::%discord id of event-user%::common}*20
-			set {_uf} to {fishbag::%discord id of event-user%::uncommon}*30
-			set {_rf} to {fishbag::%discord id of event-user%::rare}*50
-			set {_sf} to {fishbag::%discord id of event-user%::supreme}*100
-			set {_profit} to {_cf}+{_uf}+{_rf}+{_sf}
+			set {_cf} to {fishbag::%discord id of event-user%::common}*25
+			set {_uf} to {fishbag::%discord id of event-user%::uncommon}*45
+			set {_rf} to {fishbag::%discord id of event-user%::rare}*75
+			set {_sf} to {fishbag::%discord id of event-user%::supreme}*200
+			set {_lf} to {fishbag::%discord id of event-user%::ultimate}*500
+			set {_profit} to {_cf}+{_uf}+{_rf}+{_sf}+{_lf}
 			add {_profit} to {money::%discord id of event-user%}
 			create embed:
 				set the title of embed to title with text "Successful sale"
-				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%x @ `$20` each, **$%{_cf}%**%nl%:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%x @ `$30` each, **$%{_uf}%**%nl%:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%x @ `$50` each, **$%{_rf}%**%nl%:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%x @ `$100` each, **$%{_sf}%**%nl%**Total**: `$%{_profit}%`"
+				set the description of embed to ":fish: **Common Fishes**: %{fishbag::%discord id of event-user%::common}%x @ `$25` each, **$%{_cf}%**%nl%:tropical_fish: **Uncommon Fishes**: %{fishbag::%discord id of event-user%::uncommon}%x @ `$45` each, **$%{_uf}%**%nl%:blowfish: **Rare Fishes**: %{fishbag::%discord id of event-user%::rare}%x @ `$75` each, **$%{_rf}%**%nl%:shark: **`Supreme Fishes`**: %{fishbag::%discord id of event-user%::supreme}%x @ `$200` each, **$%{_sf}%**%nl%:whale: ***`Ultimate Fishes`***: %{fishbag::%discord id of event-user%::ultimate}%x @ `$500` each, **$%{_lf}%**%nl%**Total**: `$%{_profit}%`"
 				set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
 				set the colour of the embed to green
 				send the last created embed to event-channel with event-bot
@@ -93,6 +124,7 @@ on guild message receive:
 			set {fishbag::%discord id of event-user%::uncommon} to 0
 			set {fishbag::%discord id of event-user%::rare} to 0
 			set {fishbag::%discord id of event-user%::supreme} to 0
+			set {fishbag::%discord id of event-user%::ultimate} to 0
 
 
 
@@ -119,7 +151,9 @@ discord command fish [<text>]:
 			set {fishbag::%discord id of event-user%::rare} to 0
 			set {fishbag::%discord id of event-user%::supreme} to 0
 			set {fishbag::%discord id of event-user%::max} to 20
-		set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}		
+		if {fishbag::%discord id of event-user%::ultimate} isn't set:
+			set {fishbag::%discord id of event-user%::ultimate} to 0
+		set {_fishes} to {fishbag::%discord id of event-user%::common}+{fishbag::%discord id of event-user%::uncommon}+{fishbag::%discord id of event-user%::rare}+{fishbag::%discord id of event-user%::supreme}+{fishbag::%discord id of event-user%::ultimate}		
 		set {fishinggui.%discord id of event-user%} to discord id of event-channel
 		create embed:
 			set the title of embed to title with text "Fishing Game (%event-user%)"
