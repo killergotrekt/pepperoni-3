@@ -1,5 +1,5 @@
 options:
-	eventcctv: x
+	eventcctv: 764198870003089440
 	bot: Pepperoni SE
 
 every minute:
@@ -19,7 +19,7 @@ every minute:
 		if {event.timer.fishing} is 0:
 			set {event.timer.fishing} to 2100
 			set {event.active.fishing} to 240
-			send "**FISHING SEASON** This event has started! Your chances of catching rare & supreme fishes has been increased." to channel with id "{@eventcctv}" with "{@bot}"
+			send "**FISHING SEASON** This event has started! Your chances of catching supreme & ultimate fishes has been increased. Your fishing skill bonus have been doubled too." to channel with id "{@eventcctv}" with "{@bot}"
 	else:
 		remove 1 from {event.active.fishing}
 		if {event.active.fishing} = 0:
@@ -54,9 +54,9 @@ discord command event [<text>]:
 			else:
 				add field named "[:warning:] :magic_wand: `Double XP`" with value "`Description`: *Doubles XP for 1 hour (2x). Premium members get quadruple (4x) instead.*%nl%`Ends`: **%{event.active.doublexp}% minutes**" to embed
 			if {event.active.fishing} is not set:
-				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching rare/supreme fishes significantly.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
+				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is also doubled.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
 			else:
-				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching rare/supreme fishes significantly.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
+				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is also doubled.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
 			if {event.active.meme} is not set:
 				add field named ":computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Starts in`: **%{event.timer.meme}% minutes**" to embed
 			else:
