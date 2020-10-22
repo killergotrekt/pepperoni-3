@@ -1,0 +1,34 @@
+options:
+	bot: Pepperoni SE
+
+discord command /cure [<number>]:
+	bots: {@bot}
+	trigger:
+		if {cure.open.funding} isn't set:
+			set {cure.open.funding} to 0
+		if {cure.open.funding} >= 100000:
+			create embed:
+				set the title of embed to title with text "The Cure Update (Soon)"
+				set the description of embed to "The cure update is coming soon. However, the lab requires funding before it can continue. It requires `$100,000`, and you can donate any amount. Anyone can chip in and help finish the goal."
+				add field named "Building: The Lab is opening soon." with value "No more additional opening funding required!" to embed
+				add field named "Perks:" with value "- Help create a cure!%nl%- Extra Events%nl%- New collection%nl%- Knowledge Points%nl%- Permanent Perks%nl%- ???" to embed
+				set the footer of embed to footer with text "%{cure.open.funding}/100000*100%%% funding complete"
+				set the colour of the embed to Cyan
+				send the last created embed to event-channel with event-bot
+			stop
+		if arg-1 isn't set:
+			create embed:
+				set the title of embed to title with text "The Cure Update (Soon)"
+				set the description of embed to "The cure update is coming soon. However, the lab requires funding before it can continue. It requires `$100,000`, and you can donate any amount. Anyone can chip in and help finish the goal."
+				add field named "Funding: `$%{cure.open.funding}%/$100000`" with value "`/cure <amount>` to help fund the lab project." to embed
+				add field named "Perks:" with value "- Help create a cure!%nl%- Extra Events%nl%- New collection%nl%- Knowledge Points%nl%- Permanent Perks%nl%- ???" to embed
+				set the footer of embed to footer with text "%{cure.open.funding}/100000*100%%% funding complete"
+				set the colour of the embed to Cyan
+				send the last created embed to event-channel with event-bot
+		else:
+			if {money::%discord id of event-user%} >= arg-1:
+				remove arg-1 from {money::%discord id of event-user%}
+				add arg-1 to {cure.open.funding}
+				reply with "Funded **$%arg-1%** to cure lab."
+			else:
+				reply with "OOf. You can donate up to **$%{money::%discord id of event-user%}%**, sorry."
