@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.6.4
-	build: thefishingupdate_1.0
-	maincctv: x
+	version: 2.6.5
+	build: thefishingupdate_1.1
+	maincctv: 123
 
 on skript load:
-	login to "x" with name "{@bot}"
+	login to "123" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
@@ -29,7 +29,10 @@ discord command /difficulty [<text>]:
 			create embed:
 				set the title of embed to title with text "Difficulty"
 				set the description of embed to "Difficulty is you stepping up to the challenge to Pepperoni for a new experience. Higher risk = higher reward. Are you up to the challenge?%nl%`/difficulty <choose>` to change. Cooldown 14 hours."
-				add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)" to embed
+				if {levels::%discord id of event-user%::current} >= 125:
+					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)%nl%:warning: **Cost**: 250 gems per day. Suscription canceled if 1. not enough gems, 2. switching to normal or other." to embed
+				else:
+					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)" to embed
 				add field named "`Normal` (default)" with value "> Robbed (you being victim) Rate: Default%nL%> Rob (you being robber) Rate: Default%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 50%% getting from winnings from `/bet` (default)" to embed
 				set the footer of embed to footer with text "You selected: %{difficulty::%discord id of event-user%}%"
 				send the last created embed to event-channel with event-bot
@@ -49,9 +52,21 @@ discord command /difficulty [<text>]:
 				set the footer of embed to footer with text "Avaliable in %difference between 14 hours and {_lastswa}%"
 				send the last created embed to event-channel with event-bot
 		else:
+			if arg-1 = "pacifist":
+				if {gems::%discord id of event-user%} >= 250:
+					remove 250 from {gems::%discord id of event-user%}
+					set {protectioncash::%discord id of event-user%::now} to now
+					reply with "Swapped Difficulty to `%arg-1%`!"
+				else:
+					create embed:
+						set the title of embed to title with text "Not enough Gems!"
+						set the colour of the embed to red
+						set the footer of embed to footer with text "250 required, %250-{gems::%discord id of event-user%}% missing"
+						send the last created embed to event-channel with event-bot
 			set {lastdiffswap.%discord id of event-user%} to now
 			set {difficulty::%discord id of event-user%} to arg
 			reply with "Swapped Difficulty to `%arg-1%`!"
+			delete {protectioncash::%discord id of event-user%::*}
 
 
 
@@ -351,3 +366,29 @@ on vixio command:
 		{levels::%discord id of event-user%::current} = 500:
 			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
 			add 1000 to {Gems::%discord id of event-user%}
+	if {levels::%discord id of event-user%::current} >= 125:
+		{protectioncash::%discord id of event-user%::now} isn't set:
+			{Difficulty::%discord id of event-user%} = "Pacifist"
+			set {Difficulty::%discord id of event-user%} to "normal"
+			create embed:
+				set the title of embed to title with text ":warning: Pacifist no longer avaliable"
+				set the description of embed to "You are level %{levels::%discord id of event-user%::current}%. Pacifist has been turned off."
+				set the colour of the embed to orange
+				set the footer of embed to footer with text "purchase 'protection money' in /difficulty"
+				send the last created embed to event-channel with event-bot
+		else:
+			set {_c} to difference between {protectioncash::%discord id of event-user%::now} and now
+			if {_c} is more than 1 day:
+				if {gems::%discord id of event-user%} >= 250:
+					remove 250 from {gems::%discord id of event-user%}
+					set {protectioncash::%discord id of event-user%::now} to now
+				else:
+					delete {protectioncash::%discord id of event-user%::*}
+					set {Difficulty::%discord id of event-user%} to "normal"
+					create embed:
+						set the title of embed to title with text ":warning: Pacifist disabled"
+						set the description of embed to "Not enough gems to renew suscription."
+						set the colour of the embed to orange
+						set the footer of embed to footer with text "%250-{gems::%discord id of event-user%}% missing"
+						send the last created embed to event-channel with event-bot
+
