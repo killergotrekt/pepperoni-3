@@ -32,69 +32,69 @@ on guild message receive:
 					set {_fishinglvl} to floor({levels::%discord id of event-user%::current}/3)
 					if {_fishinglvl} > 50:
 						set {_fishinglvl} to 50
-					set {_multi} to 0.009*{_fishinglvl}
+					set {_multi} to 0.0012*{_fishinglvl}
 					{event.active.fishing} isn't set:
 						set {_luck} to random integer between 1 and 100
 						if {_luck} is less than 50:
 							set {_c} to random integer between 5 and 10
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::common}
 							reply with "You fished up **%{_d}%x** :fish: Common Fish!"
 							stop
 						if {_luck} is less than 85:
 							set {_c} to random integer between 4 and 7
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::uncommon}
 							reply with "You fished up **%{_d}%x** :tropical_fish: Uncommon Fish!"
 							stop
 						if {_luck} is less than 95:
 							set {_c} to random integer between 3 and 5
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::rare}
 							reply with "You fished up **%{_c}%x** :blowfish: Rare Fish!"
 							stop
 						if {_luck} is less than 100:
 							set {_c} to random integer between 1 and 3
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::supreme}
 							reply with "You fished up **%{_d}%x** :shark: `Supreme Fish`!"
 							stop
 						if {_luck} is 100:
 							set {_c} to random integer between 1 and 2
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::ultimate}
 							reply with "You fished up **%{_d}%x** :whale: *`Ultimate Fish`*!"
 							stop
 					else:
-						set {_multi} to (0.009*{_fishinglvl})*2
+						set {_multi} to (0.0012*{_fishinglvl})*2
 						set {_luck} to random integer between 1 and 100
 						if {_luck} is less than 15:
 							set {_c} to random integer between 5 and 10
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::common}
 							reply with "You fished up **%{_d}%x** :fish: Common Fish!"
 							stop
 						if {_luck} is less than 45:
 							set {_c} to random integer between 4 and 7
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::uncommon}
 							reply with "You fished up **%{_d}%x** :tropical_fish: Uncommon Fish!"
 							stop
 						if {_luck} is less than 80:
 							set {_c} to random integer between 3 and 5
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::rare}
 							reply with "You fished up **%{_c}%x** :blowfish: Rare Fish!"
 							stop
 						if {_luck} is less than 98:
 							set {_c} to random integer between 1 and 3
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::supreme}
 							reply with "You fished up **%{_d}%x** :shark: `Supreme Fish`!"
 							stop
 						else:
 							set {_c} to random integer between 1 and 2
-							set {_d} to round({_multi}*{_c})
+							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::ultimate}
 							reply with "You fished up **%{_d}%x** :whale: *`Ultimate Fish`*!"
 							stop
