@@ -1,5 +1,5 @@
 options:
-	economycctv: x
+	economycctv: 123
 	bot: Pepperoni SE
 
 discord command /bal [<member>]:
@@ -324,9 +324,9 @@ discord command level [<text>]:
 			set the description of embed to "**Progress to level up**: %{levels::%discord id of event-user%::xp}/{_req}*100%%%%nl%Each level-up grants you a few bucks, and a random amount of bank storage, ($20-$45)"
 			add field named "Banker Skill %{_bankerlvl}%/50" with value "Increase your bank capacity by **%{_bankerlvl}*0.002*100%%%** when leveling up." to embed
 			{event.active.fishing} isn't set:
-				add field named "Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.009*100%%%**." to embed
+				add field named "Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.012*100%%%**." to embed
 			else:
-				add field named "**`FISHING EVENT ACTIVE`** Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.009*2*100%%%**." to embed
+				add field named "**`FISHING EVENT ACTIVE`** Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.012*2*100%%%**." to embed
 			set the footer of embed to footer with text "Level XP: %{levels::%discord id of event-user%::xp}%/%{_req}%"
 			send the last created embed to event-channel with event-bot
 
