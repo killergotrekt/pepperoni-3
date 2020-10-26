@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.6.5
-	build: thefishingupdate_1.1
+	version: 2.6.6
+	build: thefishingupdate_1.2
 	maincctv: 123
 
 on skript load:
