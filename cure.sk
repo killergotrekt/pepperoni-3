@@ -26,6 +26,7 @@ discord command /cure [<number>]:
 				set the colour of the embed to Cyan
 				send the last created embed to event-channel with event-bot
 		else:
+			arg-1 > 0
 			if {money::%discord id of event-user%} >= arg-1:
 				remove arg-1 from {money::%discord id of event-user%}
 				add arg-1 to {cure.open.funding}
