@@ -1,8 +1,8 @@
 options:
 	bot: Pepperoni SE
-	version: 2.6.6
-	build: thefishingupdate_1.2
-	maincctv: 123
+	version: 2.6.7
+	build: thefishingupdate_1.3
+	maincctv: 757727071337185330
 
 on skript load:
 	login to "123" with name "{@bot}"
@@ -15,8 +15,8 @@ discord command /help:
 		create embed:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
-			add field named "Economics" with value "`/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
-			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/boost`, `/levels`, `/progress`" to embed
+			add field named "Economics" with value "`/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
+			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/levels`, `/progress`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to Cyan
 			send the last created embed to event-channel with event-bot
@@ -30,7 +30,7 @@ discord command /difficulty [<text>]:
 				set the title of embed to title with text "Difficulty"
 				set the description of embed to "Difficulty is you stepping up to the challenge to Pepperoni for a new experience. Higher risk = higher reward. Are you up to the challenge?%nl%`/difficulty <choose>` to change. Cooldown 14 hours."
 				if {levels::%discord id of event-user%::current} >= 125:
-					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)%nl%:warning: **Cost**: 250 gems per day. Suscription canceled if 1. not enough gems, 2. switching to normal or other." to embed
+					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)%nl%:warning: **Cost**: 100 gems per day. Suscription canceled if 1. not enough gems, 2. switching to normal or other." to embed
 				else:
 					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)" to embed
 				add field named "`Normal` (default)" with value "> Robbed (you being victim) Rate: Default%nL%> Rob (you being robber) Rate: Default%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 50%% getting from winnings from `/bet` (default)" to embed
@@ -53,8 +53,8 @@ discord command /difficulty [<text>]:
 				send the last created embed to event-channel with event-bot
 		else:
 			if arg-1 = "pacifist":
-				if {gems::%discord id of event-user%} >= 250:
-					remove 250 from {gems::%discord id of event-user%}
+				if {gems::%discord id of event-user%} >= 100:
+					remove 100 from {gems::%discord id of event-user%}
 					set {protectioncash::%discord id of event-user%::now} to now
 					reply with "Swapped Difficulty to `%arg-1%`!"
 				else:
@@ -66,7 +66,8 @@ discord command /difficulty [<text>]:
 			set {lastdiffswap.%discord id of event-user%} to now
 			set {difficulty::%discord id of event-user%} to arg
 			reply with "Swapped Difficulty to `%arg-1%`!"
-			delete {protectioncash::%discord id of event-user%::*}
+			if {difficulty::%discord id of event-user%} is not "Pacifist":
+				delete {protectioncash::%discord id of event-user%::*}
 
 
 
@@ -379,8 +380,8 @@ on vixio command:
 		else:
 			set {_c} to difference between {protectioncash::%discord id of event-user%::now} and now
 			if {_c} is more than 1 day:
-				if {gems::%discord id of event-user%} >= 250:
-					remove 250 from {gems::%discord id of event-user%}
+				if {gems::%discord id of event-user%} >= 100:
+					remove 100 from {gems::%discord id of event-user%}
 					set {protectioncash::%discord id of event-user%::now} to now
 				else:
 					delete {protectioncash::%discord id of event-user%::*}
