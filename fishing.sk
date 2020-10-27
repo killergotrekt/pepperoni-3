@@ -66,7 +66,7 @@ on guild message receive:
 							reply with "You fished up **%{_d}%x** :whale: *`Ultimate Fish`*!"
 							stop
 					else:
-						set {_multi} to (0.0012*{_fishinglvl})*2
+						set {_multi} to (0.0012*{_fishinglvl})*3
 						set {_luck} to random integer between 1 and 100
 						if {_luck} is less than 15:
 							set {_c} to random integer between 5 and 10
