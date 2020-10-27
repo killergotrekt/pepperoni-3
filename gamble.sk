@@ -1,8 +1,83 @@
 options:
 	bot: Pepperoni SE
 
-discord command bet [<text>]:
+discord command /betinfo:
 	bots: {@bot}
+	trigger:
+		create embed:
+			set the title of embed to title with text "`{@bot}` Bet Win Rate"
+			set the colour of the embed to yellow
+			add split field named "Pacifists `(%{bet.pacifist.win}/{bet.pacifist.total}*100%%% rate)`" with value "**Total** - %{bet.pacifist.total}%%nl%**Wins** - %{bet.pacifist.win}%" to embed
+			add split field named "Normal `(%{bet.normal.win}/{bet.normal.total}*100%%% rate)`" with value "**Total** - %{bet.normal.total}%%nl%**Wins** - %{bet.normal.win}%" to embed
+			set the footer of embed to footer with text "0%% Global Win Rate"
+			send the last created embed to event-channel with event-bot
+
+
+discord command bet [<number>]:
+	bots: {@bot}
+	aliases: gamble
 	prefixes: /
 	trigger:
-		reply with "Bet is disabled."
+		arg-1 isn't set:
+			reply with "`/bet <amount>` **Amount > $300, Amount < $20k**"
+			stop
+		arg-1 is less than 300:
+			reply with "`/bet <amount>` **Amount > $300, Amount < $20k**"
+			stop
+		arg-1 is more than 20000:
+			reply with "`/bet <amount>` **Amount > $300, Amount < $20k**"
+			stop
+		{money::%discord id of event-user%} < arg-1:
+			reply with "Not enough money."
+			stop
+		set {_D} to difference between {lastbet.%discord id of event-user%} and now
+		if {_D} is less than 45 seconds:
+			cancel event
+			create embed:
+				set the title of embed to title with text "Cooldown"
+				set the description of embed to "Stop gambling, jerk. Cooldown: `%difference between 45 seconds and {_d}%`"
+				set the colour of the embed to red
+				set the footer of embed to footer with text "Chill out bro"
+				send the last created embed to event-channel with event-bot
+		else:
+			set {lastbet.%discord id of event-user%} to now
+			set {_you} to random integer between 1 and 10
+			set {_me} to random integer between 1 and 10
+			if {_you} > {_me}:
+				if {difficulty::%discord id of event-user%} = "Pacifist":
+					set {_winpercent} to 1.25
+					set {_b} to "Lost 25%% of winning due to pacifist."
+					add 1 to {bet.pacifist.win}
+					add 1 to {bet.pacifist.total}
+				if {difficulty::%discord id of event-user%} = "Normal":
+					set {_winpercent} to 1.5
+					set {_b} to "Won 50%% of your bet."
+					add 1 to {bet.normal.win}
+					add 1 to {bet.normal.total}
+				set {_winamount} to arg*{_winpercent}
+				add {_winamount} to {money::%discord id of event-user%}
+				create embed:
+					set the title of embed to title with text "%event-user%'s Win"
+					set the description of embed to "You won **$%{_winamount}%**.%nl%%nl%Current Balance: **$%{money::%discord id of event-user%}%**"
+					set the colour of the embed to green
+					add field named "%event-user%" with value "Rolled `%{_you}%`" to embed
+					add field named "{@bot}" with value "Rolled `%{_me}%`" to embed
+					set the footer of embed to footer with text "%{_b}%"
+					send the last created embed to event-channel with event-bot
+			else:
+				if {difficulty::%discord id of event-user%} = "Pacifist":
+					add 1 to {bet.pacifist.total}
+				if {difficulty::%discord id of event-user%} = "Normal":
+					add 1 to {bet.normal.total}
+				remove arg-1 from {money::%discord id of event-user%}
+				create embed:
+					set the title of embed to title with text "%event-user%'s Lost"
+					set the description of embed to "You lost **$%arg%**.%nl%%nl%Current Balance: **$%{money::%discord id of event-user%}%**"
+					set the colour of the embed to red
+					add field named "%event-user%" with value "Rolled `%{_you}%`" to embed
+					add field named "{@bot}" with value "Rolled `%{_me}%`" to embed
+					set the footer of embed to footer with text "You lost 100%% of the amount."
+					send the last created embed to event-channel with event-bot
+
+
+
