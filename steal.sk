@@ -1,0 +1,211 @@
+options:
+	bot: Pepperoni SE
+
+on guild message receive:
+	set {_msg} to "%event-message%"
+	if {heist::%discord id of event-channel%::active} is set:
+		{_msg} = "join"
+		set {%discord id of event-user%.lastbankcrime} to now
+		if {heist::%discord id of event-channel%::people} doesn't contain discord id of event-user:
+			add discord id of event-user to {heist::%discord id of event-channel%::people::*}
+			reply with "**%event-user%* has joined the heist!"
+
+
+discord command /robinfo:
+	bots: {@bot}
+	trigger:
+		create embed:
+			set the title of embed to title with text "`{@bot}` Global Rob/BankRob Info"
+			set the colour of the embed to yellow
+			add split field named "Normal (R) `(%{rob.normal.win}/{rob.normal.total}*100%%% rate)`" with value "**Total** - %{rob.normal.total}%%nl%**Wins** - %{rob.normal.win}%%nl%**Most Money Stolen** - $%{rob.normal.moneysteal}%" to embed
+			add split field named "Normal (BR) `(%{bankrob.normal.win}/{bankrob.normal.total}*100%%% rate)`" with value "**Total** - %{bankrob.normal.total}%%nl%**Wins** - %{bankrob.normal.win}%" to embed
+			send the last created embed to event-channel with event-bot
+
+discord command bankrob [<member>]:
+	aliases: heist
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		if {levels::%discord id of event-user%::current} < 75:
+			create embed:
+				set the colour of the embed to red
+				add split field named "Locked" with value "**Join Heist**: %{levels::%discord id of event-user%::current}%/10%nl%**Create Heist**: %{levels::%discord id of event-user%::current}%/75" to embed
+				send the last created embed to event-channel with event-bot
+			stop
+		if arg-1 isn't set:
+			reply with "`/bankrob <someone>`.%nl%Info: *Bank Robbing chances increases when there are more people involved with the heist. However the more robbers joining the heist, the more severe and harsher punishment you get if caught. Chances are scaled. Difficulty is not matter during this heist.*"
+			stop
+		set {_b} to difference between {%discord id of event-user%.lastbankcrime} and now
+		if {_b} is less than 5 minute:
+			create embed:
+				set the footer of embed to footer with text "Avaliable %difference between 5 minute and {_b}%"
+				set the colour of the embed to red
+				set the title of embed to title with text "Cooldown"
+				set the description of embed to "**Bank**: get the motherfuckin out."
+				send the last created embed to event-channel with event-bot
+				stop
+		set {_b} to difference between {%discord id of arg%.lastbankcrimevictim} and now
+		if {_b} is less than 6 hours:
+			create embed:
+				set the footer of embed to footer with text "Avaliable %difference between 6 hours and {_b}%"
+				set the colour of the embed to red
+				set the title of embed to title with text "Cooldown"
+				set the description of embed to "**National Guard**: get away from that!"
+				send the last created embed to event-channel with event-bot
+				stop
+		discord id of event-user = discord id of arg:
+			reply with "Cannot bankrob, victim is not you."
+			stop
+		if {difficulty::%discord id of event-user%} = "Pacifist":
+			reply with "Bankrob disabled, turn off pacifist to continue."
+			stop
+		if {difficulty::%discord id of arg%} = "Pacifist":
+			reply with "Cannot bankrob, victim must disable pacifist to continue."
+			stop
+		if {moneybank::%discord id of arg%} is less than 3000:
+			reply with "Cannot bankrob, victim's bank balance must be > **$3000**"
+			stop
+		if {moneybank::%discord id of event-user%} is less than 3000:
+			reply with "Cannot bankrob, your bank balance must be > **$3000**"
+			stop
+		if {heist::%discord id of event-channel%} is set:
+			reply with "Another Heist is going on here. Join that or wait."
+			stop
+		else:
+			set {%discord id of event-user%.lastbankcrime} to now
+			set {heist::%discord id of event-channel%::active} to true
+			add discord id of event-user to {heist::%discord id of event-channel%::people::*}
+			reply with "**%event-user%** is preparing to rob **%arg-1%**'s bank. Type `JOIN` to join heist."
+			wait 1 minute
+			set {_people} to size of {heist::%discord id of event-channel%::people::*} 
+			set {_chance} to {_people}/({_people}+1.5)*100
+			loop {_people} times:
+				set {_someone} to random element out of {heist::%discord id of event-channel%::people::*}
+				chance of {_chance}%:
+					set {_c} to {moneybank::%discord id of arg-1%}*0.25
+					remove {_c} from {moneybank::%discord id of arg-1%}
+					add {_c} to {money::%{_someone}%}
+					set {_list::*} to "escaped with the **$%{_c}%** without getting noticed.", "almost died but snatched **$%{_c}%** on his way out.", "was stopped by a soldier and beated up the soldier and and looted **$%{_c}%** and ran off.", "was shot multiple times and successfully fleed with **$%{_c}%**.", and "hacked **$%{_c}%** out of the bank."
+					set {_1} to random element out of {_list::*}
+					reply with "<@%{_someone}%> %{_1}%"
+					remove {_someone} from {heist::%discord id of event-channel%::people::*}
+				else:
+					set {_e} to {moneybank::%discord id of event-user%}*0.4
+					remove {_e} from {moneybank::%discord id of event-user%}
+					set {_list2::*} to "fell into a sewer grate and was hospitalized and fined **$%{_e}%**.", "was stopped at a checkpoint and detained for **$%{_e}%**.", "was shot and arrested and fined **%{_e}%**", "was stopped by security and fined **$%{_e}%**", and "surrendered after being threatened by the national guardsmen and dropped **$%{_e}%**."
+					set {_2} to random element out of {_list2::*}
+					reply with "<@%{_someone}%> %{_2}%"
+					remove {_someone} from {heist::%discord id of event-channel%::people::*}
+
+
+
+discord command rob [<member>]:
+	aliases: steal
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		if {levels::%discord id of event-user%::current} < 25:
+			create embed:
+				set the colour of the embed to red
+				add split field named "Locked" with value "**Reach level 25**: %{levels::%discord id of event-user%::current}%/25" to embed
+				send the last created embed to event-channel with event-bot
+			stop
+		if arg-1 isn't set:
+			reply with "`/rob <someone>`"
+			stop
+		discord id of event-user = discord id of arg:
+			reply with "Cannot rob, victim is not you."
+			stop
+		if {difficulty::%discord id of event-user%} = "Pacifist":
+			reply with "Rob disabled, turn off pacifist to continue."
+			stop
+		if {difficulty::%discord id of arg%} = "Pacifist":
+			reply with "Cannot rob, victim must disable pacifist to continue."
+			stop
+		if {money::%discord id of event-user%} >= 200:
+			if {money::%discord id of arg%} >= 200:
+				if {event.active.crime} is not set:
+					set {_b} to difference between {%discord id of event-user%.lastcrime} and now
+					if {_b} is less than 2 minute:
+						create embed:
+							set the footer of embed to footer with text "Avaliable %difference between 2 minute and {_b}%"
+							set the colour of the embed to red
+							set the title of embed to title with text "Cooldown"
+							set the description of embed to "**Police Officer**: you look sus."
+							send the last created embed to event-channel with event-bot
+							stop
+				else:
+					set {_b} to difference between {%discord id of event-user%.lastcrime} and now
+					if {_b} is less than 30 seconds:
+						create embed:
+							set the footer of embed to footer with text "Avaliable %difference between 30 seconds and {_b}%"
+							set the colour of the embed to red
+							set the title of embed to title with text "Cooldown"
+							set the description of embed to "**Police Officer**: a sus kid makes me want to arrest.."
+							send the last created embed to event-channel with event-bot
+							stop
+				set {%discord id of event-user%.lastcrime} to now
+				if {event.active.crime} is not set:
+					chance of 66.67%:
+						chance of 18.5%:
+							set {_c} to {money::%discord id of arg-1%}*0.4
+							remove {_c} from {money::%discord id of arg-1%}
+							add {_c} to {money::%discord id of event-user%}
+							reply with "You stole a big **$%{_c}%** out of **%arg-1%'s** purse."
+							stop
+						chance of 80%:
+							set {_c} to {money::%discord id of arg-1%}*0.2
+							remove {_c} from {money::%discord id of arg-1%}
+							add {_c} to {money::%discord id of event-user%}
+							reply with "You stole **$%{_c}%** from **%arg-1%.**"
+							stop
+						else:
+							set {_c} to {money::%discord id of event-user%}*0.3
+							remove {_c} from {money::%discord id of event-user%}
+							add {_c} to {money::%discord id of arg-1%}
+							reply with "**%event-user%**: What the?? Why are you snooping in my purse! Thank you for the **$%{_c}%**!"
+					else:
+						set {_fine} to {money::%discord id of event-user%}*0.4
+						remove {_fine} from {bank::%discord id of event-user%}
+						reply with "**Police Officer**: caught ya! Gimme **$%{_fine}%**!"
+						chance of 20%:
+							set {_fine} to {money::%discord id of event-user%}*0.75
+							remove {_fine} from {bank::%discord id of event-user%}
+							wait 10 ticks
+							reply with "**Police Officer**: nah, I want more money. REQUESTING BACKUP!!!"
+							wait 2 seconds
+							reply with "The police officer and his goons beat the crap outta you and executed you and looted 25%% of your purse. Also you died!"
+				else:
+					chance of 83.17%:
+						chance of 28.5%:
+							set {_c} to {money::%discord id of arg-1%}*0.45
+							remove {_c} from {money::%discord id of arg-1%}
+							add {_c} to {money::%discord id of event-user%}
+							reply with "You stole a big **$%{_c}%** out of **%arg-1%'s** purse."
+							stop
+						chance of 85%:
+							set {_c} to {money::%discord id of arg-1%}*0.35
+							remove {_c} from {money::%discord id of arg-1%}
+							add {_c} to {money::%discord id of event-user%}
+							reply with "You stole **$%{_c}%** from **%arg-1%.**"
+							stop
+						else:
+							set {_c} to {money::%discord id of event-user%}*0.3
+							remove {_c} from {money::%discord id of event-user%}
+							add {_c} to {money::%discord id of arg-1%}
+							reply with "**%event-user%**: What the?? Why are you snooping in my purse! Thank you for the **$%{_c}%**!"
+					else:
+						set {_fine} to {money::%discord id of event-user%}*0.1
+						remove {_fine} from {bank::%discord id of event-user%}
+						reply with "**Police Officer**: caught ya! Gimme **$%{_fine}%**!"
+						chance of 20%:
+							set {_fine} to {money::%discord id of event-user%}*0.15
+							remove {_fine} from {bank::%discord id of event-user%}
+							wait 10 ticks
+							reply with "**Police Officer**: nah, I want more money. REQUESTING BACKUP!!!"
+							wait 2 seconds
+							reply with "The police officer and his goons beat the crap outta you and they shot you and looted 15%% of your purse. You somehow survived!"
+			else:
+				reply with "Cannot rob, victim must have > `$200` to continue."
+		else:
+			reply with "Cannot rob, your purse must have > `$200` to continue."
