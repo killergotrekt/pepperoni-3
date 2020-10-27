@@ -36,6 +36,37 @@ every minute:
 		if {event.active.meme} = 0:
 			delete {event.active.meme}
 			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+	{event.active.meme} isn't set:
+		remove 1 from {event.timer.meme}
+		if {event.timer.meme} is 0:
+			set {event.timer.meme} to 1020
+			set {event.active.meme} to 120
+			send "**MEME TIME** This event has started! Start spamming memes onto the internet, you can now gain gems from memeing!" to channel with id "{@eventcctv}" with "{@bot}"
+	else:
+		remove 1 from {event.active.meme}
+		if {event.active.meme} = 0:
+			delete {event.active.meme}
+			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"	
+	{event.active.crime} isn't set:
+		remove 1 from {event.timer.crime}
+		if {event.timer.crime} is 0:
+			set {event.timer.crime} to 540
+			set {event.active.crime} to 30
+			send "**CRIME SPREE** This event has started! Rampant crimes is now tolerated across this bot. Pacifist Mode not included in this." to channel with id "{@eventcctv}" with "{@bot}"
+	else:
+		remove 1 from {event.active.crime}
+		if {event.active.meme} = 0:
+			delete {event.active.crime}
+			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+
+discord command /reschedule:
+	trigger:
+		discord id of event-user = "387336581775884288"
+		set {event.timer.doublexp} to 420
+		set {event.timer.fishing} to 2100
+		set {event.timer.meme} to 1020
+		set {event.timer.crime} to 540
+		reply with "Rescheduled all events..."
 
 discord command event [<text>]:
 	aliases: eve
@@ -46,6 +77,8 @@ discord command event [<text>]:
 			set {event.timer.doublexp} to 420
 			set {event.timer.fishing} to 2100
 			set {event.timer.meme} to 1020
+		if {event.timer.crime} isn't set:
+			set {event.timer.crime} to 540
 		create embed:
 			set the title of embed to title with text "Event Master"
 			set the description of embed to "Limited time events that spice up ur gameplay."
@@ -54,12 +87,16 @@ discord command event [<text>]:
 			else:
 				add field named "[:warning:] :magic_wand: `Double XP`" with value "`Description`: *Doubles XP for 1 hour (2x). Premium members get quadruple (4x) instead.*%nl%`Ends`: **%{event.active.doublexp}% minutes**" to embed
 			if {event.active.fishing} is not set:
-				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is also doubled.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
+				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is `tripled`.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
 			else:
-				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is also doubled.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
+				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is `tripled`.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
 			if {event.active.meme} is not set:
 				add field named ":computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Starts in`: **%{event.timer.meme}% minutes**" to embed
 			else:
-				add field named ":computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Ends`: **%{event.active.meme}% minutes**" to embed
+				add field named "[:warning:] :computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Ends`: **%{event.active.meme}% minutes**" to embed
+			if {event.active.crime} is not set:
+				add field named ":oncoming_police_car: `Crime Spree`" with value "`Description`: *Effective for 30 minutes. Wallet Robbing chance significantly increased. Fines are significantly decreased. CD decreased. Rob amount very significantly increase.*%nl%`Starts in`: **%{event.timer.crime}% minutes**" to embed
+			else:
+				add field named "[:warning:] :oncoming_police_car: `Crime Spree`" with value "`Description`: *Effective for 30 minutes. Wallet Robbing chance significantly increased. Fines are significantly decreased. CD decreased. Rob amount very significantly increase.*%nl%`Ends`: **%{event.active.crime}% minutes**" to embed
 			send the last created embed to event-channel with event-bot
 
