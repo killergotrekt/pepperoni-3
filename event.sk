@@ -55,9 +55,9 @@ every minute:
 			send "**CRIME SPREE** This event has started! Rampant crimes is now tolerated across this bot. Pacifist Mode not included in this." to channel with id "{@eventcctv}" with "{@bot}"
 	else:
 		remove 1 from {event.active.crime}
-		if {event.active.meme} = 0:
+		if {event.active.crime} = 0:
 			delete {event.active.crime}
-			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+			send "**CRIME SPREE** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
 
 discord command /reschedule:
 	trigger:
