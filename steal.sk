@@ -6,9 +6,11 @@ on guild message receive:
 	if {heist::%discord id of event-channel%::active} is set:
 		{_msg} = "join"
 		set {%discord id of event-user%.lastbankcrime} to now
-		if {heist::%discord id of event-channel%::people} doesn't contain discord id of event-user:
+		if {heist::%discord id of event-channel%::people::*} doesn't contain discord id of event-user:
+			{levels::%discord id of event-user%::current} >= 10
+			{heist::%discord id of event-channel%::victim} is not discord id of event-user
 			add discord id of event-user to {heist::%discord id of event-channel%::people::*}
-			reply with "**%event-user%* has joined the heist!"
+			reply with "**%event-user%** has joined the heist!"
 
 
 discord command /robinfo:
@@ -43,7 +45,7 @@ discord command bankrob [<member>]:
 				set the title of embed to title with text "Cooldown"
 				set the description of embed to "**Bank**: get the motherfuckin out."
 				send the last created embed to event-channel with event-bot
-				stop
+			stop
 		set {_b} to difference between {%discord id of arg%.lastbankcrimevictim} and now
 		if {_b} is less than 6 hours:
 			create embed:
@@ -52,7 +54,7 @@ discord command bankrob [<member>]:
 				set the title of embed to title with text "Cooldown"
 				set the description of embed to "**National Guard**: get away from that!"
 				send the last created embed to event-channel with event-bot
-				stop
+			stop
 		discord id of event-user = discord id of arg:
 			reply with "Cannot bankrob, victim is not you."
 			stop
@@ -75,6 +77,7 @@ discord command bankrob [<member>]:
 			set {%discord id of event-user%.lastbankcrime} to now
 			set {heist::%discord id of event-channel%::active} to true
 			add discord id of event-user to {heist::%discord id of event-channel%::people::*}
+			set {heist::%discord id of event-channel%::victim} to discord id of arg-1
 			reply with "**%event-user%** is preparing to rob **%arg-1%**'s bank. Type `JOIN` to join heist."
 			wait 1 minute
 			set {_people} to size of {heist::%discord id of event-channel%::people::*} 
@@ -95,7 +98,10 @@ discord command bankrob [<member>]:
 					set {_list2::*} to "fell into a sewer grate and was hospitalized and fined **$%{_e}%**.", "was stopped at a checkpoint and detained for **$%{_e}%**.", "was shot and arrested and fined **%{_e}%**", "was stopped by security and fined **$%{_e}%**", and "surrendered after being threatened by the national guardsmen and dropped **$%{_e}%**."
 					set {_2} to random element out of {_list2::*}
 					reply with "<@%{_someone}%> %{_2}%"
-					remove {_someone} from {heist::%discord id of event-channel%::people::*}
+				remove {_someone} from {heist::%discord id of event-channel%::people::*}
+			delete {heist::%discord id of event-channel%::*}
+			delete {heist::%discord id of event-channel%::people::*}
+
 
 
 
