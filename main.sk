@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.6.7
-	build: thefishingupdate_1.3
-	maincctv: 757727071337185330
+	version: 2.6.8
+	build: thefishingupdate_1.4
+	maincctv: 1
 
 on skript load:
-	login to "123" with name "{@bot}"
+	login to "1" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
