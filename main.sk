@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.6.8
-	build: thefishingupdate_1.4
+	version: 2.7
+	build: tricksandtraps_1.0
 	maincctv: 1
 
 on skript load:
@@ -15,10 +15,11 @@ discord command /help:
 		create embed:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
+			add field named "Halloween 2020" with value "`/candy`, `/search`" to embed
 			add field named "Economics" with value "`/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
 			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/levels`, `/progress`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
-			set the colour of the embed to Cyan
+			set the colour of the embed to orange
 			send the last created embed to event-channel with event-bot
 
 
@@ -322,9 +323,9 @@ on vixio command:
 		if {premium::%discord id of event-user%} = "Active":
 			add 0.5 to {levels::%discord id of event-user%::xp}
 	else:
-		add 2 to {levels::%discord id of event-user%::xp}
+		add 3 to {levels::%discord id of event-user%::xp}
 		if {premium::%discord id of event-user%} = "Active":
-			add 2 to {levels::%discord id of event-user%::xp}
+			add 3 to {levels::%discord id of event-user%::xp}
 	set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
 	if {levels::%discord id of event-user%::xp} > {_req}:
 		remove {_req} from {levels::%discord id of event-user%::xp}
@@ -392,4 +393,10 @@ on vixio command:
 						set the colour of the embed to orange
 						set the footer of embed to footer with text "%250-{gems::%discord id of event-user%}% missing"
 						send the last created embed to event-channel with event-bot
-
+	if {event.active.halloween2020} > 0:
+		chance of 10%:
+			reply with "You found a **Green Candy**!"
+			add 1 to {candy::%discord id of event-user%::green}
+		chance of 3.5%:
+			reply with "You found a **Orange Candy**!"
+			add 1 to {candy::%discord id of event-user%::orange}
