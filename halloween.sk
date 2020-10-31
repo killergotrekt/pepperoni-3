@@ -1,0 +1,131 @@
+options:
+	green: <:greencandy:771492630453420053>
+	orange: <:rarecandy:771492630416064512>
+	bot: Pepperoni SE
+
+on guild message receive:
+	set {_msg} to "%event-message%"
+	If {candysellgui.%discord id of event-user%} is discord id of event-channel:
+		{_msg} = "yes"
+		set {_cf} to {candy::%discord id of event-user%::green}*50
+		set {_uf} to {candy::%discord id of event-user%::orange}*200
+		set {_profit} to {_uf}+{_cf}
+		add {_profit} to {money::%discord id of event-user%}
+		create embed:
+			set the title of embed to title with text "Successful sale"
+			set the description of embed to "{@green} **Green Candy**: %{candy::%discord id of event-user%::green}%x @ `$50` each, **$%{_cf}%**%nl%{@orange} **Orange Candy**: %{candy::%discord id of event-user%::orange}%x @ `$200` each, **$%{_uf}%**%nl%**Total**: `$%{_profit}%`"
+			set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
+			set the colour of the embed to green
+			send the last created embed to event-channel with event-bot
+		set {candy::%discord id of event-user%::green} to 0
+		set {candy::%discord id of event-user%::orange} to 0
+
+
+
+
+
+discord command /candy [<text>] [<text>]:
+	bots: {@bot}
+	trigger:
+		if {candy::%discord id of event-user%::green} isn't set:
+			set {candy::%discord id of event-user%::green} to 0
+		if {candy::%discord id of event-user%::orange} isn't set:
+			set {candy::%discord id of event-user%::orange} to 0
+		arg-1 isn't set:
+			set {candygui.%discord id of event-user%} to discord id of event-channel
+			set {_c} to {candy::%discord id of event-user%::green}+{candy::%discord id of event-user%::orange}
+			if {premium::%discord id of event-user%} isn't set:
+				set {_max} to 100
+			else:
+				set {_max} to "Unlimited"
+			create embed:
+				set the title of embed to title with text "%event-user%'s bag [%{_c}%/%{_max}%]"
+				set the description of embed to "`/candy shop`, `/candy sell`, `/search`"
+				add split field named "{@green} `Green Candy`" with value "Owned: **%{candy::%discord id of event-user%::green}%**" to embed
+				add split field named "{@orange} `Orange Candy`" with value "Owned: **%{candy::%discord id of event-user%::orange}%**" to embed
+				send the last created embed to event-channel with event-bot
+		else:
+			arg-1 = "shop":
+				arg-2 isn't set:
+					create embed:
+						set the title of embed to title with text "Candy Shop"
+						set the description of embed to "`/candy shop <number>`"
+						add split field named "[1] Greater Instant XP" with value "**Gives** 150 XP%nl%**Cost** 30{@green}" to embed
+						add split field named "[2] Bag of Instant XP" with value "**Gives** 500 XP%nl%**Cost** 35{@orange}" to embed
+						add split field named "[3] Explosive Surprise" with value "**Context** Last line of defense. explodes robber and kills him.%nl%**Cost** 25{@green}" to embed
+						add split field named "[4] Missile" with value "**Context** fire one of those bad boys to stun someone from robbing you for 3 days. %nl%**Cost** 10{@green}" to embed
+						add split field named "[5] 8x Unpleasant Bait" with value "**Context** you cannot catch rod-eating fishes %nl%**Cost** 5{@orange}" to embed
+						add split field named "[6] Upgrade; Indestructible Safe" with value "**Context** your bank account cannot be robbed%nl%**Cost** 50{@orange}" to embed
+						add split field named "[7] Gems" with value "**Gives** 50 :gem:%nl%**Cost** 10{@green}" to embed
+						send the last created embed to event-channel with event-bot
+			arg-1 = "sell":
+				set {_c} to {candy::%discord id of event-user%::green}+{candy::%discord id of event-user%::orange}
+				if {_c} is less than 1:
+					reply with "Nothing in this bag."
+				else:
+					reply with "Are you sure you want to sell **EVERYTHING** in this bag? This action cannot be reversed. Maybe you should in the shop first (`/candy shop`)? Type `yes` to continue."
+					set {candysellgui.%discord id of event-user%} to discord id of event-channel
+					wait 10 seconds
+					delete {candysellgui.%discord id of event-user%} 
+
+discord command /search:
+	bots: {@bot}
+	trigger:
+		if {event.active.halloween2020} > 1:
+			set {_D} to difference between {lastsearch.%discord id of event-user%} and now
+			if {_D} is less than 288 seconds:
+				cancel event
+				create embed:
+					set the title of embed to title with text "Cooldown"
+					set the description of embed to "No one answered the doors when you knocked."
+					set the colour of the embed to red
+					set the footer of embed to footer with text "Try again in: %difference between 288 seconds and {_d}%"
+					send the last created embed to event-channel with event-bot
+			else:
+				set {lastsearch.%discord id of event-user%} to now
+				set {_people::*} to "<@671896615950221322>", "Granny", "Mr. Krabs", "Dr. Stupid", "Lenin", "Mao", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Grandpa's Cat", "Your Dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
+				if {premium::%discord id of event-user%} is not set:
+					set {_houses} to 5
+				else:
+					set {_houses} to 6		
+				loop {_houses} times:
+					chance of 30%:
+						set {_c} to random integer between 2 and 5
+						add {_c} to {_candy.orange}
+					else:
+						set {_c} to random integer between 2 and 7
+						add {_c} to {_candy.green}
+					chance of 15%:
+						set {_died} to true
+				if {_died} isn't set:
+					add {_candy.green} to {candy::%discord id of event-user%::green}
+					add {_candy.orange} to {candy::%discord id of event-user%::orange}
+					create embed:
+						set the title of embed to title with text "Trick and Treating Results"
+						set the description of embed to "You gained `%{_candy.green}%x` {@green} **Green Candy** and `%{_candy.orange}%x` {@orange} **Orange Candy**."
+						set the colour of the embed to green
+						set the footer of embed to footer with text "You gained candy!"
+						send the last created embed to event-channel with event-bot
+				else:
+					set {money::%discord id of event-user%} to {money::%discord id of event-user%}/2
+					set {_c} to random integer between 4 and 5
+					create embed:
+						set the title of embed to title with text "Trick and Treating Results"
+						set the description of embed to "You died after knocking on the %{_c}%th house."
+						set the colour of the embed to red
+						set the footer of embed to footer with text "Lost 1/2 of your money!"
+						send the last created embed to event-channel with event-bot
+		else:
+			create embed:
+				set the description of embed to "Event not active."
+				set the colour of the embed to red
+				send the last created embed to event-channel with event-bot
+
+
+
+
+
+
+
+
+
