@@ -1,5 +1,5 @@
 options:
-	economycctv: 1
+	economycctv: 312
 	bot: Pepperoni SE
 
 discord command /bal [<member>]:
@@ -326,7 +326,7 @@ discord command level [<text>]:
 			{event.active.fishing} isn't set:
 				add field named "Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.012*100%%%**." to embed
 			else:
-				add field named "**`FISHING EVENT ACTIVE`** Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.012*3*100%%%**." to embed
+				add field named "**`FISHING EVENT ACTIVE`** Fishing Skill %{_fishinglvl}%/50" with value "Increase the amount of fish you catch by **%{_bankerlvl}*0.012*4*100%%%**." to embed
 			set the footer of embed to footer with text "Level XP: %{levels::%discord id of event-user%::xp}%/%{_req}%"
 			send the last created embed to event-channel with event-bot
 
