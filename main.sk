@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.7
-	build: tricksandtraps_1.0
-	maincctv: 1
+	version: 2.7.1
+	build: tricksandtraps_1.1
+	maincctv: a
 
 on skript load:
-	login to "1" with name "{@bot}"
+	login to "a" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
