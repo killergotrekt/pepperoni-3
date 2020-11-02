@@ -50,14 +50,36 @@ discord command /candy [<text>] [<text>]:
 					create embed:
 						set the title of embed to title with text "Candy Shop"
 						set the description of embed to "`/candy shop <number>`"
-						add split field named "[1] Greater Instant XP" with value "**Gives** 150 XP%nl%**Cost** 30{@green}" to embed
+						add split field named "[1] Greater Instant XP" with value "**Gives** 150 XP%nl%**Cost** 50{@green}" to embed
 						add split field named "[2] Bag of Instant XP" with value "**Gives** 500 XP%nl%**Cost** 35{@orange}" to embed
-						add split field named "[3] Explosive Surprise" with value "**Context** Last line of defense. explodes robber and kills him.%nl%**Cost** 25{@green}" to embed
-						add split field named "[4] Missile" with value "**Context** fire one of those bad boys to stun someone from robbing you for 3 days. %nl%**Cost** 10{@green}" to embed
-						add split field named "[5] 8x Unpleasant Bait" with value "**Context** you cannot catch rod-eating fishes %nl%**Cost** 5{@orange}" to embed
-						add split field named "[6] Upgrade; Indestructible Safe" with value "**Context** your bank account cannot be robbed%nl%**Cost** 50{@orange}" to embed
-						add split field named "[7] Gems" with value "**Gives** 50 :gem:%nl%**Cost** 10{@green}" to embed
+						add split field named "[3] Explosive Surprise" with value "**Context** kills robbers who wants to rob you.%nl%**Cost** 100{@green}" to embed
+						add split field named "[4] Missile" with value "**Context** fire one of those bad boys to stun someone from robbing you for 3 days. %nl%**Cost** 50{@green}" to embed
+						add split field named "[5] 8x Unpleasant Bait" with value "**Context** you cannot catch rod-eating fishes %nl%**Cost** 10{@orange}" to embed
+						add split field named "[6] Upgrade; Indestructible Safe" with value "**Context** your bank account cannot be robbed%nl%**Cost** 200{@orange}" to embed
+						add split field named "[7] 50x Gems" with value "**Gives** 50 :gem:%nl%**Cost** 30{@green}" to embed
 						send the last created embed to event-channel with event-bot
+					stop
+				arg-2 = "1":
+					if {candy::%discord id of event-user%::green} >= 50:
+						remove 50 from {candy::%discord id of event-user%::green}
+						add 150 to {levels::%discord id of event-user%::xp}
+						reply with ":white_check_mark: Successfully purchased `Greater Instant XP`!"
+					else:
+						reply with "Not enough {@green} **Green Candy**! (%50-{candy::%discord id of event-user%::green}% missing)"
+				arg-2 = "2":
+					if {candy::%discord id of event-user%::orange} >= 35:
+						remove 35 from {candy::%discord id of event-user%::orange}
+						add 500 to {levels::%discord id of event-user%::xp}
+						reply with ":white_check_mark: Successfully purchased `Bag of Instant XP`!"
+					else:
+						reply with "Not enough {@green} **Orange Candy**! (%35-{candy::%discord id of event-user%::orange}% missing)"
+				arg-2 = "7":
+					if {candy::%discord id of event-user%::green} >= 30:
+						remove 30 from {candy::%discord id of event-user%::green}
+						add 50 to {gems::%discord id of event-user%}
+						reply with ":white_check_mark: Successfully purchased `50x Gems`!"
+					else:
+						reply with "Not enough {@green} **Green Candy**! (%30-{candy::%discord id of event-user%::green}% missing)"
 			arg-1 = "sell":
 				set {_c} to {candy::%discord id of event-user%::green}+{candy::%discord id of event-user%::orange}
 				if {_c} is less than 1:
@@ -89,13 +111,13 @@ discord command /search:
 				else:
 					set {_houses} to 6		
 				loop {_houses} times:
-					chance of 30%:
-						set {_c} to random integer between 2 and 5
+					chance of 10%:
+						set {_c} to random integer between 1 and 2
 						add {_c} to {_candy.orange}
 					else:
-						set {_c} to random integer between 2 and 7
+						set {_c} to random integer between 1 and 3
 						add {_c} to {_candy.green}
-					chance of 15%:
+					chance of 5%:
 						set {_died} to true
 				if {_died} isn't set:
 					add {_candy.green} to {candy::%discord id of event-user%::green}
