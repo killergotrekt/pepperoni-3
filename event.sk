@@ -1,5 +1,5 @@
 options:
-	eventcctv: 2
+	eventcctv: xxx
 	bot: Pepperoni SE
 
 every minute:
@@ -7,7 +7,7 @@ every minute:
 		remove 1 from {event.timer.halloween2020}
 		if {event.timer.halloween2020} is 0:
 			set {event.timer.halloween2020} to -1
-			set {event.active.halloween2020} to 10080
+			set {event.active.halloween2020} to 5000
 			send "**SCAVENGER EVENT** Halloween 2020 has started." to channel with id "{@eventcctv}" with "{@bot}"
 	else:
 		remove 1 from {event.active.halloween2020}
@@ -44,7 +44,7 @@ every minute:
 			send "**MEME TIME** This event has started! Start spamming memes onto the internet, you can now gain gems from memeing!" to channel with id "{@eventcctv}" with "{@bot}"
 	else:
 		remove 1 from {event.active.meme}
-		if {event.active.meme} = 0:
+		if {event.active.meme} <= 0:
 			delete {event.active.meme}
 			send "**MEME TIME** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
 	{event.active.meme} isn't set:
