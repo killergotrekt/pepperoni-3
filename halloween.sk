@@ -53,10 +53,9 @@ discord command /candy [<text>] [<text>]:
 						add split field named "[1] Greater Instant XP" with value "**Gives** 150 XP%nl%**Cost** 50{@green}" to embed
 						add split field named "[2] Bag of Instant XP" with value "**Gives** 500 XP%nl%**Cost** 35{@orange}" to embed
 						add split field named "[3] Explosive Surprise" with value "**Context** kills robbers who wants to rob you.%nl%**Cost** 100{@green}" to embed
-						add split field named "[4] Missile" with value "**Context** fire one of those bad boys to stun someone from robbing you for 3 days. %nl%**Cost** 50{@green}" to embed
-						add split field named "[5] 8x Unpleasant Bait" with value "**Context** you cannot catch rod-eating fishes %nl%**Cost** 10{@orange}" to embed
-						add split field named "[6] Upgrade; Indestructible Safe" with value "**Context** your bank account cannot be robbed%nl%**Cost** 200{@orange}" to embed
-						add split field named "[7] 50x Gems" with value "**Gives** 50 :gem:%nl%**Cost** 30{@green}" to embed
+						add split field named "[4] 8x Unpleasant Bait" with value "**Context** you cannot catch rod-eating fishes %nl%**Cost** 10{@orange}" to embed
+						add split field named "[5] Upgrade; Indestructible Safe" with value "**Context** your bank account cannot be robbed%nl%**Cost** 200{@orange}" to embed
+						add split field named "[6] 50x Gems" with value "**Gives** 50 :gem:%nl%**Cost** 30{@green}" to embed
 						send the last created embed to event-channel with event-bot
 					stop
 				arg-2 = "1":
@@ -72,8 +71,25 @@ discord command /candy [<text>] [<text>]:
 						add 500 to {levels::%discord id of event-user%::xp}
 						reply with ":white_check_mark: Successfully purchased `Bag of Instant XP`!"
 					else:
-						reply with "Not enough {@green} **Orange Candy**! (%35-{candy::%discord id of event-user%::orange}% missing)"
-				arg-2 = "7":
+						reply with "Not enough {@orange} **Orange Candy**! (%35-{candy::%discord id of event-user%::orange}% missing)"
+				arg-2 = "3":
+					if {candy::%discord id of event-user%::green} >= 100:
+						remove 100 from {candy::%discord id of event-user%::green}
+						add 1 to {halloweenitems::%discord id of event-user%::explosive}
+						reply with ":white_check_mark: Successfully purchased `Explosive Surprise`!"
+					else:
+						reply with "Not enough {@green} **Green Candy**! (%100-{candy::%discord id of event-user%::green}% missing)"
+				arg-2 = "5":
+					if {candy::%discord id of event-user%::orange} >= 200:
+						{perks::%discord id of event-user%::*} contains "IndestructableBank:1":
+							reply with "Upgrade already unlocked."
+							stop
+						add "IndestructableBank:1" to {perks::%discord id of event-user%::*}
+						remove 200 from {candy::%discord id of event-user%::orange}
+						reply with ":white_check_mark: Successfully purchased `Upgrade; Indestructible Safe`!"
+					else:
+						reply with "Not enough {@orange} **Orange Candy**! (%200-{candy::%discord id of event-user%::orange}% missing)"
+				arg-2 = "6":
 					if {candy::%discord id of event-user%::green} >= 30:
 						remove 30 from {candy::%discord id of event-user%::green}
 						add 50 to {gems::%discord id of event-user%}
