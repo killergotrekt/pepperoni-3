@@ -2,6 +2,7 @@ options:
 	bot: Pepperoni SE
 
 discord command /buy [<text>]:
+	bots: {@bot}
 	trigger:
 		arg-1 isn't set:
 			reply with "`/buy <laptop/fishingrod>` Laptop: $400, FishingRod: $500"
@@ -19,3 +20,21 @@ discord command /buy [<text>]:
 				reply with ":white_check_mark: Successfully purchased fishing rod for **$500**."
 			else:
 				reply with "Not enough money! You still need **$%500-{money::%discord id of event-user%}%** more."
+
+discord command /perks [<text>]:
+	bots: {@bot}
+	trigger:
+		{perks::%discord id of event-user%::*} is not set:
+			create embed:
+				set the title of embed to title with text "Perks"
+				set the description of embed to "None"				
+				set the colour of the embed to red
+				send the last created embed to event-channel with event-bot
+		else:
+			create embed:
+				set the title of embed to title with text "Perks"
+				set the description of embed to "`%{perks::%discord id of event-user%::*}%`"				
+				set the colour of the embed to green
+				send the last created embed to event-channel with event-bot
+
+
