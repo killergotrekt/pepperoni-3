@@ -46,6 +46,13 @@ discord command bankrob [<member>]:
 				set the description of embed to "**Bank**: get the motherfuckin out."
 				send the last created embed to event-channel with event-bot
 			stop
+		{perks::%discord id of arg-1%::*} contains "IndestructableBank:1":
+			create embed:
+				set the colour of the embed to red
+				set the title of embed to title with text "Error"
+				set the description of embed to "This user has the `Indestructable Bank` Tactic and cannot be bank robbed."
+				send the last created embed to event-channel with event-bot
+			stop
 		set {_b} to difference between {%discord id of arg%.lastbankcrimevictim} and now
 		if {_b} is less than 6 hours:
 			create embed:
@@ -151,6 +158,16 @@ discord command rob [<member>]:
 							send the last created embed to event-channel with event-bot
 							stop
 				set {%discord id of event-user%.lastcrime} to now
+				if {halloweenitems::%discord id of arg-1%::explosive} is set:
+					remove 1 from {halloweenitems::%discord id of arg-1%::explosive}
+					reply with "**???*** beep!"
+					wait 2 seconds
+					reply with "**???*** beep! beep! "
+					wait 2 seconds
+					reply with "**???*** beep! beep! beep!"
+					reply with "**BOMB** KABLOOSH! You died!"
+					set {Money::%discord id of event-user%} to {Money::%discord id of event-user%}/2
+					stop
 				if {event.active.crime} is not set:
 					chance of 66.67%:
 						chance of 18.5%:
