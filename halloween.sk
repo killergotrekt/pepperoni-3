@@ -17,6 +17,9 @@ on guild message receive:
 			set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
 			set the colour of the embed to green
 			send the last created embed to event-channel with event-bot
+		add {candy::%discord id of event-user%::green} to {market.gc}
+		set {candy::%discord id of event-user%::orange} to {market.oc}
+		wait 5 ticks
 		set {candy::%discord id of event-user%::green} to 0
 		set {candy::%discord id of event-user%::orange} to 0
 
@@ -34,12 +37,8 @@ discord command /candy [<text>] [<text>]:
 		arg-1 isn't set:
 			set {candygui.%discord id of event-user%} to discord id of event-channel
 			set {_c} to {candy::%discord id of event-user%::green}+{candy::%discord id of event-user%::orange}
-			if {premium::%discord id of event-user%} isn't set:
-				set {_max} to 100
-			else:
-				set {_max} to "Unlimited"
 			create embed:
-				set the title of embed to title with text "%event-user%'s bag [%{_c}%/%{_max}%]"
+				set the title of embed to title with text "%event-user%'s bag (%{_c}%)"
 				set the description of embed to "`/candy shop`, `/candy sell`, `/search`"
 				add split field named "{@green} `Green Candy`" with value "Owned: **%{candy::%discord id of event-user%::green}%**" to embed
 				add split field named "{@orange} `Orange Candy`" with value "Owned: **%{candy::%discord id of event-user%::orange}%**" to embed
@@ -125,16 +124,20 @@ discord command /search:
 				if {premium::%discord id of event-user%} is not set:
 					set {_houses} to 5
 				else:
-					set {_houses} to 6		
+					set {_houses} to 8		
 				loop {_houses} times:
 					chance of 10%:
-						set {_c} to random integer between 1 and 2
+						set {_c} to random integer between 1 and 3
 						add {_c} to {_candy.orange}
 					else:
 						set {_c} to random integer between 1 and 3
 						add {_c} to {_candy.green}
-					chance of 5%:
+					chance of 1%:
 						set {_died} to true
+				wait 5 ticks
+				if {_candy.orange} isn't set:
+					set {_c} to random integer between 1 and 2
+					add {_c} to {_candy.orange}
 				if {_died} isn't set:
 					add {_candy.green} to {candy::%discord id of event-user%::green}
 					add {_candy.orange} to {candy::%discord id of event-user%::orange}
