@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.7.2
-	build: tricksandtraps_1.2
-	maincctv: 123
+	version: 2.7.3
+	build: tricksandtraps_1.3
+	maincctv: 1
 
 on skript load:
-	login to "123" with name "{@bot}"
+	login to "1" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
@@ -16,8 +16,8 @@ discord command /help:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Halloween 2020" with value "`/candy`, `/search`" to embed
-			add field named "Economics" with value "`/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
-			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/levels`, `/progress`" to embed
+			add field named "Economics" with value "`/perks`, `/market`, `/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
+			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/levels`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to orange
 			send the last created embed to event-channel with event-bot
@@ -87,7 +87,7 @@ discord command /github:
 		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/help`" to channel with id "{@maincctv}" with "{@bot}"
 		create embed:
 			set the title of embed to title with text "Github"
-			set the description of embed to "All Pepperoni SE downloads/stuff listed below:%nl%https://github.com/killergotrekt/pepperoni-se2"
+			set the description of embed to "All {@bot} downloads/stuff listed below:%nl%https://github.com/killergotrekt/pepperoni-se2"
 			set the colour of the embed to Cyan
 			send the last created embed to event-channel with event-bot
 			
