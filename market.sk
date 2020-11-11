@@ -1,0 +1,148 @@
+options:
+	bot: Pepperoni SE
+	gc: 60
+	oc: 240
+	cf: 30
+	uf: 54
+	rf: 90
+	sf: 240
+	tf: 600
+
+discord command market [<text>] [<integer>]:
+	aliases: mp, marketplace
+	bots: {@bot}
+	prefixes: /
+	trigger:
+		{levels::%discord id of event-user%::current} is less than 15:
+			create embed:
+				set the footer of embed to footer with text "%15-{levels::%discord id of event-user%::current}% level(s) away"
+				set the colour of the embed to red
+				set the title of embed to title with text ":lock: Locked"
+				set the description of embed to "This command cannot be used at this current level."
+				send the last created embed to event-channel with event-bot
+			stop
+		set {_gc} to 60
+		set {_oc} to 240
+		set {_cf} to 30
+		set {_uf} to 54
+		set {_rf} to 90
+		set {_sf} to 240
+		set {_tf} to 600
+		if arg-1 isn't set:
+			create embed:
+				set the title of embed to title with text "Marketplace"
+				add split field named "<:greencandy:771492630453420053> GC" with value "`%{market.gc}%` in stock%nl%Buy: **${@gc}**/unit" to embed
+				add split field named "<:rarecandy:771492630416064512> OC" with value "`%{market.oc}%` in stock%nl%Buy: **${@oc}**/unit" to embed
+				add split field named ":fish: CF" with value "`%{market.cf}%` in stock%nl%Buy: **${@cf}**/unit" to embed
+				add split field named ":tropical_fish: UF" with value "`%{market.uf}%` in stock%nl%Buy: **${@uf}**/unit" to embed
+				add split field named ":blowfish: RF" with value "`%{market.rf}%` in stock%nl%Buy: **${@rf}**/unit" to embed
+				add split field named ":shark: `UF`" with value "`%{market.uf}%` in stock%nl%Buy: **${@uf}**/unit" to embed
+				add split field named ":whale: *`TF`*" with value "`%{market.tf}%` in stock%nl%Buy: **${@tf}**/unit" to embed
+				set the footer of embed to footer with text "/mp <item> <amount> | Page 1 of 1"
+				set the colour of the embed to Cyan
+				send the last created embed to event-channel with event-bot
+			stop
+		set {_amount} to floor(arg-2)
+		if arg-2 < 1:
+			reply with "Amount > 1 for amount."
+		arg-1 = "gc":
+			if {market.gc} > 1:
+				if {_amount} >= {market.gc}:
+					set {_amount} to {market.gc}
+				set {_price} to {market.gc}*{_gc}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.gc}
+					add {_amount} to {candy::%discord id of event-user%::green}
+					reply with "**Marketplace** - Purchased %{_amount}%x `GC` for **$%{_price}%**!"
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		arg-1 = "oc":
+			if {market.oc} > 1:
+				if {_amount} >= {market.oc}:
+					set {_amount} to {market.oc}
+				set {_price} to {market.oc}*{_oc}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.oc}
+					add {_amount} to {candy::%discord id of event-user%::orange}
+					reply with "**Marketplace** - Purchased %{_amount}%x `OC` for **$%{_price}%**!" 
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		arg-1 = "cf":
+			if {market.%arg-1%} > 1:
+				if {_amount} >= {market.%arg-1%}:
+					set {_amount} to {market.%arg-1%}
+				set {_price} to {market.%arg-1%}*{_%arg-1%}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.%arg-1%}
+					add {_amount} to {fishbag::%discord id of event-user%::common}
+					reply with "**Marketplace** - Purchased %{_amount}%x `CF` for **$%{_price}%**!" 
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		arg-1 = "uf":
+			if {market.%arg-1%} > 1:
+				if {_amount} >= {market.%arg-1%}:
+					set {_amount} to {market.%arg-1%}
+				set {_price} to {market.%arg-1%}*{_%arg-1%}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.%arg-1%}
+					add {_amount} to {fishbag::%discord id of event-user%::uncommon}
+					reply with "**Marketplace** - Purchased %{_amount}%x `UF` for **$%{_price}%**!" 
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		arg-1 = "rf":
+			if {market.%arg-1%} > 1:
+				if {_amount} >= {market.%arg-1%}:
+					set {_amount} to {market.%arg-1%}
+				set {_price} to {market.%arg-1%}*{_%arg-1%}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.%arg-1%}
+					add {_amount} to {fishbag::%discord id of event-user%::rare}
+					reply with "**Marketplace** - Purchased %{_amount}%x `RF` for **$%{_price}%**!" 
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		arg-1 = "sf":
+			if {market.%arg-1%} > 1:
+				if {_amount} >= {market.%arg-1%}:
+					set {_amount} to {market.%arg-1%}
+				set {_price} to {market.%arg-1%}*{_%arg-1%}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.%arg-1%}
+					add {_amount} to {fishbag::%discord id of event-user%::supreme}
+					reply with "**Marketplace** - Purchased %{_amount}%x `SF` for **$%{_price}%**!" 
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		arg-1 = "tf":
+			if {market.%arg-1%} > 1:
+				if {_amount} >= {market.%arg-1%}:
+					set {_amount} to {market.%arg-1%}
+				set {_price} to {market.%arg-1%}*{_%arg-1%}
+				if {money::%discord id of event-user%} >= {_price}:
+					remove {_amount} from {market.%arg-1%}
+					add {_amount} to {fishbag::%discord id of event-user%::Ultimate}
+					reply with "**Marketplace** - Purchased %{_amount}%x `TF` for **$%{_price}%**!" 
+				else:
+					reply with "Not enough money! (**$%{_price}-{money::%discord id of event-user%}%** missing)"
+			else:
+				reply with "This product ran out of stock."
+				stop
+		else:
+			reply with "That item doesn't exist."
+
