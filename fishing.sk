@@ -35,7 +35,19 @@ on guild message receive:
 					set {_multi} to 0.0012*{_fishinglvl}
 					{event.active.fishing} isn't set:
 						set {_luck} to random integer between 1 and 100
-						if {_luck} is less than 50:
+						if {_luck} is less than 20:
+							chance of 60%:
+								set {_c} to random integer between 2 and 7
+								set {_d} to round(({_multi}+1)*{_c})
+								add {_d} to {candy::%discord id of event-user%::green}
+								reply with "You fished up **%{_d}%x** **Green Candy**?"
+							else:
+								set {_c} to random integer between 1 and 5
+								set {_d} to round(({_multi}+1)*{_c})
+								add {_d} to {candy::%discord id of event-user%::orange}
+								reply with "You fished up **%{_d}%x** **Orange Candy**?"
+							stop
+						if {_luck} is less than 60:
 							set {_c} to random integer between 5 and 10
 							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::common}
@@ -73,6 +85,18 @@ on guild message receive:
 							set {_d} to round(({_multi}+1)*{_c})
 							add {_d} to {fishbag::%discord id of event-user%::common}
 							reply with "You fished up **%{_d}%x** :fish: Common Fish!"
+							stop
+						if {_luck} is less than 20:
+							chance of 30%:
+								set {_c} to random integer between 2 and 7
+								set {_d} to round(({_multi}+1)*{_c})
+								add {_d} to {candy::%discord id of event-user%::green}
+								reply with "You fished up **%{_d}%x** **Green Candy**?"
+							else:
+								set {_c} to random integer between 1 and 5
+								set {_d} to round(({_multi}+1)*{_c})
+								add {_d} to {candy::%discord id of event-user%::orange}
+								reply with "You fished up **%{_d}%x** **Orange Candy**?"
 							stop
 						if {_luck} is less than 45:
 							set {_c} to random integer between 4 and 7
@@ -120,6 +144,12 @@ on guild message receive:
 				set the footer of embed to footer with text "if your fishing bag is full you need to sell them."
 				set the colour of the embed to green
 				send the last created embed to event-channel with event-bot
+			add {fishbag::%discord id of event-user%::common} to {market.cf}
+			add {fishbag::%discord id of event-user%::uncommon} to {market.uf}
+			add {fishbag::%discord id of event-user%::rare} to {market.rf}
+			add {fishbag::%discord id of event-user%::supreme} to {market.sf}
+			add {fishbag::%discord id of event-user%::ultimate} to {market.tf}
+			wait 5 ticks
 			set {fishbag::%discord id of event-user%::common} to 0
 			set {fishbag::%discord id of event-user%::uncommon} to 0
 			set {fishbag::%discord id of event-user%::rare} to 0
