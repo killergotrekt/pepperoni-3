@@ -1,7 +1,7 @@
 options:
 	bot: Pepperoni SE
-	version: 2.7.3
-	build: tricksandtraps_1.3
+	version: 2.7.4
+	build: tricksandtraps_1.4
 	maincctv: 1
 
 on skript load:
@@ -16,7 +16,7 @@ discord command /help:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Halloween 2020" with value "`/candy`, `/search`" to embed
-			add field named "Economics" with value "`/perks`, `/market`, `/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
+			add field named "Economics" with value "`/loan`, `/perks`, `/market`, `/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
 			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/levels`" to embed
 			set the footer of embed to footer with text "(Build {@build})"
 			set the colour of the embed to orange
@@ -244,7 +244,10 @@ discord command /gems [<text>] [<text>]:
 						reply with "Not Enough Gems! (%6500-{gems::%discord id of event-user%}% missing)"
 
 
-
+discord command /chklvl <member>:
+	bots: {@bot}
+	trigger:
+		reply with "**%arg-1%**'s level: %{levels::%discord id of arg-1%::current}%"
 					
 
 on bot join guild:
