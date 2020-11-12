@@ -36,15 +36,19 @@ discord command market [<text>] [<integer>]:
 				add split field named ":fish: CF" with value "`%{market.cf}%` in stock%nl%Buy: **${@cf}**/unit" to embed
 				add split field named ":tropical_fish: UF" with value "`%{market.uf}%` in stock%nl%Buy: **${@uf}**/unit" to embed
 				add split field named ":blowfish: RF" with value "`%{market.rf}%` in stock%nl%Buy: **${@rf}**/unit" to embed
-				add split field named ":shark: `UF`" with value "`%{market.uf}%` in stock%nl%Buy: **${@uf}**/unit" to embed
+				add split field named ":shark: `SF`" with value "`%{market.uf}%` in stock%nl%Buy: **${@sf}**/unit" to embed
 				add split field named ":whale: *`TF`*" with value "`%{market.tf}%` in stock%nl%Buy: **${@tf}**/unit" to embed
 				set the footer of embed to footer with text "/mp <item> <amount> | Page 1 of 1"
 				set the colour of the embed to Cyan
 				send the last created embed to event-channel with event-bot
 			stop
+		arg-2 is not set:
+			reply with "Amount not set!"
+			stop
 		set {_amount} to floor(arg-2)
 		if arg-2 < 1:
 			reply with "Amount > 1 for amount."
+			stop
 		arg-1 = "gc":
 			if {market.gc} > 1:
 				if {_amount} >= {market.gc}:
