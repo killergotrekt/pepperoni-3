@@ -18,7 +18,7 @@ on guild message receive:
 			set the colour of the embed to green
 			send the last created embed to event-channel with event-bot
 		add {candy::%discord id of event-user%::green} to {market.gc}
-		set {candy::%discord id of event-user%::orange} to {market.oc}
+		add {candy::%discord id of event-user%::orange} to {market.oc}
 		wait 5 ticks
 		set {candy::%discord id of event-user%::green} to 0
 		set {candy::%discord id of event-user%::orange} to 0
