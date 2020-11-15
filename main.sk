@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.7.4
-	build: tricksandtraps_1.4
-	maincctv: 1
+	version: 2.7.5
+	build: tricksandtraps_preupgrade
+	maincctv: 123
 
 on skript load:
-	login to "1" with name "{@bot}"
+	login to "aaa" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
@@ -15,11 +15,12 @@ discord command /help:
 		create embed:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
-			add field named "Halloween 2020" with value "`/candy`, `/search`" to embed
-			add field named "Economics" with value "`/loan`, `/perks`, `/market`, `/rob`, `/bankrob`, `/gamble`, `/cure`, `/work`, `/bal`, `/hourly`, `/dep`, `/wd`, `/beg`, `/fish`, `/difficulty`, `/daily`, `/pm`, `/weekly`, `/qug`, `/bet`" to embed
-			add field named "Other" with value "`/help`, `/github`, `/gems`, `/invite`, `/levels`" to embed
-			set the footer of embed to footer with text "(Build {@build})"
-			set the colour of the embed to orange
+			add field named "Eco-Income" with value "`/candy`, `/perks`, `/market`, `/hourly`, `/daily`, `/weekly`, `/beg`, `/fish`, `/pm`" to embed
+			add field named "Eco-Balance" with value "`/rob`, `/bankrob`, `/gamble`, `/bal`, `/dep`, `/wd`, `/difficulty`, `/qug`, `/bet`" to embed
+			add field named "Misc" with value "`/help`, `/gems`, `/levels`" to embed
+			add field named "Other" with value "`/github`, `/github`, `/invite`" to embed
+			set the footer of embed to footer with text "Debug: ""{@build}"""
+			set the colour of the embed to cyan
 			send the last created embed to event-channel with event-bot
 
 
@@ -326,9 +327,9 @@ on vixio command:
 		if {premium::%discord id of event-user%} = "Active":
 			add 0.5 to {levels::%discord id of event-user%::xp}
 	else:
-		add 3 to {levels::%discord id of event-user%::xp}
+		add 2 to {levels::%discord id of event-user%::xp}
 		if {premium::%discord id of event-user%} = "Active":
-			add 3 to {levels::%discord id of event-user%::xp}
+			add 1 to {levels::%discord id of event-user%::xp}
 	set {_req} to {levels::%discord id of event-user%::extraxpneed}+5
 	if {levels::%discord id of event-user%::xp} > {_req}:
 		remove {_req} from {levels::%discord id of event-user%::xp}
@@ -396,10 +397,3 @@ on vixio command:
 						set the colour of the embed to orange
 						set the footer of embed to footer with text "%250-{gems::%discord id of event-user%}% missing"
 						send the last created embed to event-channel with event-bot
-	if {event.active.halloween2020} > 0:
-		chance of 10%:
-			reply with "You found a **Green Candy**!"
-			add 1 to {candy::%discord id of event-user%::green}
-		chance of 3.5%:
-			reply with "You found a **Orange Candy**!"
-			add 1 to {candy::%discord id of event-user%::orange}
