@@ -3,23 +3,12 @@ options:
 	bot: Pepperoni SE
 
 every minute:
-	{event.active.halloween2020} isn't set:
-		remove 1 from {event.timer.halloween2020}
-		if {event.timer.halloween2020} is 0:
-			set {event.timer.halloween2020} to -1
-			set {event.active.halloween2020} to 5000
-			send "**SCAVENGER EVENT** Halloween 2020 has started." to channel with id "{@eventcctv}" with "{@bot}"
-	else:
-		remove 1 from {event.active.halloween2020}
-		if {event.active.halloween2020} = 0:
-			delete {event.active.halloween2020}
-			send "**SCAVENGER EVENT** This event has ended. No more candies can be earned." to channel with id "{@eventcctv}" with "{@bot}"
 	{event.active.doublexp} isn't set:
 		remove 1 from {event.timer.doublexp}
 		if {event.timer.doublexp} is 0:
 			set {event.timer.doublexp} to 420
-			set {event.active.doublexp} to 120
-			send "**BONUS XP EVENT** This event has started! Start executing commands for 3x more xp, or 6x more xp if you are a premium user." to channel with id "{@eventcctv}" with "{@bot}"
+			set {event.active.doublexp} to 60
+			send "**BONUS XP EVENT** This event has started! Start executing commands for 2x more xp, or 3.5x more xp if you are a premium user." to channel with id "{@eventcctv}" with "{@bot}"
 	else:
 		remove 1 from {event.active.doublexp}
 		if {event.active.doublexp} = 0:
@@ -29,7 +18,7 @@ every minute:
 		remove 1 from {event.timer.fishing}
 		if {event.timer.fishing} is 0:
 			set {event.timer.fishing} to 2100
-			set {event.active.fishing} to 360
+			set {event.active.fishing} to 240
 			send "**FISHING SEASON** This event has started! Your chances of catching supreme & ultimate fishes has been increased. Your fishing skill bonus have been quadrupled." to channel with id "{@eventcctv}" with "{@bot}"
 	else:
 		remove 1 from {event.active.fishing}
@@ -98,18 +87,14 @@ discord command event [<text>]:
 		create embed:
 			set the title of embed to title with text "Event Master"
 			set the description of embed to "Limited time events that spice up ur gameplay."
-			if {event.active.halloween2020} is not set:
-				add field named ":cloud_tornado: `HALLOWEEN 2020`" with value "`Description`: *This halloween season has begun! Start gaining candy to purchase cool rewards and perks!*%nl%`Starts in`: **%{event.timer.halloween2020}% minutes**" to embed
-			else:
-				add field named ":cloud_tornado: `HALLOWEEN 2020`" with value "`Description`: *This halloween season has begun! Start gaining candy to purchase cool rewards and perks!*%nl%`Ends`: **%{event.timer.halloween2020}% minutes**" to embed
 			if {event.active.doublexp} is not set:
-				add field named ":flashlight: `Bonus XP`" with value "`Description`: *Triped XP for 2 hours (3x). Premium members get sextupled (6x) instead.*%nl%`Starts in`: **%{event.timer.doublexp}% minutes**" to embed
+				add field named ":flashlight: `Bonus XP`" with value "`Description`: *Doubles XP for 1 hour (2x). Premium members gets tripled (3.5x) instead.*%nl%`Starts in`: **%{event.timer.doublexp}% minutes**" to embed
 			else:
-				add field named "[:warning:] :flashlight: `Bonus XP`" with value "`Description`: *Triped XP for 2 hours (3x). Premium members get sextupled (6x) instead.*%nl%`Ends`: **%{event.active.doublexp}% minutes**" to embed
+				add field named "[:warning:] :flashlight: `Bonus XP`" with value "`Description`: *Doubles XP for 1 hour (2x). Premium members gets tripled (3.5x) instead.*%nl%`Ends`: **%{event.active.doublexp}% minutes**" to embed
 			if {event.active.fishing} is not set:
-				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 6 hours. Your fishing skill bonus is `quadrupled`.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
+				add field named ":cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is `tripled`.*%nl%`Starts in`: **%{event.timer.fishing}% minutes**" to embed
 			else:
-				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 6 hours. Your fishing skill bonus is `quadrupled`.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
+				add field named "[:warning:] :cloud_rain: `Fishing Season`" with value "`Description`: *Increases chance of catching supreme/ultimate fishes significantly for 4 hours. Your fishing skill bonus is `tripled`.*%nl%`Ends`: **%{event.active.fishing}% minutes**" to embed
 			if {event.active.meme} is not set:
 				add field named ":computer: `Meme Time`" with value "`Description`: *Gems can now be obtained from posting memes*%nl%`Starts in`: **%{event.timer.meme}% minutes**" to embed
 			else:
