@@ -105,64 +105,6 @@ discord command /candy [<text>] [<text>]:
 					wait 10 seconds
 					delete {candysellgui.%discord id of event-user%} 
 
-discord command /search:
-	bots: {@bot}
-	trigger:
-		if {event.active.halloween2020} > 1:
-			set {_D} to difference between {lastsearch.%discord id of event-user%} and now
-			if {_D} is less than 288 seconds:
-				cancel event
-				create embed:
-					set the title of embed to title with text "Cooldown"
-					set the description of embed to "No one answered the doors when you knocked."
-					set the colour of the embed to red
-					set the footer of embed to footer with text "Try again in: %difference between 288 seconds and {_d}%"
-					send the last created embed to event-channel with event-bot
-			else:
-				set {lastsearch.%discord id of event-user%} to now
-				set {_people::*} to "<@671896615950221322>", "Granny", "Mr. Krabs", "Dr. Stupid", "Lenin", "Mao", "Mommy", "Peppa Pig", "POTUS", "Trump", "Stalin", "Thanos", "Grandpa's Cat", "Your Dog", "Your fart", "Daddy", "Riot Guard", and "Police Officer"
-				if {premium::%discord id of event-user%} is not set:
-					set {_houses} to 5
-				else:
-					set {_houses} to 8		
-				loop {_houses} times:
-					chance of 10%:
-						set {_c} to random integer between 1 and 3
-						add {_c} to {_candy.orange}
-					else:
-						set {_c} to random integer between 1 and 3
-						add {_c} to {_candy.green}
-					chance of 1%:
-						set {_died} to true
-				wait 5 ticks
-				if {_candy.orange} isn't set:
-					set {_c} to random integer between 1 and 2
-					add {_c} to {_candy.orange}
-				if {_died} isn't set:
-					add {_candy.green} to {candy::%discord id of event-user%::green}
-					add {_candy.orange} to {candy::%discord id of event-user%::orange}
-					create embed:
-						set the title of embed to title with text "Trick and Treating Results"
-						set the description of embed to "You gained `%{_candy.green}%x` {@green} **Green Candy** and `%{_candy.orange}%x` {@orange} **Orange Candy**."
-						set the colour of the embed to green
-						set the footer of embed to footer with text "You gained candy!"
-						send the last created embed to event-channel with event-bot
-				else:
-					set {money::%discord id of event-user%} to {money::%discord id of event-user%}/2
-					set {_c} to random integer between 4 and 5
-					create embed:
-						set the title of embed to title with text "Trick and Treating Results"
-						set the description of embed to "You died after knocking on the %{_c}%th house."
-						set the colour of the embed to red
-						set the footer of embed to footer with text "Lost 1/2 of your money!"
-						send the last created embed to event-channel with event-bot
-		else:
-			create embed:
-				set the description of embed to "Event not active."
-				set the colour of the embed to red
-				send the last created embed to event-channel with event-bot
-
-
 
 
 
