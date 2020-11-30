@@ -21,10 +21,14 @@ on guild message receive:
 				set {%discord id of event-user%.lastpond} to now
 				chance of 22%:
 					reply with "The `Supreme Fish` decided to eat up your fishingrod whole because 'it was hungry'."
+					{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon" or "Rare"
+					{pets::%discord id of event-user%::active::type} = "flyingfish"
 					remove "fishingrod" from {inventory::%discord id of event-user%::*}
 					stop
 				chance of 11%:
 					reply with "The *`Ultimate Fish`* decided to eat up your fishingrod whole and beat the shit outta you. You died!"
+					{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon" or "Rare"
+					{pets::%discord id of event-user%::active::type} = "flyingfish"
 					remove "fishingrod" from {inventory::%discord id of event-user%::*}
 					set {money::%discord id of event-user%} to {money::%discord id of event-user%} /2
 					stop
@@ -33,8 +37,17 @@ on guild message receive:
 					if {_fishinglvl} > 50:
 						set {_fishinglvl} to 50
 					set {_multi} to 0.0012*{_fishinglvl}
+					if {pets::%discord id of event-user%::active::type} = "flyingfish":
+						set {_c} to ({pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0065*100+1)*{_multi}
+						set {_multi} to {_c}
 					{event.active.fishing} isn't set:
 						set {_luck} to random integer between 1 and 100
+						if {pets::%discord id of event-user%::active::type} = "flyingfish":
+							{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare"
+							set {_bonus} to 1+{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0065*100
+							set {_luck} to {_bonus}
+							{_luck} > 100
+							set {_luck} to 100
 						if {_luck} is less than 50:
 							set {_c} to random integer between 5 and 10
 							set {_d} to round(({_multi}+1)*{_c})
