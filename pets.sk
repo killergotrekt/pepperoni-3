@@ -1,0 +1,364 @@
+options:
+	bot: Pepperoni SE
+	petess: <:purpleessence:780516437986639952>
+
+command givepet <text> <text> <number>:
+	usage: /givepet <pet> <rarity> <user>
+	trigger:
+		set {pets::%arg-3%::%arg-1%} to true
+		set {pets::%arg-3%::%arg-1%::rarity} to arg-2
+		set {pets::%arg-3%::%arg-1%::xp} to 0
+		set {pets::%arg-3%::%arg-1%::level} to 0
+		if {pets::%arg-3%::%arg-1%::rarity} = "common":
+			set {pets::%arg-3%::%arg-1%::ess} to 5
+		if {pets::%arg-3%::%arg-1%::rarity} = "uncommon":
+			set {pets::%arg-3%::%arg-1%::ess} to 10
+		if {pets::%arg-3%::%arg-1%::rarity} = "rare":
+			set {pets::%arg-3%::%arg-1%::ess} to 20
+
+
+on vixio command:
+	if {pets::%discord id of event-user%::active::type} is set:
+		set {_food} to difference between {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::food} and now
+		set {_water} to difference between {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::water} and now
+		if {_food} is more than 32 hours:
+			{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Common" or "Uncommon"
+			reply with "Your Pet is done with your incompetent feeding! Your pet will now try and heist your bank."
+			set {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::food} to 6 hours before now
+			wait 10 seconds
+			set {_chance} to 40+({pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}/3)
+			chance of {_chance}%:
+				chance of 80%:
+					set {_b} to {moneybank::%discord id of event-user%}*0.45
+					remove {_b} from {moneybank::%discord id of event-user%}
+					reply with "Your pet successfully heisted your bank and stole a massive **$%{_b}%** from your account."
+				else:
+					set {_b} to {moneybank::%discord id of event-user%}*0.2
+					remove {_b} from {moneybank::%discord id of event-user%}
+					reply with "Your pet successfully heisted your bank and stole **$%{_b}%** from your account."
+			else:
+				set {_b} to round({money::%discord id of event-user%}*0.25)
+				remove {_b} from {money::%discord id of event-user%}
+				set {_randompoll::*} to "drill into the vault", "attack the SWAT team", "steal money", and "tackle the bank teller"
+				set {_c} to random element out of {_randompoll::*}
+				reply with "**POLICE OFFICER** Is this your retarded pet? We caught em trying to %{_c}%. Unacceptable, here's a fine of **$%{_b}%**."
+			stop
+		if {_water} is more than 32 hours:
+			{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Common" 
+			reply with "Your Pet is done with your incompetent care! Your pet will now try and heist your bank."
+			set {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::water} to 6 hours before now
+			wait 10 seconds
+			set {_chance} to 40+({pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}/3)
+			chance of {_chance}%:
+				chance of 80%:
+					set {_b} to {moneybank::%discord id of event-user%}*0.45
+					remove {_b} from {moneybank::%discord id of event-user%}
+					reply with "Your pet successfully heisted your bank and stole a massive **$%{_b}%** from your account."
+				else:
+					set {_b} to {moneybank::%discord id of event-user%}*0.2
+					remove {_b} from {moneybank::%discord id of event-user%}
+					reply with "Your pet successfully heisted your bank and stole **$%{_b}%** from your account."
+			else:
+				set {_b} to round({money::%discord id of event-user%}*0.25)
+				remove {_b} from {money::%discord id of event-user%}
+				set {_randompoll::*} to "drill into the vault", "attack the SWAT team", "steal money", and "tackle the bank teller"
+				set {_c} to random element out of {_randompoll::*}
+				reply with "**POLICE OFFICER** Is this your retarded pet? We caught em trying to %{_c}%. Unacceptable, here's a fine of **$%{_b}%**."
+			stop
+
+discord command pet [<text>] [<text>]:
+	aliases: pets
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		if skutil file "plugins/data/pet-xp.yml" doesn't exist:
+			create embed:
+				set the colour of the embed to red
+				set the title of embed to title with text "Content not avaliable"
+				set the description of embed to "This feature is disabled in this guild. Try again later"
+				set the footer of embed to footer with text "XP sheet missing"
+				send the last created embed to event-channel with event-bot
+			stop
+		if {levels::%discord id of event-user%::current} < 85:
+			create embed:
+				set the colour of the embed to red
+				add field named "Feature Locked" with value "Level Required: **%{levels::%discord id of event-user%::current}%**/**85**" to embed
+				send the last created embed to event-channel with event-bot
+			stop
+		arg-1 isn't set:
+			if {pets::%discord id of event-user%::active::type} is not set:
+				create embed:
+					set the colour of the embed to red
+					set the title of embed to title with text "No pet active"
+					set the description of embed to "You can equip a pet in `/pet selactive <pet>`"
+					set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+					send the last created embed to event-channel with event-bot
+				stop
+			else:
+				set {_pet.xp} to skutil yaml value "%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}+1%" from file "plugins/data/pet-xp.yml"
+				if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon":
+					set {_pet.xp} to 1.2*{_pet.xp}
+				if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+					set {_pet.xp} to 1.4*{_pet.xp}
+				if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::food} isn't set:
+					set {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::food} to now
+					set {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::water} to now
+				set {_food} to difference between {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::food} and now
+				set {_water} to difference between {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::water} and now
+				create embed:
+					set the title of embed to title with text "%{pets::%discord id of event-user%::active::type}% - Level %{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}%"
+					set the description of embed to "**Rarity**: %{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity}%%nl%Rarities get abilities. Common,1 - Uncommon,2 - Rare,3%nl%%nl%**XP** - `%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}% / %{_pet.xp}%`"
+					if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Common" or "Uncommon":
+						add field named ":warning: Need: Food" with value "*COMMON & UNCOMMON ONLY*%nl%Hostile in **%difference between 32 hours and {_food}%**%nl%Cost to feed: **$500**%nl%`/pet food`" to embed
+					if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Common":
+						add field named ":warning: Need: Water" with value "*COMMON ONLY*%nl%Hostile in **%difference between 28 hours and {_water}%**%nl%Cost to water: **$200**%nl%`/pet water`" to embed
+					if {pets::%discord id of event-user%::active::type} = "Dog":
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon" or "Rare":
+							add field named ":star: Ability: Steal Seal" with value "Increase stolen amount by **%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0020*100%%%**." to embed
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+							add field named ":star: Ability: Cop Briber" with value "Decrease the chance you get caught by **%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0030*100%%%**." to embed
+						add field named ":star: Ability: Attack!" with value "**%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0035*100%%%** chance to kill purse robbers." to embed
+					if {pets::%discord id of event-user%::active::type} = "flyingfish":
+						add field named ":star: Ability: Fish Finder" with value "Increase Fish Caught by **%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.004*100%%%**." to embed
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon" or "Rare":
+							add field named ":star: Ability: Plated Rod" with value "Your rod is indestructible." to embed
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+							add field named ":star: Ability: Ultimate Bait" with value "Increase rarer fish catch chance by **%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0065*100%%%**." to embed
+					if {pets::%discord id of event-user%::active::type} = "rock":
+						add field named ":star: Ability: Rock" with value "It's a rock. What did you expect?!?" to embed
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon" or "Rare":
+							add field named ":star: Ability: Graphite Shield" with value "Decrease chance caught in heists by **%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0025*100%%%**." to embed
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+							add field named ":star: Ability: Steel Platings" with value "Decrease your bank money stolen in heists by **%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}*0.0050*100%%%**." to embed					
+					set the footer of embed to footer with text "%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}/{_pet.xp}*100%%% level up "
+					send the last created embed to event-channel with event-bot
+				stop
+		arg-1 = "food":
+			if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} is not "Common" or "Uncommon":
+				reply with "This pet can feed itself, no thank you."
+				stop
+			if {pets::%discord id of event-user%::active::type} is not set:
+				create embed:
+					set the colour of the embed to red
+					set the title of embed to title with text "No pet active"
+					set the description of embed to "You can equip a pet in `/pet selactive <pet>`"
+					set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+					send the last created embed to event-channel with event-bot
+				stop
+			if {money::%discord id of event-user%} >= 500:
+				remove 500 from {money::%discord id of event-user%}
+				set {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::food} to now
+				reply with "Yum! your pet is happy... for now."
+			else:
+				reply with "You don't have enough money to feed your pet."
+		arg-1 = "water":
+			if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} is not "Common" or "Uncommon":
+				reply with "This pet can find water itself, no thank you."
+				stop
+			if {pets::%discord id of event-user%::active::type} is not set:
+				create embed:
+					set the colour of the embed to red
+					set the title of embed to title with text "No pet active"
+					set the description of embed to "You can equip a pet in `/pet selactive <pet>`"
+					set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+					send the last created embed to event-channel with event-bot
+				stop
+			if {money::%discord id of event-user%} >= 200:
+				remove 200 from {money::%discord id of event-user%}
+				set {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::water} to now
+				reply with "Slurp! your pet is happy... for now."
+			else:
+				reply with "You don't have enough money to feed your pet."
+		arg-1 = "limits" or "limit":
+			create embed:
+				set the colour of the embed to red
+				add field named "Pet Limitations" with value "- Only **1** pet is active at a time%nl%- You can only own one type of pet%nl%- Pets are limited to level **100**." to embed
+				set the footer of embed to footer with text "These limitations may be increased or removed in the future..."
+				send the last created embed to event-channel with event-bot
+		arg-1 = "deactive":
+			{pets::%discord id of event-user%::active::type} isn't set:
+				create embed:
+					set the colour of the embed to red
+					set the title of embed to title with text "Pets"
+					set the description of embed to "No Active Pet."
+					set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+					send the last created embed to event-channel with event-bot
+			else:
+				reply with "Deselected active pet: **%{pets::%discord id of event-user%::active::type}%**"
+				delete {pets::%discord id of event-user%::active::type}
+		arg-1 = "selactive":
+			if arg-2 isn't set:
+				if {pets::%discord id of event-user%::dog} is set:
+					add 1 to {_amountofpets}
+				if {_amountofpets} is not set:
+					create embed:
+						set the colour of the embed to red
+						set the title of embed to title with text "Pets"
+						set the description of embed to "You don't have any pets."
+						set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+						send the last created embed to event-channel with event-bot
+					stop
+				else:
+					create embed:
+						set the colour of the embed to cyan
+						set the title of embed to title with text "Pets"
+						if {pets::%discord id of event-user%::dog} is set:
+							add field named ":dog2: Dog `[LV%{pets::%discord id of event-user%::dog::level}%]`" with value "Rarity: **%{pets::%discord id of event-user%::dog::rarity}%**%nl%XP: **%{pets::%discord id of event-user%::dog::xp}%**%nl%Select this pet: `/pet selactive dog`" to embed
+						if {pets::%discord id of event-user%::flyingfish} is set:
+							add field named ":dolphin: FlyingFish `[LV%{pets::%discord id of event-user%::flyingfish::level}%]`" with value "Rarity: **%{pets::%discord id of event-user%::flyingfish::rarity}%**%nl%XP: **%{pets::%discord id of event-user%::flyingfish::xp}%**%nl%Select this pet: `/pet selactive flyingfish`" to embed
+						if {pets::%discord id of event-user%::rock} is set:
+							add field named ":rock: Rock `[LV%{pets::%discord id of event-user%::rock::level}%]`" with value "Rarity: **%{pets::%discord id of event-user%::rock::rarity}%**%nl%XP: **%{pets::%discord id of event-user%::rock::xp}%**%nl%Select this pet: `/pet selactive rock`" to embed
+						set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+						send the last created embed to event-channel with event-bot
+					stop
+			else:
+				if arg-2 = "dog" or "flyingfish" or "rock":
+					if {pets::%discord id of event-user%::%arg-2%} is set:
+						set {pets::%discord id of event-user%::active::type} to arg-2
+						reply with "Successfully switched active pet."
+					else:
+						reply with "You don't known this pet?"
+		arg-1 = "candy":
+			{pets::%discord id of event-user%::active::type} isn't set:
+				create embed:
+					set the colour of the embed to red
+					set the title of embed to title with text "No Active Pet"
+					set the description of embed to "You need to equip a pet. (`/pet selactive`)"
+					send the last created embed to event-channel with event-bot
+			else:
+				arg-2 isn't set:
+					create embed:
+						set the colour of the embed to cyan
+						set the title of embed to title with text "Candies"
+						set the description of embed to "Feed your pet: `/pet candy <candy>`"
+						add field named "<:greencandy:771492630453420053> `Green` Candies [%{candy::%discord id of event-user%::green}%]" with value "Gives *1000 XP*" to embed
+						add field named "<:rarecandy:771492630416064512> `Orange` Candies [%{candy::%discord id of event-user%::orange}%]" with value "Gives *15000 XP*" to embed
+						send the last created embed to event-channel with event-bot
+					stop
+				arg-2 = "green":
+					if {candy::%discord id of event-user%::green} >= 1:
+						remove 1 from {candy::%discord id of event-user%::green}
+						add 500 to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+						reply with "`+ 500 Pet XP` given to pet."
+					else:
+						reply with "You don't have enough of that candy."
+				arg-2 = "orange":
+					if {candy::%discord id of event-user%::orange} >= 1:
+						remove 1 from {candy::%discord id of event-user%::orange}
+						add 3000 to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+						reply with "`+ 3000 Pet XP` given to pet."
+					else:
+						reply with "You don't have enough of that candy."
+		arg-1 = "essence":
+			create embed:
+				set the title of embed to title with text "Pet Essence (%{essence::%discord id of event-user%::pets}%)"
+				set the description of embed to "Pet Essence can be used to forage pets, upgrade pets. Pet Essence can be gained by **salvaging pets**."
+				set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+				send the last created embed to event-channel with event-bot
+		arg-1 = "salvage":
+			{pets::%discord id of event-user%::active::type} isn't set:
+				if arg-2 isn't set:
+					create embed:
+						set the colour of the embed to cyan
+						set the title of embed to title with text "Salvagable Pets"
+						if {pets::%discord id of event-user%::dog} is set:
+							add field named ":dog2: Dog `[LV%{pets::%discord id of event-user%::dog::level}%]`" with value "Rarity: **%{pets::%discord id of event-user%::dog::rarity}%**%nl%Salvage this pet for {@petess} %{pets::%discord id of event-user%::dog::ess}%" to embed
+						if {pets::%discord id of event-user%::flyingfish} is set:
+							add field named ":dolphin: FlyingFish `[LV%{pets::%discord id of event-user%::flyingfish::level}%]`" with value "Rarity: **%{pets::%discord id of event-user%::flyingfish::rarity}%**%nl%Salvage this pet for {@petess} %{pets::%discord id of event-user%::flyingfish::ess}%" to embed
+						if {pets::%discord id of event-user%::rock} is set:
+							add field named ":rock: Rock `[LV%{pets::%discord id of event-user%::rock::level}%]`" with value "Rarity: **%{pets::%discord id of event-user%::rock::rarity}%**%nl%Salvage this pet for {@petess} %{pets::%discord id of event-user%::rock::ess}%" to embed
+						set the footer of embed to footer with text "Usage: '/pet salvage <pet>' | Pets have limitations. Read it here: '/pet limits'"
+						send the last created embed to event-channel with event-bot
+				else:
+					arg-1 = "dog" or "flyingfish" or "rock":
+						if {pets::%discord id of event-user%::dog} is set:
+							{pets::%discord id of event-user%::dog::ess} isn't set:
+								if {pets::%discord id of event-user%::dog::rarity} = "Common":
+									set {pets::%discord id of event-user%::dog::ess} to 5
+								if {pets::%discord id of event-user%::dog::rarity} = "UnCommon":
+									set {pets::%discord id of event-user%::dog::ess} to 10
+								if {pets::%discord id of event-user%::dog::rarity} = "Rare":
+									set {pets::%discord id of event-user%::dog::ess} to 20
+							if {confirmdogsalvage.%discord id of event-user%} isn't set:
+								set {confirmdogsalvage.%discord id of event-user%} to true
+								reply with "Are you sure you want to salvage this pet? This action is irreversable. Run this command again to continue."
+								wait 8 seconds
+								delete {confirmdogsalvage.%discord id of event-user%}
+							else:
+								add {pets::%discord id of event-user%::dog::ess} to {essence::%discord id of event-user%::pets}
+								delete {pets::%discord id of event-user%::dog}
+								delete {pets::%discord id of event-user%::dog::*}
+								reply with "Done."
+						else:
+							reply with "You don't own this dog."
+			else:
+				create embed:
+					set the colour of the embed to red
+					set the title of embed to title with text "Pets"
+					set the description of embed to "You must deactive any current pet! (`/pet deactive`)"
+					set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+					send the last created embed to event-channel with event-bot
+		arg-1 = "shop":
+			if arg-2 isn't set:
+				create embed:
+					set the colour of the embed to cyan
+					set the title of embed to title with text "Pet Shop"
+					set the description of embed to "Hello. Welcome to the pet shop. These are the pets that is currently sold right now. I'm sorry if you cannot find the pet you are looking for. You may need to craft those pets.%nl%%Nl%Warning: All pets will no longer be purchaseable in the future."
+					add field named ":rock: Rock [$5,000]" with value "Rarites: Common, Uncommon, Rare%Nl%Hardened and tough." to embed
+					add field named ":dog2: Dog [$30,000]" with value "Rarites: Common, Uncommon, Rare%Nl%Great for purse stealing people." to embed
+					add field named ":dolphin: FlyingFish [$40,000]" with value "Rarites: Common, Uncommon, Rare%Nl%Fishing companion, great for stuff." to embed
+					set the footer of embed to footer with text "Pets have limitations. Read it here: '/pet limits'"
+					send the last created embed to event-channel with event-bot
+			else:
+				arg-2 = "dog":
+					if {pets::%discord id of event-user%::dog} is set:
+						reply with "I'm sorry, but you already have a dog pet."
+						stop
+					if {money::%discord id of event-user%} >= 30000:
+						remove 30000 from {money::%discord id of event-user%}
+						set {_b} to random integer between 1 and 100
+						if {_b} is less than 70:
+							console command "/givepet dog Common %discord id of event-user%"
+						if {_b} is less than 95:
+							console command "/givepet dog Uncommon %discord id of event-user%"
+						if {_b} is less than 5:
+							console command "/givepet dog Rare %discord id of event-user%"
+						reply with "You brought a **Mystery Dog Pet**!"
+					else:
+						reply with "I'm sorry, but you don't have enough cash."
+				arg-2 = "rock":
+					if {pets::%discord id of event-user%::rock} is set:
+						reply with "I'm sorry, but you already have a rock pet."
+						stop
+					if {money::%discord id of event-user%} >= 5000:
+						remove 5000 from {money::%discord id of event-user%}
+						set {_b} to random integer between 1 and 100
+						if {_b} is less than 70:
+							console command "/givepet %arg-2% Common %discord id of event-user%"
+						if {_b} is less than 95:
+							console command "/givepet %arg-2% Uncommon %discord id of event-user%"
+						if {_b} is less than 5:
+							console command "/givepet %arg-2% Rare %discord id of event-user%"
+						reply with "You brought a **Mystery Rock Pet**!"
+					else:
+						reply with "I'm sorry, but you don't have enough cash."
+
+				arg-2 = "flyingfish":
+					if {pets::%discord id of event-user%::flyingfish} is set:
+						reply with "I'm sorry, but you already have a flyingfish pet."
+						stop
+					if {money::%discord id of event-user%} >= 40000:
+						remove 40000 from {money::%discord id of event-user%}
+						set {_b} to random integer between 1 and 100
+						if {_b} is less than 70:
+							console command "/givepet flyingfish Common %discord id of event-user%"
+						if {_b} is less than 95:
+							console command "/givepet flyingfish Uncommon %discord id of event-user%"
+						if {_b} is less than 5:
+							console command "/givepet flyingfish Rare %discord id of event-user%"
+						reply with "You brought a **Mystery Flying Fish Pet**!"
+					else:
+						reply with "I'm sorry, but you don't have enough cash."
+
+
+			
