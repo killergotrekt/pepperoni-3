@@ -11,6 +11,28 @@ on guild message receive:
 			{heist::%discord id of event-channel%::victim} is not discord id of event-user
 			add discord id of event-user to {heist::%discord id of event-channel%::people::*}
 			reply with "**%event-user%** has joined the heist!"
+	if {pursesteal.%discord id of event-user%} is true:
+		{pets::%discord id of event-user%::active::type} is set
+		skutil file "plugins/data/pet-xp.yml" exists
+		delete {pursesteal.%discord id of event-user%}
+		{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level} is less than 100
+		set {_pet.xp} to skutil yaml value "%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}+1%" from file "plugins/data/pet-xp.yml"
+		if {premium::%discord id of event-user%} is set:
+			add 20 to {_xp}
+		if {levels::%discord id of event-user%::current} >= 200:
+			add 20 to {_xp}
+		add 20 to {_xp}
+		add {_xp} to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+		if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon":
+			set {_pet.xp} to 1.2*{_pet.xp}
+		if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+			set {_pet.xp} to 1.4*{_pet.xp}
+		if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp} >= {_pet.xp}:
+			remove {_pet.xp} from {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+			wait 10 ticks
+			add 1 to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}
+			reply with "Your **%{pets::%discord id of event-user%::active::type}%** leveled up to `%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}%`!"
+
 
 
 discord command /robinfo:
@@ -92,6 +114,26 @@ discord command bankrob [<member>]:
 			loop {_people} times:
 				set {_someone} to random element out of {heist::%discord id of event-channel%::people::*}
 				chance of {_chance}%:
+					if {pursesteal.%discord id of event-user%} is true:
+						{pets::%discord id of event-user%::active::type} is set
+						skutil file "plugins/data/pet-xp.yml" exists
+						{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level} is less than 100
+						set {_pet.xp} to skutil yaml value "%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}+1%" from file "plugins/data/pet-xp.yml"
+						if {premium::%discord id of event-user%} is set:
+							add 50 to {_xp}
+						if {levels::%discord id of event-user%::current} >= 200:
+							add 50 to {_xp}
+						add 50 to {_xp}
+						add {_xp} to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon":
+							set {_pet.xp} to 1.2*{_pet.xp}
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+							set {_pet.xp} to 1.4*{_pet.xp}
+						if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp} >= {_pet.xp}:
+							remove {_pet.xp} from {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+							wait 10 ticks
+							add 1 to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}
+							reply with "Your **%{pets::%discord id of event-user%::active::type}%** leveled up to `%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}%`!"
 					set {_c} to {moneybank::%discord id of arg-1%}*0.25
 					remove {_c} from {moneybank::%discord id of arg-1%}
 					add {_c} to {money::%{_someone}%}
@@ -169,17 +211,36 @@ discord command rob [<member>]:
 					set {Money::%discord id of event-user%} to {Money::%discord id of event-user%}/2
 					stop
 				if {event.active.crime} is not set:
-					chance of 66.67%:
+					if {pets::%discord id of arg-1%::active::type} = "Dog":
+						set {_1} to {pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0030
+						set {_chance} to 66.67*(1-{_1})
+					else:
+						set {_chance} to 66.67
+					chance of {_chance}%:
+						if {pets::%discord id of arg-1%::active::type} = "Dog":
+							set {_chance} to {pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0035*100
+							chance of {_chance}%:
+								reply with "**%event-user%**'s dog has bit you to death. You died!"
+								set {Money::%discord id of event-user%} to {Money::%discord id of event-user%}/2
+								stop
 						chance of 18.5%:
-							set {_c} to {money::%discord id of arg-1%}*0.4
+							if {pets::%discord id of arg-1%::active::type} = "Dog":
+								set {_c} to {money::%discord id of arg-1%}*0.4*({pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0020*100+1)
+							else:
+								set {_c} to {money::%discord id of arg-1%}*0.4
 							remove {_c} from {money::%discord id of arg-1%}
 							add {_c} to {money::%discord id of event-user%}
 							reply with "You stole a big **$%{_c}%** out of **%arg-1%'s** purse."
+							set {pursesteal.%discord id of event-user%} to true
 							stop
 						chance of 80%:
-							set {_c} to {money::%discord id of arg-1%}*0.2
+							if {pets::%discord id of arg-1%::active::type} = "Dog":
+								set {_c} to {money::%discord id of arg-1%}*0.2*({pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0020*100+1)
+							else:
+								set {_c} to {money::%discord id of arg-1%}*0.2
 							remove {_c} from {money::%discord id of arg-1%}
 							add {_c} to {money::%discord id of event-user%}
+							set {pursesteal.%discord id of event-user%} to true
 							reply with "You stole **$%{_c}%** from **%arg-1%.**"
 							stop
 						else:
@@ -199,18 +260,31 @@ discord command rob [<member>]:
 							wait 2 seconds
 							reply with "The police officer and his goons beat the crap outta you and executed you and looted 25%% of your purse. Also you died!"
 				else:
-					chance of 83.17%:
+					if {pets::%discord id of arg-1%::active::type} = "Dog":
+						set {_1} to {pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0030
+						set {_chance} to 83.17*(1-{_1})
+					else:
+						set {_chance} to 83.17
+					chance of {_chance}%:
 						chance of 28.5%:
-							set {_c} to {money::%discord id of arg-1%}*0.45
+							if {pets::%discord id of arg-1%::active::type} = "Dog":
+								set {_c} to {money::%discord id of arg-1%}*0.45*({pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0020*100+1)
+							else:
+								set {_c} to {money::%discord id of arg-1%}*0.45
 							remove {_c} from {money::%discord id of arg-1%}
 							add {_c} to {money::%discord id of event-user%}
+							set {pursesteal.%discord id of event-user%} to true
 							reply with "You stole a big **$%{_c}%** out of **%arg-1%'s** purse."
 							stop
 						chance of 85%:
-							set {_c} to {money::%discord id of arg-1%}*0.35
+							if {pets::%discord id of arg-1%::active::type} = "Dog":
+								set {_c} to {money::%discord id of arg-1%}*0.35*({pets::%discord id of arg-1%::%{pets::%discord id of arg-1%::active::type}%::level}*0.0020*100+1)
+							else:
+								set {_c} to {money::%discord id of arg-1%}*0.35
 							remove {_c} from {money::%discord id of arg-1%}
 							add {_c} to {money::%discord id of event-user%}
 							reply with "You stole **$%{_c}%** from **%arg-1%.**"
+							set {pursesteal.%discord id of event-user%} to true
 							stop
 						else:
 							set {_c} to {money::%discord id of event-user%}*0.3
