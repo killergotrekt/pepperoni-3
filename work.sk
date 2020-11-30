@@ -12,12 +12,14 @@ on guild message receive:
 				set {_pay} to 300*({workjob::%discord id of event-user%::bonus}+1)
 			if {workjob::%discord id of event-user%::current} = "Soldier":
 				set {_pay} to 400*({workjob::%discord id of event-user%::bonus}+1)
+			if {event.active.work} is set:
+				set {_pay} to {_pay}*1.5
 			add {_pay} to {money::%discord id of event-user%}
 			add 1 to {worktimes::%discord id of event-user%}
 			add 1 to {worktimes24h.times.%discord id of event-user%}
 			reply with "**BOSS** Excellent work %event-user%, I have paid you `$%{_pay}%`. Continue this work and you will gain a promotion."
 			chance of 40%:
-				add 0.05 to {workjob::%discord id of event-user%::bonus}
+				add 0.1 to {workjob::%discord id of event-user%::bonus}
 				if {workjob::%discord id of event-user%::current} = "Janitor":
 					set {_pay} to 200*{workjob::%discord id of event-user%::bonus}
 				if {workjob::%discord id of event-user%::current} = "Karen":
@@ -142,13 +144,22 @@ discord command work [<text>]:
 				send the last created embed to event-channel with event-bot
 		else:
 			set {_c} to difference between {lastwork.%discord id of event-user%} and now
-			if {_c} is less than 1 hour:
-				create embed:
-					set the description of embed to "You recently worked."
-					set the footer of embed to footer with text "Try again within %difference between 1 hours and {_c}%"
-					set the colour of the embed to red
-					send the last created embed to event-channel with event-bot
-				stop
+			if {event.active.work} isn't set:
+				if {_c} is less than 1 hour:
+					create embed:
+						set the description of embed to "You recently worked."
+						set the footer of embed to footer with text "Try again within %difference between 1 hours and {_c}%"
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+					stop
+			else:
+				if {_c} is less than 30 minutes:
+					create embed:
+						set the description of embed to "You recently worked."
+						set the footer of embed to footer with text "Try again within %difference between 30 minutes and {_c}%"
+						set the colour of the embed to red
+						send the last created embed to event-channel with event-bot
+					stop
 			wait 10 ticks
 			{workjob::%discord id of event-user%::current} = "soldier":
 				set {_c} to difference between {worktimes24h.now.%discord id of event-user%} and now
@@ -174,7 +185,7 @@ discord command work [<text>]:
 					reply with "**WORK** What is `%{_a}%x + %{_b}%` if `x = %{_x}%`?"
 				else:
 					set {_f} to {_a}*{_x}
-					set {_ab} to {_f}+{_b} 
+					set {_ab} to {_f}-{_b} 
 					set {workanswer::%discord id of event-user%::a} to "%{_ab}%"
 					set {workanswer::%discord id of event-user%::b} to discord id of event-channel
 					reply with "**WORK** What is `%{_a}%x - %{_b}%` if `x = %{_x}%`?"
