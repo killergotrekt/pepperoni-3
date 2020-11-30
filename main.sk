@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.7.5
-	build: tricksandtraps_preupgrade
-	maincctv: 123
+	version: 2.8
+	build: thepetsupdate_1.0
+	maincctv: 213
 
 on skript load:
-	login to "aaa" with name "{@bot}"
+	login to "222222222222222222222222222222222222222222222222222222222222222222222222222222222" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command /help:
@@ -16,7 +16,8 @@ discord command /help:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Eco-Income" with value "`/candy`, `/perks`, `/market`, `/hourly`, `/daily`, `/weekly`, `/beg`, `/fish`, `/pm`" to embed
-			add field named "Eco-Balance" with value "`/rob`, `/bankrob`, `/gamble`, `/bal`, `/dep`, `/wd`, `/difficulty`, `/qug`, `/bet`" to embed
+			add field named "Eco-Balance" with value "`/pay`, `/rob`, `/bankrob`, `/gamble`, `/bal`, `/dep`, `/wd`, `/difficulty`, `/qug`, `/bet`" to embed
+			add field named "Eco-Pets" with value "`/pets`" to embed
 			add field named "Misc" with value "`/help`, `/gems`, `/levels`" to embed
 			add field named "Other" with value "`/github`, `/github`, `/invite`" to embed
 			set the footer of embed to footer with text "Debug: ""{@build}"""
@@ -372,6 +373,25 @@ on vixio command:
 		{levels::%discord id of event-user%::current} = 500:
 			reply with "**%event-user%** has reached level **%{levels::%discord id of event-user%::current}%**!"
 			add 1000 to {Gems::%discord id of event-user%}
+	if {pets::%discord id of event-user%::active::type} is set:
+		skutil file "plugins/data/pet-xp.yml" exists
+		{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level} is less than 100
+		set {_pet.xp} to skutil yaml value "%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}+1%" from file "plugins/data/pet-xp.yml"
+		if {premium::%discord id of event-user%} is set:
+			add 2 to {_xp}
+		if {levels::%discord id of event-user%::current} >= 200:
+			add 2 to {_xp}
+		add 2 to {_xp}
+		add {_xp} to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+		if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Uncommon":
+			set {_pet.xp} to 1.2*{_pet.xp}
+		if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::rarity} = "Rare":
+			set {_pet.xp} to 1.4*{_pet.xp}
+		if {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp} >= {_pet.xp}:
+			remove {_pet.xp} from {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::xp}
+			wait 10 ticks
+			add 1 to {pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}
+			reply with "Your **%{pets::%discord id of event-user%::active::type}%** leveled up to `%{pets::%discord id of event-user%::%{pets::%discord id of event-user%::active::type}%::level}%`!"
 	if {levels::%discord id of event-user%::current} >= 125:
 		{protectioncash::%discord id of event-user%::now} isn't set:
 			{Difficulty::%discord id of event-user%} = "Pacifist"
