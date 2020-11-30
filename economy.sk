@@ -1,5 +1,5 @@
 options:
-	economycctv: xxx
+	economycctv: daw
 	bot: Pepperoni SE
 
 discord command bal [<member>]:
@@ -298,6 +298,31 @@ discord command /beg [<Text>]:
 					set {_gems} to random integer between 30 and 50
 					add {_gems} to {gems::%discord id of event-user%}
 					reply with "**%{_person}%** has given you **%{_gems}% gems!**"
+
+discord command pay [<member>] [<number>]:
+	prefixes: /
+	bots: {@bot}
+	trigger:
+		arg-2 isn't set:
+			reply with "`/pay <user> <amount>`, Tax is 4%%, premium is 1.5%%."
+			stop
+		arg-1 isn't set:
+			reply with "`/pay <user> <amount>`, Tax is 4%%, premium is 1.5%%."
+			stop
+		arg-2 is less than 1:
+			reply with "Arg-1 must be > 1"
+		set {_money} to floor(arg-2)
+		if {money::%discord id of event-user%} < arg-2:
+			reply with "Not enough money!"
+		else:
+			if {premium::%discord id of event-user%} is set:
+				set {_tax} to 0.015*{_money}
+			else:
+				set {_tax} to 0.04*{_money}
+			set {_give} to {_money}-{_tax}
+			remove {_give} from {money::%discord id of arg-1%}
+			add {_give} to {money::%discord id of event-user%}
+			reply with "You paid **%event-user%**, `$%{_money}%`, after tax, they got `$%{_give}%`"
 											
 discord command level [<text>]:
 	aliases: levels
