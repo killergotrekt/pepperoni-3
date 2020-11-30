@@ -1,5 +1,5 @@
 options:
-	eventcctv: xxx
+	eventcctv: a
 	bot: Pepperoni SE
 
 every minute:
@@ -58,6 +58,18 @@ every minute:
 		if {event.active.crime} <= 0:
 			delete {event.active.crime}
 			send "**CRIME SPREE** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+	{event.active.work} isn't set:
+		remove 1 from {event.timer.work}
+		if {event.timer.work} is 0:
+			set {event.timer.work} to 7200
+			set {event.active.work} to 1440
+			send "**NATIONAL LABOR DAY** This event has started! Start working! You gain 50%% more money & you can work every 30m." to channel with id "{@eventcctv}" with "{@bot}"
+	else:
+		remove 1 from {event.active.work}
+		if {event.active.work} <= 0:
+			delete {event.active.work}
+			send "**NATIONAL LABOR DAY** This event has ended." to channel with id "{@eventcctv}" with "{@bot}"
+
 
 discord command /reschedule:
 	trigger:
@@ -84,6 +96,8 @@ discord command event [<text>]:
 			set {event.timer.meme} to 1020
 		if {event.timer.crime} isn't set:
 			set {event.timer.crime} to 540
+		if {event.timer.work} isn't set:
+			set {event.timer.work} to 7200
 		create embed:
 			set the title of embed to title with text "Event Master"
 			set the description of embed to "Limited time events that spice up ur gameplay."
@@ -103,5 +117,9 @@ discord command event [<text>]:
 				add field named ":oncoming_police_car: `Crime Spree`" with value "`Description`: *Effective for 30 minutes. Wallet Robbing chance significantly increased. Fines are significantly decreased. CD decreased. Rob amount very significantly increase.*%nl%`Starts in`: **%{event.timer.crime}% minutes**" to embed
 			else:
 				add field named "[:warning:] :oncoming_police_car: `Crime Spree`" with value "`Description`: *Effective for 30 minutes. Wallet Robbing chance significantly increased. Fines are significantly decreased. CD decreased. Rob amount very significantly increase.*%nl%`Ends`: **%{event.active.crime}% minutes**" to embed
+			if {event.active.work} is not set:
+				add field named ":tools: `National Labor Day`" with value "`Description`: *Effective for 1 day. Increase pay by 50%%. Work time decreased to 30m.*%nl%`Starts in`: **%{event.timer.work}% minutes**" to embed
+			else:
+				add field named "[:warning:] :tools: `National Labor Day`" with value "`Description`: *Effective for 1 day. Increase pay by 50%%. Work time decreased to 30m.*%nl%`Ends`: **%{event.active.work}% minutes**" to embed
 			send the last created embed to event-channel with event-bot
 
