@@ -1,6 +1,9 @@
 # Pepperoni 2.0 SE
 A revived version of the Operation pepperoni.
 
+### Update: Pepperoni killed
+Pepperoni will no longer recieve updates.
+
 ### Update: December 10th, 2020
 Official Pepperoni SE will be discontinued soon.
 #### 2.10/3.0 Status
