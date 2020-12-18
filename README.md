@@ -1,4 +1,4 @@
-# Pepperoni 2.0 SE
+# Pepperoni SE (2nd generation)
 A revived version of the Operation pepperoni.
 
 ### Update: Pepperoni killed
