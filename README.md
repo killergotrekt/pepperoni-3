@@ -8,7 +8,6 @@ New [Pepperoni Plus](https://github.com/killergotrekt/pepperoni-plus) now avalia
 ## All generations:
 Name | Generation | Latest | Link
 ------------ | ------------- | ------------- | -------------
-Plus | 3rd | 1.0 | [Here](https://github.com/killergotrekt/pepperoni-plus)
 SE | 2nd | 2.8 | [Here](https://github.com/killergotrekt/pepperoni-se)
 Alpha | 1st | 0.5 | **N/A**
 
