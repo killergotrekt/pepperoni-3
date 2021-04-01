@@ -1,14 +1,16 @@
 options:
 	bot: Pepperoni SE
 	version: 2.8
-	build: thepetsupdate_1.0
+	build: thepetsupdate_1.1
 	maincctv: 213
 
 on skript load:
 	login to "222222222222222222222222222222222222222222222222222222222222222222222222222222222" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
-discord command /help:
+discord command help:
+	aliases: ?
+	prefixes: /
 	bots: {@bot}
 	trigger:
 		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/help`" to channel with id "{@maincctv}" with "{@bot}"
