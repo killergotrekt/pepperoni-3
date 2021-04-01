@@ -1,18 +1,23 @@
 # Pepperoni SE (2nd generation)
 A revived version of the Operation pepperoni.
 
-# New
-
-New [Pepperoni Plus](https://github.com/killergotrekt/pepperoni-plus) now avaliable
-
 ## All generations:
 Name | Generation | Latest | Link
 ------------ | ------------- | ------------- | -------------
-SE | 2nd | 2.8 | [Here](https://github.com/killergotrekt/pepperoni-se)
+SE | 2nd | 2.8.1 | [Here](https://github.com/killergotrekt/pepperoni-se)
 Alpha | 1st | 0.5 | **N/A**
 
 
 # Older
+### Update: April 1st, 2020
+Upcoming Updates:
+- Lawyer Update
+- Online Influncer Update
+
+#### Rollout
+2.9 | 2.10
+------------ | -------------
+~This Week | ~Next Week
 
 ### Update: Pepperoni killed
 Pepperoni will no longer recieve updates.
