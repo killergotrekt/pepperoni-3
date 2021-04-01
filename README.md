@@ -7,6 +7,11 @@ Name | Generation | Latest | Link
 SE | 2nd | 2.8.1 | [Here](https://github.com/killergotrekt/pepperoni-se)
 Alpha | 1st | 0.5 | **N/A**
 
+## Other Bot
+Name | Link
+------------ | ------------- 
+Epidemic | [Here](https://github.com/killergotrekt/epidemic)
+
 
 # Older
 ### Update: April 1st, 2020
