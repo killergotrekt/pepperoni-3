@@ -3,6 +3,17 @@ options:
 	bot: Pepperoni SE
 
 every minute:
+	{lawyernew} is not set:
+		set {lawyernew} to 60
+	remove 1 from {lawyernew}
+	if {lawyernew} < 0:
+		set {lawyernew} to 60
+		newLawyer(1)
+		newLawyer(2)
+		newLawyer(3)
+		newLawyer(4)
+		newLawyer(5)
+		newLawyer(6)
 	{event.active.doublexp} isn't set:
 		remove 1 from {event.timer.doublexp}
 		if {event.timer.doublexp} is 0:
@@ -121,5 +132,6 @@ discord command event [<text>]:
 				add field named ":tools: `National Labor Day`" with value "`Description`: *Effective for 1 day. Increase pay by 50%%. Work time decreased to 30m.*%nl%`Starts in`: **%{event.timer.work}% minutes**" to embed
 			else:
 				add field named "[:warning:] :tools: `National Labor Day`" with value "`Description`: *Effective for 1 day. Increase pay by 50%%. Work time decreased to 30m.*%nl%`Ends`: **%{event.active.work}% minutes**" to embed
+			add field named ":globe_with_meridians: `Lawyer Marketplace Reload`" with value "`Description`: *Every hour, new lawyers are randomly generated.*%nl%`Starts in`: **%{lawyernew}% minutes**" to embed
 			send the last created embed to event-channel with event-bot
 
