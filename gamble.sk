@@ -48,7 +48,10 @@ discord command bet [<number>]:
 		else:
 			set {lastbet.%discord id of event-user%} to now
 			set {_you} to random integer between 1 and 10
-			set {_me} to random integer between 1 and 15
+			if {difficulty::%discord id of event-user%} = "expert":
+				set {_me} to random integer between 1 and 15
+			else:
+				set {_me} to random integer between 1 and 10
 			if {_you} > {_me}:
 				if {difficulty::%discord id of event-user%} = "Pacifist":
 					set {_winpercent} to 1.25
