@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.8.1
-	build: thepetsupdate_1.1
+	version: 2.9
+	build: lawyerupdatepart1
 	maincctv: 213
 
 on skript load:
-	login to "222222222222222222222222222222222222222222222222222222222222222222222222222222222" with name "{@bot}"
+	login to ".x" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command help:
@@ -18,8 +18,8 @@ discord command help:
 			set the title of embed to title with text "Help - version {@version}"
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Eco-Income" with value "`/candy`, `/perks`, `/market`, `/hourly`, `/daily`, `/weekly`, `/beg`, `/fish`, `/pm`" to embed
-			add field named "Eco-Balance" with value "`/pay`, `/rob`, `/bankrob`, `/gamble`, `/bal`, `/dep`, `/wd`, `/difficulty`, `/qug`, `/bet`" to embed
-			add field named "Eco-Pets" with value "`/pets`" to embed
+			add field named "Eco-Balance" with value "`/pay`, `/rob`, `/bankrob`, `/gamble`, `/bal`, `/dep`, `/wd`, `/difficulty`, `/qug`, `/bet`, `/pets`" to embed
+			add field named "DLC" with value "`/lawyer`" to embed
 			add field named "Misc" with value "`/help`, `/gems`, `/levels`" to embed
 			add field named "Other" with value "`/github`, `/github`, `/invite`" to embed
 			set the footer of embed to footer with text "Debug: ""{@build}"""
@@ -35,15 +35,16 @@ discord command /difficulty [<text>]:
 				set the title of embed to title with text "Difficulty"
 				set the description of embed to "Difficulty is you stepping up to the challenge to Pepperoni for a new experience. Higher risk = higher reward. Are you up to the challenge?%nl%`/difficulty <choose>` to change. Cooldown 14 hours."
 				if {levels::%discord id of event-user%::current} >= 125:
-					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)%nl%:warning: **Cost**: 100 gems per day. Suscription canceled if 1. not enough gems, 2. switching to normal or other." to embed
+					add field named "`Pacifist`" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)%nl%:warning: **Cost**: 100 gems per day. Suscription canceled if 1. not enough gems, 2. switching to normal or other." to embed
 				else:
-					add field named "`Pacifist` (noob mode)" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)" to embed
+					add field named "`Pacifist`" with value "> Cannot be robbed%nL%> Cannot rob others%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 25%% getting from winnings from `/bet` (from 50%%)" to embed
 				add field named "`Normal` (default)" with value "> Robbed (you being victim) Rate: Default%nL%> Rob (you being robber) Rate: Default%nl%> Bet: 1.0x difficulty (default)%nl%> Bet: 50%% getting from winnings from `/bet` (default)" to embed
+				add field named "`Expert`" with value "> Robbed (you being victim) Rate: Default%nL%> Rob (you being robber) Rate: Default%nl%> Bet: 2.0x difficulty (+1)%nl%> Bet: 100%% getting from winnings from `/bet` (+50%%)" to embed
 				set the footer of embed to footer with text "You selected: %{difficulty::%discord id of event-user%}%"
 				send the last created embed to event-channel with event-bot
 			stop
-		arg-1 isn't "Pacifist" or "Normal":
-			reply with "Accepted values: `pacifist`, `normal`"
+		arg-1 isn't "Pacifist" or "Normal" or "Expert":
+			reply with "Accepted values: `pacifist`, `normal`, `expert`"
 			stop
 		arg-1 = {difficulty::%discord id of event-user%}:
 			reply with "No, you can't do that."
@@ -274,12 +275,7 @@ discord command /invite:
 	trigger:
 		send "`%event-user%##%discriminator of event-user%` (`%discord id of event-user%`) in guild `%event-guild%` in channel (`##%event-channel%`, `%discord id of event-channel%`) executed `/invite`" to channel with id "{@maincctv}" with "{@bot}"
 		reply with "https://discord.com/api/oauth2/authorize?client_id=671896615950221322&permissions=2147483639&scope=bot"
-
-command wip:
-	trigger:
-		set {wip} to !{wip}
-		broadcast "&7%{wip}%"
-
+	
 on vixio command:
 	{wip} is true:
 		cancel event
@@ -299,23 +295,23 @@ on vixio command:
 		set {lastcommand.%discord id of event-user%} to now
 	if {premium::%discord id of event-user%} = "Not Active":
 		set {_D} to difference between {lastcommand.%discord id of event-user%} and now
-		if {_D} is less than 4 seconds:
+		if {_D} is less than 1 seconds:
 			cancel event
 			create embed:
 				set the title of embed to title with text "Cooldown"
-				set the description of embed to "Pepperoni can be used again in `%difference between 4 seconds and {_d}%`"
+				set the description of embed to "Pepperoni can be used again in `%difference between 1 seconds and {_d}%`"
 				set the colour of the embed to red
-				set the footer of embed to footer with text "Get Premium to decrease cooldown 4 -> 2"
+				set the footer of embed to footer with text "Get Premium to decrease cooldown 1 -> 0"
 				send the last created embed to event-channel with event-bot
 		else:
 			set {lastcommand.%discord id of event-user%} to now
 	if {premium::%discord id of event-user%} = "Active":
 		set {_D} to difference between {lastcommand.%discord id of event-user%} and now
-		if {_D} is less than 2 seconds:
+		if {_D} is less than 0 seconds:
 			cancel event
 			create embed:
 				set the title of embed to title with text "Cooldown"
-				set the description of embed to "Pepperoni can be used again in `%difference between 2 seconds and {_d}%`"
+				set the description of embed to "Pepperoni can be used again in `%difference between 0 seconds and {_d}%`"
 				set the colour of the embed to red
 				set the footer of embed to footer with text "Chill out bro"
 				send the last created embed to event-channel with event-bot
