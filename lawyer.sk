@@ -1,0 +1,111 @@
+options:
+	bot: Pepperoni SE
+
+on script load:
+	set {database::lawyer::namef::*} to "Bob", "Silly", "Bill", "Billy", "Donald", "Joe", "Ruth", "Looter", "Dick", "Adolf", "Joesph", "Lice", "Andrew", "Ben", "Xi", "Bobathan", "Mark", "Meth", "Beth", "Crack", "Rig", "Jerry", "Mac", "Fak", "Sack", and "McDonald"
+	set {database::lawyer::namel::*} to "Hitler", "de Osis", "Hiden", "Biden", "Trump", "J. Dementia", "Putin", "Kremlin", "Moscow", "Mitch", "U", "Jr.", "Sr.", "Tong", "Tang", "Lu", "Gates", "High", "Cook", "Dawn", "Hope", "Donke", "Monke", "IV", "XDR" and "Lam"
+		
+function newLawyer(n: integer):
+	delete {lmarket::%{_n}%::locked}
+	set {_fn} to random element out of {database::lawyer::namef::*}
+	set {_ln} to random element out of {database::lawyer::namel::*}
+	set {lmarket::%{_n}%::name} to "%{_fn}% %{_ln}%"
+	set {_gpa} to random integer between 0 and 40
+	set {lmarket::%{_n}%::gpa} to {_gpa}/10
+	chance of 80%:
+		set {lmarket::%{_n}%::iq} to random integer between 80 and 115
+	else:
+		set {lmarket::%{_n}%::iq} to random integer between 130 and 170
+	set {lmarket::%{_n}%::yr} to random integer between 1 and 10
+	set {_gpaweight} to {lmarket::%{_n}%::gpa}*10
+	set {_iqweight} to {lmarket::%{_n}%::iq}*35
+	set {_experiencemultiplier} to 1+(log({lmarket::%{_n}%::yr}*5))
+	set {lmarket::%{_n}%::score} to round({_gpaweight}+{_iqweight}*{_experiencemultiplier})
+	set {lmarket::%{_n}%::cut} to random integer between 15 and 70
+	set {lmarket::%{_n}%::cost} to {lmarket::%{_n}%::score}*1.75*{_experiencemultiplier}
+
+discord command lawyer [<text>] [<text>]:
+	aliases: lawyers, legal
+	prefixes: /
+	trigger:
+		arg-1 isn't set:
+			{lawyer::%discord id of event-user%::name} isn't set:
+				create embed:
+					set the title of embed to title with text "You have no lawyer."
+					set the colour of the embed to red
+					set the footer of embed to footer with text "Find some in the market: /lawyer market"
+					send the last created embed to event-channel with event-bot
+			else:
+				create embed:
+					set the title of embed to title with text "%event-user%'s lawyer: %{lawyer::%discord id of event-user%::name}%"
+					set the colour of the embed to cyan
+					set the description of embed to "Get rid of your lawyer: `/lawyer fire`%nl%Increase/Decrease effectiveness of your lawyer: `/lawyer budget`"
+					add split field named "Stats" with value "GPA: %{lawyer::%discord id of event-user%::gpa}%%nl%Years of Experience: %{lawyer::%discord id of event-user%::yr}%%nl%IQ: %{lawyer::%discord id of event-user%::iq}%" to embed
+					set the footer of embed to footer with text "Effective Score: %{lawyer::%discord id of event-user%::score}%"
+					send the last created embed to event-channel with event-bot
+		arg-1 = "budget":
+			reply with "soon"
+		arg-1 = "fire":
+			{lawyer::%discord id of event-user%::name} isn't set:
+				reply with "You need a lawyer."
+			else:
+				if {firelawyer.%discord id of event-user%} is not set:
+					reply with "Are you sure you'll like to fire your lawyer? This cannot be undone. do `/lawyer fire` again within 10 seconds to confirm."
+					set {firelawyer.%discord id of event-user%} to 1
+					wait 10 seconds
+					delete {firelawyer.%discord id of event-user%}
+				else:
+					delete {firelawyer.%discord id of event-user%}
+					delete {lawyer::%discord id of event-user%::*}
+					reply with "You fired your laywer without any compensation."
+		arg-1 = "market":
+			arg-2 isn't set:
+				create embed:
+					set the title of embed to title with text "Lawyer Market"
+					set the colour of the embed to cyan
+					set the description of embed to "Buy: `/lawyer market <##>`"
+					if {lmarket::1::locked} isn't set:
+						add split field named "[1] %{lmarket::1::name}%" with value "GPA: `%{lmarket::1::gpa}%`%nl%IQ: `%{lmarket::1::iq}%`%nl%Yrs of Exp: `%{lmarket::1::yr}%`%nl%Cost: `$%{lmarket::1::cost}% + %{lmarket::1::cut}%%% cut`%nl%%nl%**Score**: `%{lmarket::1::score}%`" to embed
+					else:
+						add split field named "~~[1] %{lmarket::1::name}%~~" with value "~~GPA: `%{lmarket::1::gpa}%`~~%nl%~~IQ: `%{lmarket::1::iq}%`~~%nl%~~Yrs of Exp: `%{lmarket::1::yr}%`~~%nl%~~Cost: `$%{lmarket::1::cost}% + %{lmarket::1::cut}%%% cut`~~%nl%%nl%~~**Score**: `%{lmarket::1::score}%`~~" to embed
+					if {lmarket::2::locked} isn't set:
+						add split field named "[2] %{lmarket::2::name}%" with value "GPA: `%{lmarket::2::gpa}%`%nl%IQ: `%{lmarket::2::iq}%`%nl%Yrs of Exp: `%{lmarket::2::yr}%`%nl%Cost: `$%{lmarket::2::cost}% + %{lmarket::2::cut}%%% cut`%nl%%nl%**Score**: `%{lmarket::2::score}%`" to embed
+					else:
+						add split field named "~~[2] %{lmarket::2::name}%~~" with value "~~GPA: `%{lmarket::2::gpa}%`~~%nl%~~IQ: `%{lmarket::2::iq}%`~~%nl%~~Yrs of Exp: `%{lmarket::2::yr}%`~~%nl%~~Cost: `$%{lmarket::2::cost}% + %{lmarket::2::cut}%%% cut`~~%nl%%nl%~~**Score**: `%{lmarket::2::score}%`~~" to embed
+					if {lmarket::3::locked} isn't set:
+						add split field named "[3] %{lmarket::3::name}%" with value "GPA: `%{lmarket::3::gpa}%`%nl%IQ: `%{lmarket::3::iq}%`%nl%Yrs of Exp: `%{lmarket::3::yr}%`%nl%Cost: `$%{lmarket::3::cost}% + %{lmarket::3::cut}%%% cut`%nl%%nl%**Score**: `%{lmarket::3::score}%`" to embed
+					else:
+						add split field named "~~[3] %{lmarket::3::name}%~~" with value "~~GPA: `%{lmarket::3::gpa}%`~~%nl%~~IQ: `%{lmarket::3::iq}%`~~%nl%~~Yrs of Exp: `%{lmarket::3::yr}%`~~%nl%~~Cost: `$%{lmarket::3::cost}% + %{lmarket::3::cut}%%% cut`~~%nl%%nl%~~**Score**: `%{lmarket::3::score}%`~~" to embed
+					if {lmarket::4::locked} isn't set:
+						add split field named "[4] %{lmarket::4::name}%" with value "GPA: `%{lmarket::4::gpa}%`%nl%IQ: `%{lmarket::4::iq}%`%nl%Yrs of Exp: `%{lmarket::4::yr}%`%nl%Cost: `$%{lmarket::4::cost}% + %{lmarket::4::cut}%%% cut`%nl%%nl%**Score**: `%{lmarket::4::score}%`" to embed
+					else:
+						add split field named "~~[4] %{lmarket::4::name}%~~" with value "~~GPA: `%{lmarket::4::gpa}%`~~%nl%~~IQ: `%{lmarket::4::iq}%`~~%nl%~~Yrs of Exp: `%{lmarket::4::yr}%`~~%nl%~~Cost: `$%{lmarket::4::cost}% + %{lmarket::4::cut}%%% cut`~~%nl%%nl%~~**Score**: `%{lmarket::4::score}%`~~" to embed
+					if {lmarket::5::locked} isn't set:
+						add split field named "[5] %{lmarket::5::name}%" with value "GPA: `%{lmarket::5::gpa}%`%nl%IQ: `%{lmarket::5::iq}%`%nl%Yrs of Exp: `%{lmarket::5::yr}%`%nl%Cost: `$%{lmarket::5::cost}% + %{lmarket::5::cut}%%% cut`%nl%%nl%**Score**: `%{lmarket::5::score}%`" to embed
+					else:
+						add split field named "~~[5] %{lmarket::5::name}%~~" with value "~~GPA: `%{lmarket::5::gpa}%`~~%nl%~~IQ: `%{lmarket::5::iq}%`~~%nl%~~Yrs of Exp: `%{lmarket::5::yr}%`~~%nl%~~Cost: `$%{lmarket::5::cost}% + %{lmarket::5::cut}%%% cut`~~%nl%%nl%~~**Score**: `%{lmarket::5::score}%`~~" to embed
+					if {lmarket::6::locked} isn't set:
+						add split field named "[6] %{lmarket::6::name}%" with value "GPA: `%{lmarket::6::gpa}%`%nl%IQ: `%{lmarket::6::iq}%`%nl%Yrs of Exp: `%{lmarket::6::yr}%`%nl%Cost: `$%{lmarket::6::cost}% + %{lmarket::6::cut}%%% cut`%nl%%nl%**Score**: `%{lmarket::6::score}%`" to embed
+					else:
+						add split field named "~~[6] %{lmarket::6::name}%~~" with value "~~GPA: `%{lmarket::6::gpa}%`~~%nl%~~IQ: `%{lmarket::6::iq}%`~~%nl%~~Yrs of Exp: `%{lmarket::6::yr}%`~~%nl%~~Cost: `$%{lmarket::6::cost}% + %{lmarket::6::cut}%%% cut`~~%nl%%nl%~~**Score**: `%{lmarket::6::score}%`~~" to embed
+					set the footer of embed to footer with text "Refreshes in: %{lawyernew}% minutes"
+					send the last created embed to event-channel with event-bot
+			arg-2 = "1" or "2" or "3" or "4" or "5" or "6":
+				{lawyer::%discord id of event-user%::name} is set:
+					reply with "You already have a lawyer."
+					stop
+				{lmarket::%arg-2%::locked} is not set:
+					if {money::%discord id of event-user%} >= {lmarket::%arg-2%::cost}:
+						remove {lmarket::%arg-2%::cost} from {money::%discord id of event-user%}
+						set {lawyer::%discord id of event-user%::name} to {lmarket::%arg-2%::name}
+						set {lawyer::%discord id of event-user%::gpa} to {lmarket::%arg-2%::gpa}
+						set {lawyer::%discord id of event-user%::iq} to {lmarket::%arg-2%::iq}
+						set {lawyer::%discord id of event-user%::yr} to {lmarket::%arg-2%::yr}
+						set {lawyer::%discord id of event-user%::cut} to {lmarket::%arg-2%::cut}
+						set {lawyer::%discord id of event-user%::score} to {lmarket::%arg-2%::score}
+						set {lawyer::%discord id of event-user%::cost} to {lmarket::%arg-2%::cost}
+						set {lmarket::%arg-2%::locked} to true
+					else:
+						reply with "Not enough money! (Missing: $%{lmarket::%arg-2%::cost}-{money::%discord id of event-user%}%)"
+				else:
+					reply with "This lawyer has been purchased already."
