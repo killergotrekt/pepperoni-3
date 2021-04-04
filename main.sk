@@ -1,11 +1,11 @@
 options:
 	bot: Pepperoni SE
-	version: 2.9
-	build: lawyerupdatepart1
+	version: 2.9.1
+	build: lawyerupdatepart1.1
 	maincctv: 213
 
 on skript load:
-	login to ".x" with name "{@bot}"
+	login to "3.3.3" with name "{@bot}"
 	mark "Pepperoni SE" as playing "/help"
 	
 discord command help:
@@ -19,7 +19,7 @@ discord command help:
 			set the description of embed to "All Pepperoni SE commands listed below:"
 			add field named "Eco-Income" with value "`/candy`, `/perks`, `/market`, `/hourly`, `/daily`, `/weekly`, `/beg`, `/fish`, `/pm`" to embed
 			add field named "Eco-Balance" with value "`/pay`, `/rob`, `/bankrob`, `/gamble`, `/bal`, `/dep`, `/wd`, `/difficulty`, `/qug`, `/bet`, `/pets`" to embed
-			add field named "DLC" with value "`/lawyer`" to embed
+			add field named "DLC" with value "`/lawyer`, `/sue`" to embed
 			add field named "Misc" with value "`/help`, `/gems`, `/levels`" to embed
 			add field named "Other" with value "`/github`, `/github`, `/invite`" to embed
 			set the footer of embed to footer with text "Debug: ""{@build}"""
