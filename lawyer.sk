@@ -4,6 +4,22 @@ options:
 on script load:
 	set {database::lawyer::namef::*} to "Bob", "Silly", "Bill", "Billy", "Donald", "Joe", "Ruth", "Looter", "Dick", "Adolf", "Joesph", "Lice", "Andrew", "Ben", "Xi", "Bobathan", "Mark", "Meth", "Beth", "Crack", "Rig", "Jerry", "Mac", "Fak", "Sack", and "McDonald"
 	set {database::lawyer::namel::*} to "Hitler", "de Osis", "Hiden", "Biden", "Trump", "J. Dementia", "Putin", "Kremlin", "Moscow", "Mitch", "U", "Jr.", "Sr.", "Tong", "Tang", "Lu", "Gates", "High", "Cook", "Dawn", "Hope", "Donke", "Monke", "IV", "XDR" and "Lam"
+
+
+command fuc <integer>:
+	trigger:
+		arg > 10000:
+			newLawyer(1)
+			newLawyer(2)
+			newLawyer(3)
+			newLawyer(4)
+			newLawyer(5)
+			newLawyer(6)
+			stop
+		arg > 1000:
+			set {lawyernew} to arg-1000
+			stop
+		newLawyer(arg)
 		
 function newLawyer(n: integer):
 	delete {lmarket::%{_n}%::locked}
@@ -24,7 +40,7 @@ function newLawyer(n: integer):
 	set {lmarket::%{_n}%::cut} to random integer between 15 and 70
 	set {lmarket::%{_n}%::cost} to {lmarket::%{_n}%::score}*1.75*{_experiencemultiplier}
 
-discord command lawyer [<text>] [<text>]:
+discord command lawyer [<text>] [<text>] [<text>]:
 	aliases: lawyers, legal
 	prefixes: /
 	trigger:
@@ -39,12 +55,64 @@ discord command lawyer [<text>] [<text>]:
 				create embed:
 					set the title of embed to title with text "%event-user%'s lawyer: %{lawyer::%discord id of event-user%::name}%"
 					set the colour of the embed to cyan
-					set the description of embed to "Get rid of your lawyer: `/lawyer fire`%nl%Increase/Decrease effectiveness of your lawyer: `/lawyer budget`"
-					add split field named "Stats" with value "GPA: %{lawyer::%discord id of event-user%::gpa}%%nl%Years of Experience: %{lawyer::%discord id of event-user%::yr}%%nl%IQ: %{lawyer::%discord id of event-user%::iq}%" to embed
+					set the description of embed to "Get rid of your lawyer: `/lawyer fire`%nl%Increase/Decrease effectiveness of your lawyer: `/lawyer budget`%nl%Change the abilities: `/lawyer ability`"
+					add field named "Stats" with value "GPA: %{lawyer::%discord id of event-user%::gpa}%%nl%Years of Experience: %{lawyer::%discord id of event-user%::yr}%%nl%IQ: %{lawyer::%discord id of event-user%::iq}%" to embed
+					if {lawyer::%discord id of event-user%::a1} isn't set:
+						add split field named "1: None" with value "Select in: `/lawyer ability`" to embed
+					else:
+						add split field named "1: %{lawyer::%discord id of event-user%::a1}%" with value "%{lawyer::%discord id of event-user%::a2}%" to embed
+					if {lawyer::%discord id of event-user%::a3} isn't set:
+						add split field named "2: None" with value "Select in: `/lawyer ability`" to embed
+					else:
+						add split field named "2: %{lawyer::%discord id of event-user%::a3}%" with value "%{lawyer::%discord id of event-user%::a4}%" to embed
 					set the footer of embed to footer with text "Effective Score: %{lawyer::%discord id of event-user%::score}%"
 					send the last created embed to event-channel with event-bot
 		arg-1 = "budget":
 			reply with "soon"
+		arg-1 = "ability":
+			{lawyer::%discord id of event-user%::name} isn't set:
+				reply with "You need a lawyer."
+				stop
+			arg-2 is not set:
+				create embed:
+					set the description of embed to "Lawyer Abilities"
+					if {lawyer::%discord id of event-user%::a1} isn't set:
+						add split field named "1: None" with value "Select in: `/lawyer ability list`" to embed
+					else:
+						add split field named "1: %{lawyer::%discord id of event-user%::a1}%" with value "%{lawyer::%discord id of event-user%::a2}%" to embed
+					if {lawyer::%discord id of event-user%::a3} isn't set:
+						add split field named "2: None" with value "Select in: `/lawyer ability list`" to embed
+					else:
+						add split field named "2: %{lawyer::%discord id of event-user%::a3}%" with value "%{lawyer::%discord id of event-user%::a4}%" to embed
+					send the last created embed to event-channel with event-bot
+			arg-2 = "list":
+				create embed:
+					set the description of embed to "Lawyer Abilities List"
+					add split field named "Ability 1: Offense" with value "[1] **Direct Hit** Damage enemy by 1500.%nl%[2] **Logarithm Percentage** Damage enemy 20%% of your max LP.%nl%[3] **Acclerated Damage** Damage 8%% of your max HP. Increases damage by 4%% every round." to embed
+					add split field named "Ability 2: Defensive" with value "[1] **Heal** Heal 20%% of your max HP.%nl%[2] **Rapid Heal** Heal 30%% of your max HP. Up to 3 times.%nl%[3] **Siphon** Damage your enemy and heal 50%% of the damage." to embed
+					set the footer of embed to footer with text "/lawyer ability <ability 1/2> <ability choice>"
+					send the last created embed to event-channel with event-bot
+			arg-2 = "1":
+				arg-3 = "1":
+					set {lawyer::%discord id of event-user%::a1} to "Direct Hit"
+					set {lawyer::%discord id of event-user%::a2} to "Damage enemy by 1500."
+				arg-3 = "2":
+					set {lawyer::%discord id of event-user%::a1} to "Logarithm Percentage"
+					set {lawyer::%discord id of event-user%::a2} to "Damage enemy 20%% of your max LP."
+				arg-3 = "3":
+					set {lawyer::%discord id of event-user%::a1} to "Accelerated Damage"
+					set {lawyer::%discord id of event-user%::a2} to "Damage 8%% of your max LP. Increases damage by 4%% every round."
+			arg-2 = "2":
+				arg-3 = "1":
+					set {lawyer::%discord id of event-user%::a3} to "Heal"
+					set {lawyer::%discord id of event-user%::a4} to "Heal 20%% of your max HP."
+				arg-3 = "2":
+					set {lawyer::%discord id of event-user%::a3} to "Rapid Heal"
+					set {lawyer::%discord id of event-user%::a4} to "Heal 30%% of your max HP. Up to 3 times."
+				arg-3 = "3":
+					set {lawyer::%discord id of event-user%::a3} to "Siphon"
+					set {lawyer::%discord id of event-user%::a4} to "Damage your enemy and heal 50%% of the damage."
+
 		arg-1 = "fire":
 			{lawyer::%discord id of event-user%::name} isn't set:
 				reply with "You need a lawyer."
