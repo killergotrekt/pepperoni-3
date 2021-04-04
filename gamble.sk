@@ -28,7 +28,7 @@ discord command bet [<number>]:
 		arg-1 is more than 20000:
 			reply with "`/bet <amount>` **Amount > $300, Amount < $20k**"
 			stop
-		{difficulty::%discord id of event-user%} = "Expert"
+		{difficulty::%discord id of event-user%} = "Expert":
 			{money::%discord id of event-user%}/2 < arg-1:
 				reply with "Not enough money. (Up to $%{money::%discord id of event-user%}/2%)"
 				stop
